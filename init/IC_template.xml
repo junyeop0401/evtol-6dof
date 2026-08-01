@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  초기조건(Initial Conditions) 템플릿
+  PX4 SITL 연동 시 home position이 PX4 쪽 설정과 일치해야 함.
+-->
+<initialize name="reset_hover_TEMPLATE">
+  <latitude unit="DEG">TODO</latitude>
+  <longitude unit="DEG">TODO</longitude>
+  <altitude unit="FT">TODO</altitude>
+  <phi unit="DEG">0.0</phi>
+  <theta unit="DEG">0.0</theta>
+  <psi unit="DEG">TODO</psi>
+  <ubody unit="FT/SEC">0.0</ubody>
+  <vbody unit="FT/SEC">0.0</vbody>
+  <wbody unit="FT/SEC">0.0</wbody>
+  <p unit="DEG/SEC">0.0</p>
+  <q unit="DEG/SEC">0.0</q>
+  <r unit="DEG/SEC">0.0</r>
+</initialize>

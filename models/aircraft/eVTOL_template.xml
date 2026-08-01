@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  eVTOL 6DOF 기체 정의 템플릿 (JSBSim aircraft xml)
+  TODO 표시된 부분은 기체 형상/제원 확정 후 채울 것.
+-->
+<fdm_config name="eVTOL_TEMPLATE" version="2.0" release="ALPHA"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
+
+  <fileheader>
+    <author>TODO</author>
+    <filecreationdate>2026-08-01</filecreationdate>
+    <version>0.1 template</version>
+    <description>eVTOL 6DOF 연구용 기체 템플릿 (미완성)</description>
+  </fileheader>
+
+  <metrics>
+    <wingarea unit="FT2">TODO</wingarea>
+    <wingspan unit="FT">TODO</wingspan>
+    <chord unit="FT">TODO</chord>
+    <htailarea unit="FT2">0</htailarea>
+    <htailarm unit="FT">0</htailarm>
+    <vtailarea unit="FT2">0</vtailarea>
+    <vtailarm unit="FT">0</vtailarm>
+    <location name="AERORP" unit="IN"><x>TODO</x><y>0</y><z>TODO</z></location>
+    <location name="EYEPOINT" unit="IN"><x>TODO</x><y>0</y><z>TODO</z></location>
+    <location name="VRP" unit="IN"><x>0</x><y>0</y><z>0</z></location>
+  </metrics>
+
+  <mass_balance>
+    <ixx unit="SLUG*FT2">TODO</ixx>
+    <iyy unit="SLUG*FT2">TODO</iyy>
+    <izz unit="SLUG*FT2">TODO</izz>
+    <ixy unit="SLUG*FT2">0</ixy>
+    <ixz unit="SLUG*FT2">0</ixz>
+    <iyz unit="SLUG*FT2">0</iyz>
+    <emptywt unit="LBS">TODO</emptywt>
+    <location name="CG" unit="IN"><x>TODO</x><y>0</y><z>TODO</z></location>
+  </mass_balance>
+
+  <ground_reactions>
+    <contact type="BOGEY" name="MAIN_LEFT">
+      <location unit="IN"><x>TODO</x><y>TODO</y><z>TODO</z></location>
+      <static_friction>0.8</static_friction>
+      <dynamic_friction>0.5</dynamic_friction>
+      <rolling_friction>0.02</rolling_friction>
+      <spring_coeff unit="LBS/FT">TODO</spring_coeff>
+      <damping_coeff unit="LBS/FT/SEC">TODO</damping_coeff>
+      <max_steer unit="DEG">0.0</max_steer>
+      <brake_group>NONE</brake_group>
+      <retractable>0</retractable>
+    </contact>
+  </ground_reactions>
+
+  <propulsion>
+    <!--
+      eVTOL 핵심 파트. 멀티로터/틸트로터 등 형상에 따라 구조가 크게 달라짐.
+      JSBSim 기본 엔진 타입에 electric motor가 없어서 커스텀 propulsion
+      구현이 필요함 = "JSBSim에만 없는 eVTOL 전용 모델" 핵심 작업.
+    -->
+    <engine file="TODO_motor_definition">
+      <location unit="IN"><x>TODO</x><y>TODO</y><z>TODO</z></location>
+      <orient unit="DEG"><roll>0</roll><pitch>TODO</pitch><yaw>0</yaw></orient>
+      <feed>0</feed>
+      <thruster file="TODO_propeller_definition">
+        <sense>1</sense>
+        <p_factor>0</p_factor>
+      </thruster>
+    </engine>
+  </propulsion>
+
+  <aerodynamics>
+    <axis name="LIFT">
+      <function name="aero/coefficient/CLtotal">
+        <description>Lift coefficient placeholder</description>
+        <value>0.0</value>
+      </function>
+    </axis>
+    <axis name="DRAG">
+      <function name="aero/coefficient/CDtotal">
+        <description>Drag coefficient placeholder</description>
+        <value>0.0</value>
+      </function>
+    </axis>
+  </aerodynamics>
+
+</fdm_config>

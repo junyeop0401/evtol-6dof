@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+  eVTOL 비행제어(FCS) 템플릿 — JSBSim system 파일
+  PX4 연동 시 실제 제어 로직은 PX4가 담당하고, 여기는 PX4가 보낸
+  액추에이터 명령을 propulsion에 꽂아주는 패스스루 역할을 함.
+-->
+<system name="eVTOL FCS TEMPLATE">
+
+  <channel name="Motor Commands (PX4 passthrough)">
+    <fcs_function name="fcs/motor1-cmd-norm">
+      <function>
+        <property>fcs/bridge/motor1-cmd-norm</property>
+      </function>
+      <clipto><min>0</min><max>1</max></clipto>
+      <output>fcs/motor1-throttle-cmd-norm</output>
+    </fcs_function>
+  </channel>
+
+  <channel name="Tilt Actuator Commands (if tiltrotor)">
+    <fcs_function name="fcs/tilt1-cmd-deg">
+      <function>
+        <property>fcs/bridge/tilt1-cmd-norm</property>
+        <value>90</value>
+      </function>
+      <output>fcs/tilt1-pos-deg</output>
+    </fcs_function>
+  </channel>
+
+  <channel name="Control Surfaces (if fixed-wing hybrid)">
+  </channel>
+
+</system>

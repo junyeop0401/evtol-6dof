@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  실행조건(run script) 템플릿. PX4 연동 시에는 jsbsim-bridge 통해
+  실행되므로 별도 런처가 필요할 수 있음 — bridge/README.md 참고.
+-->
+<runscript name="eVTOL_hover_test_TEMPLATE"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
+
+  <description>eVTOL 호버 기본 검증용 run script 템플릿</description>
+  <use aircraft="eVTOL_TEMPLATE" initialize="reset_hover_TEMPLATE"/>
+
+  <run start="0.0" end="60.0" dt="0.0083333">
+    <event name="Trim / Stabilize">
+      <condition>simulation/sim-time-sec ge 0.0</condition>
+      <notify/>
+    </event>
+  </run>
+
+</runscript>
