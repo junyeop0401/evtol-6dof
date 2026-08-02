@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  QuadX_control_response_test.xml — QuadX_Baseline 제어권한(축별 스텝/더블릿
+  응답) 검증용 run script.
+
+  scripts/QuadX_nominal_mission.xml(정상 미션, 완만한 입력)과는 별도의 산출물.
+  이 스크립트는 일부러 공격적인 더블릿(doublet) 입력을 사용해 롤/피치/요 축
+  각각의 제어권한과 rate-SCAS 응답 특성을 확인하기 위한 것이며, F450 공식
+  테스트 스크립트(Test_F450_Launch.xml)의 더블릿 검증 패턴을 참고함.
+
+  공중 호버 상태(init/QuadX_hover.xml, 10m AGL)에서 바로 시작하여 이착륙
+  과정을 생략함 — 순수 제어 응답에 집중.
+-->
+<runscript name="QuadX_control_response_test"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
+
+  <description>
+    QuadX_Baseline 축별 제어권한 검증: 호버 상태에서 롤/피치/요 순서로 더블릿
+    입력을 주고 각속도(p,q,r) 응답을 CSV로 기록한다.
+  </description>
+
+  <use aircraft="QuadX_Baseline" initialize="QuadX_hover"/>
+
+  <run start="0.0" end="40.0" dt="0.002">
+
+    <event name="1. Hover Throttle + Engage SCAS">
+      <condition>simulation/sim-time-sec ge 0.0</condition>
+      <set name="fcs/throttle-cmd-norm" value="0.35"/>
+      <set name="fcs/ScasEngage" value="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="2. Roll Doublet - Positive">
+      <condition>simulation/sim-time-sec ge 5.0</condition>
+      <set name="fcs/aileron-cmd-norm" value="0.15" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="3. Roll Doublet - Negative">
+      <condition>simulation/sim-time-sec ge 6.0</condition>
+      <set name="fcs/aileron-cmd-norm" value="-0.15" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="4. Roll Doublet - Return to Neutral">
+      <condition>simulation/sim-time-sec ge 7.0</condition>
+      <set name="fcs/aileron-cmd-norm" value="0.0" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="5. Roll Settle Checkpoint">
+      <condition>simulation/sim-time-sec ge 10.0</condition>
+      <notify/>
+    </event>
+
+    <event name="6. Pitch Doublet - Positive (nose-up)">
+      <condition>simulation/sim-time-sec ge 15.0</condition>
+      <set name="fcs/elevator-cmd-norm" value="0.15" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="7. Pitch Doublet - Negative (nose-down)">
+      <condition>simulation/sim-time-sec ge 16.0</condition>
+      <set name="fcs/elevator-cmd-norm" value="-0.15" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="8. Pitch Doublet - Return to Neutral">
+      <condition>simulation/sim-time-sec ge 17.0</condition>
+      <set name="fcs/elevator-cmd-norm" value="0.0" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="9. Pitch Settle Checkpoint">
+      <condition>simulation/sim-time-sec ge 20.0</condition>
+      <notify/>
+    </event>
+
+    <event name="10. Yaw Doublet - Positive">
+      <condition>simulation/sim-time-sec ge 25.0</condition>
+      <set name="fcs/rudder-cmd-norm" value="0.15" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="11. Yaw Doublet - Negative">
+      <condition>simulation/sim-time-sec ge 26.0</condition>
+      <set name="fcs/rudder-cmd-norm" value="-0.15" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="12. Yaw Doublet - Return to Neutral">
+      <condition>simulation/sim-time-sec ge 27.0</condition>
+      <set name="fcs/rudder-cmd-norm" value="0.0" action="FG_RAMP" tc="0.3"/>
+      <notify/>
+    </event>
+    <event name="13. Yaw Settle Checkpoint">
+      <condition>simulation/sim-time-sec ge 30.0</condition>
+      <notify/>
+    </event>
+
+    <event name="14. End of Test">
+      <condition>simulation/sim-time-sec ge 38.0</condition>
+      <notify/>
+    </event>
+
+  </run>
+
+  <!--
+    CSV 출력: rate=50(Hz). 과도응답(스텝/더블릿) 분석 목적이므로 정상 미션
+    스크립트(rate=20)보다 높은 주파수로 기록함.
+  -->
+  <output name="QuadX_control_response_test_output.csv" type="CSV" rate="50">
+    <property>attitude/phi-rad</property>
+    <property>attitude/theta-rad</property>
+    <property>attitude/psi-rad</property>
+    <property>velocities/p-rad_sec</property>
+    <property>velocities/q-rad_sec</property>
+    <property>velocities/r-rad_sec</property>
+    <property>fcs/aileron-cmd-norm</property>
+    <property>fcs/elevator-cmd-norm</property>
+    <property>fcs/rudder-cmd-norm</property>
+    <property>fcs/throttle-pos-norm[0]</property>
+    <property>fcs/throttle-pos-norm[1]</property>
+    <property>fcs/throttle-pos-norm[2]</property>
+    <property>fcs/throttle-pos-norm[3]</property>
+    <property>propulsion/engine[0]/thrust-lbs</property>
+    <property>propulsion/engine[1]/thrust-lbs</property>
+    <property>propulsion/engine[2]/thrust-lbs</property>
+    <property>propulsion/engine[3]/thrust-lbs</property>
+  </output>
+
+</runscript>

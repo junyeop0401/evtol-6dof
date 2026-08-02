@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<mass_balance>
+  <!-- Design takeoff mass, including airframe, battery, five motors and avionics -->
+  <emptywt unit="KG">2.000</emptywt>
+  <location name="CG" unit="M">
+    <x>0.000</x><y>0.000</y><z>0.000</z>
+  </location>
+
+  <!-- Preliminary rigid-body inertia estimates for the 1.5 m-span configuration -->
+  <ixx unit="KG*M2">0.180</ixx>
+  <iyy unit="KG*M2">0.160</iyy>
+  <izz unit="KG*M2">0.300</izz>
+  <ixy unit="KG*M2">0.000</ixy>
+  <ixz unit="KG*M2">0.000</ixz>
+  <iyz unit="KG*M2">0.000</iyz>
+</mass_balance>

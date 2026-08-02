@@ -1,0 +1,22 @@
+아래 JSBSim 러런스크립트를 harness로 실행하고 결과를 보고해줘.
+
+대상:
+- 기체: <AircraftName>  (/home/junyeopkwon/jsbsim/aircraft/<AircraftName>/)
+- 초기조건: scripts/<AircraftName>/initial_condition/<...>.xml
+- 런스크립트: scripts/<AircraftName>/runscript/<...>.xml
+
+실행 방법:
+- reference/harness/run_jsbsim_timestamped_no_fg_prompt_csv_only.py
+  (jsbsim_workflow/scripts/ 아래 원본과 동일)를 --aircraft/--init/--runscript
+  인자로 실행해줘.
+- 실행 중 오류가 나면(단위 미변환, AGL/MSL 해석 등 이전에 발견된 것과 비슷한
+  종류일 수 있음) 원인을 진단하고 최소 수정만 적용한 뒤 다시 실행해줘.
+- 수정한 내용은 무엇을, 왜 고쳤는지 명확히 남겨줘(자동으로 git add/commit/push는
+  하지 말 것 — 이건 사람이 검토 후 직접 한다).
+
+보고 형식:
+1. 실행 결과 요약(성공/실패, exit code)
+2. 발견/수정한 런타임 이슈 목록(있다면)
+3. 생성된 raw/SI CSV, plot 경로
+4. CSV 기준 정성적 관찰(오버슈트, 발산, 착지 여부 등) — 정량 판정은 Claude가
+   SI CSV를 받아서 별도로 함

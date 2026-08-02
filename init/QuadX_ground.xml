@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  QuadX_ground.xml — QuadX_Baseline 지상 초기화(스킵 접지, 모터 정지)
+
+  가정: 테스트 비행장 좌표(임의). 서울 근교를 대략적으로 흉내낸 위경도값을
+  사용했을 뿐, 실제 지명/정확한 측지 좌표가 아님(고도값도 임의의 평지
+  표고 50m 가정). altitude=elevation으로 두어 접지 상태에서 시작하며,
+  ground_reactions의 스킵 spring이 자체적으로 침하/안정화됨.
+  Codex note: JSBSim 1.2.4 treats initialize/altitude as AGL over elevation; ground uses altitude=0.
+-->
+<initialize name="QuadX_ground">
+  <vt unit="KTS">0.0</vt>
+  <latitude type="geodetic" unit="DEG">37.4000</latitude>
+  <longitude unit="DEG">127.0000</longitude>
+  <altitude unit="M">0.0</altitude>
+  <elevation unit="M">50.0</elevation>
+  <phi unit="DEG">0.0</phi>
+  <theta unit="DEG">0.0</theta>
+  <psi unit="DEG">0.0</psi>
+  <ubody unit="FT/SEC">0.0</ubody>
+  <vbody unit="FT/SEC">0.0</vbody>
+  <wbody unit="FT/SEC">0.0</wbody>
+  <p unit="DEG/SEC">0.0</p>
+  <q unit="DEG/SEC">0.0</q>
+  <r unit="DEG/SEC">0.0</r>
+</initialize>

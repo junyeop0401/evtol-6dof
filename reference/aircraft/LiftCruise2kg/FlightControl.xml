@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<flight_control name="LiftCruise2kg multicopter mixer and fixed-wing surfaces">
+  <property value="0.0">fcs/pusher-throttle-cmd-norm</property>
+  <property value="0.0">fcs/fw-aileron-cmd-norm</property>
+  <property value="0.0">fcs/fw-elevator-cmd-norm</property>
+  <property value="0.0">fcs/fw-rudder-cmd-norm</property>
+
+  <channel name="Manual multicopter inputs">
+    <pure_gain name="fcs/manual-roll-mix">
+      <input>fcs/aileron-cmd-norm</input><gain>0.18</gain>
+      <clipto><min>-0.25</min><max>0.25</max></clipto>
+    </pure_gain>
+    <pure_gain name="fcs/manual-pitch-mix">
+      <input>fcs/elevator-cmd-norm</input><gain>0.18</gain>
+      <clipto><min>-0.25</min><max>0.25</max></clipto>
+    </pure_gain>
+    <pure_gain name="fcs/manual-yaw-mix">
+      <input>fcs/rudder-cmd-norm</input><gain>0.12</gain>
+      <clipto><min>-0.20</min><max>0.20</max></clipto>
+    </pure_gain>
+  </channel>
+
+  <channel name="Mode selection">
+    <switch name="fcs/selected-collective-norm">
+      <default value="fcs/throttle-cmd-norm"/>
+      <test logic="OR" value="ap/collective-cmd-norm">
+        ap/mode == 2
+        ap/mode == 3
+      </test>
+    </switch>
+    <switch name="fcs/selected-roll-mix">
+      <default value="fcs/manual-roll-mix"/>
+      <test logic="OR" value="ap/roll-cmd-norm">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test>
+    </switch>
+    <switch name="fcs/selected-pitch-mix">
+      <default value="fcs/manual-pitch-mix"/>
+      <test logic="OR" value="ap/pitch-cmd-norm">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test>
+    </switch>
+    <switch name="fcs/selected-yaw-mix">
+      <default value="fcs/manual-yaw-mix"/>
+      <test logic="OR" value="ap/yaw-cmd-norm">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test>
+    </switch>
+  </channel>
+
+  <channel name="Lift motor mixer">
+    <!-- FR = collective - roll + pitch + yaw -->
+    <summer name="fcs/cmdEscFR-norm">
+      <input>fcs/selected-collective-norm</input>
+      <input>-fcs/selected-roll-mix</input>
+      <input>fcs/selected-pitch-mix</input>
+      <input>fcs/selected-yaw-mix</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+    </summer>
+    <!-- AL = collective + roll - pitch + yaw -->
+    <summer name="fcs/cmdEscAL-norm">
+      <input>fcs/selected-collective-norm</input>
+      <input>fcs/selected-roll-mix</input>
+      <input>-fcs/selected-pitch-mix</input>
+      <input>fcs/selected-yaw-mix</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+    </summer>
+    <!-- FL = collective + roll + pitch - yaw -->
+    <summer name="fcs/cmdEscFL-norm">
+      <input>fcs/selected-collective-norm</input>
+      <input>fcs/selected-roll-mix</input>
+      <input>fcs/selected-pitch-mix</input>
+      <input>-fcs/selected-yaw-mix</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+    </summer>
+    <!-- AR = collective - roll - pitch - yaw -->
+    <summer name="fcs/cmdEscAR-norm">
+      <input>fcs/selected-collective-norm</input>
+      <input>-fcs/selected-roll-mix</input>
+      <input>-fcs/selected-pitch-mix</input>
+      <input>-fcs/selected-yaw-mix</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+    </summer>
+  </channel>
+
+  <channel name="Fixed-wing control surfaces">
+    <!-- Separate commands prevent multicopter roll/pitch/yaw commands from moving the surfaces. -->
+    <aerosurface_scale name="fcs/fw-aileron-pos-rad">
+      <input>fcs/fw-aileron-cmd-norm</input>
+      <range><min>-0.349066</min><max>0.349066</max></range>
+    </aerosurface_scale>
+    <aerosurface_scale name="fcs/fw-elevator-pos-rad">
+      <input>fcs/fw-elevator-cmd-norm</input>
+      <range><min>-0.349066</min><max>0.349066</max></range>
+    </aerosurface_scale>
+    <aerosurface_scale name="fcs/fw-rudder-pos-rad">
+      <input>fcs/fw-rudder-cmd-norm</input>
+      <range><min>-0.436332</min><max>0.436332</max></range>
+    </aerosurface_scale>
+  </channel>
+</flight_control>

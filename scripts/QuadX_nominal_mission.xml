@@ -1,0 +1,306 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  QuadX_nominal_mission.xml — QuadX_Baseline "정상 미션" run script
+
+  목적: 급격한 doublet 등 공격적 기동이 아닌, 완만한 이륙-호버-순항-선회-복귀
+  -착륙의 정상 비행 프로파일 전 구간을 검증하기 위한 시나리오.
+  제어권한(스텝응답) 자체를 검증하려면 별도 파일
+  scripts/QuadX_control_response_test.xml을 사용할 것(이번 파일의 범위 밖).
+
+  dt=0.002s: F450 공식 테스트 스크립트 대비 다소 보수적인(작은) 적분 스텝.
+  전기모터+빠른 rate PID(kp up to 0.3) 조합의 수치 안정성을 위해 권장되는 값.
+
+  === 각속도-명령(rate-command) FCS 특성 유의 ===
+  models/systems/QuadX_FCS.xml은 자세유지가 아닌 "각속도" 제어 구조이므로,
+  아래 이벤트들은 목표 자세각에 도달시킬 만큼만 짧게 pilotPitch/Yaw 입력을
+  "펄스"로 준 뒤 중립(0)으로 되돌리는 방식으로 자세를 형성/유지한다.
+
+  === 고도/시간 이중조건(안전판) ===
+  이륙완료/접근감속/착지 이벤트는 고도 조건을 기본으로 하되, 손계산 예측이
+  빗나갈 경우를 대비해 시간 기준 안전판(fallback)을 OR로 함께 걸어두었다.
+  이는 실행 결과를 실제로 본 적이 없는 상태에서(이번 세션은 실행 불가)
+  스크립트가 무한정 대기하다 멈추는 것을 방지하기 위한 보수적 설계다.
+
+  === 2026-08-01 개정: 고도홀드 폐루프 도입 ===
+  최초 버전은 이륙/호버/하강 전 구간을 throttle-cmd-norm 직접 램프(open-loop)로
+  처리했으나, Codex가 JSBSim 1.2.4로 실제 실행한 결과 목표 10m AGL 대비 최대
+  약 243.8 ft까지 치솟는 고도 오버슈트가 확인되었다(docs/QuadX_Baseline_model.md
+  9절 참고). 원인은 상승 중 축적된 수직속도가 스로틀을 호버값으로 되돌려도
+  즉시 사라지지 않는, 속도 피드백 부재형 open-loop 제어의 전형적 결함이다.
+  이를 해결하기 위해 models/systems/QuadX_FCS.xml에 고도 오차 기반 PID
+  외곽 루프(Altitude Hold)를 추가했고, 이 스크립트는 이제 이륙~하강 구간에서
+  fcs/target-altitude-agl-ft만 갱신하며(fcs/AltHoldEngage=1), 실제 스로틀
+  계산은 FCS가 폐루프로 담당한다. 아이들/최종 터치다운 구간만 여전히
+  fcs/throttle-cmd-norm-raw를 직접 지정하는 open-loop로 남겨두었다(접지
+  반력이 섞이는 구간은 폐루프보다 예측 가능한 open-loop 램프다운이 낫다고
+  판단). 고도홀드 PID 게인은 손계산 선형화 기반 1차 설계값이며 실행
+  검증/재튜닝이 필요하다(QuadX_FCS.xml 주석 참고).
+-->
+<runscript name="QuadX_nominal_mission"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
+
+  <description>
+    QuadX_Baseline 정상 미션: 모터 아이들/암 -> 지상 트림 -> SCAS 인게이지 ->
+    완만한 이륙(10m AGL) -> 호버 유지 -> 완만한 전진 순항(피치 펄스) ->
+    완만한 선회(요 레이트) -> 복귀/레벨아웃 -> 감속/하강 -> 접근 플레어 -> 착지.
+  </description>
+
+  <use aircraft="QuadX_Baseline" initialize="QuadX_ground"/>
+
+  <run start="0.0" end="90.0" dt="0.002">
+
+    <!-- ================= 미션 프로파일 이벤트 ================= -->
+
+    <event name="1. Motor Idle / Arm">
+      <condition>simulation/sim-time-sec ge 0.0</condition>
+      <set name="fcs/throttle-cmd-norm-raw" value="0.15" action="FG_RAMP" tc="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="2. Initial Ground Trim">
+      <condition>simulation/sim-time-sec ge 2.0</condition>
+      <set name="simulation/do_simple_trim" value="2"/>
+      <notify/>
+    </event>
+
+    <event name="3. Engage Rate SCAS">
+      <condition>simulation/sim-time-sec ge 3.0</condition>
+      <set name="fcs/ScasEngage" value="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="4. Liftoff - Engage Altitude Hold, Target 10m AGL (32.8 ft)">
+      <!--
+        기존에는 이 지점에서 스로틀을 몇 단계(0.55→0.35 등)로 직접 램프해
+        수동으로 이륙/레벨오프/호버를 만들었으나, Codex 실행 검증에서 큰
+        고도 오버슈트(최대 약 243.8 ft)가 확인되어 models/systems/QuadX_FCS.xml에
+        추가한 고도홀드 PID 외곽 루프로 대체함. 이 시점부터 착륙 직전까지는
+        throttle-cmd-norm-raw 대신 target-altitude-agl-ft만 갱신하면 되고,
+        실제 스로틀은 FCS가 폐루프로 계산한다.
+      -->
+      <set name="fcs/AltHoldEngage" value="1.0"/>
+      <set name="fcs/target-altitude-agl-ft" value="32.8"/>
+      <notify/>
+    </event>
+
+    <event name="5. Hover Hold Checkpoint (altitude-hold maintains itself)">
+      <condition>simulation/sim-time-sec ge 20.0</condition>
+      <notify/>
+    </event>
+
+    <event name="7. Forward Cruise - Pitch Pulse In (nose-down rate cmd)">
+      <condition>simulation/sim-time-sec ge 25.0</condition>
+      <set name="fcs/elevator-cmd-norm" value="-0.06" action="FG_RAMP" tc="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="8. Forward Cruise - Pitch Pulse Out (hold ~5deg nose-down)">
+      <condition>simulation/sim-time-sec ge 27.0</condition>
+      <set name="fcs/elevator-cmd-norm" value="0.0" action="FG_RAMP" tc="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="9. Cruise Checkpoint">
+      <condition>simulation/sim-time-sec ge 35.0</condition>
+      <notify/>
+    </event>
+
+    <event name="10. Gentle Turn - Yaw Rate In">
+      <condition>simulation/sim-time-sec ge 40.0</condition>
+      <set name="fcs/rudder-cmd-norm" value="0.05" action="FG_RAMP" tc="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="11. Gentle Turn - Yaw Rate Out (~15s turn)">
+      <condition>simulation/sim-time-sec ge 55.0</condition>
+      <set name="fcs/rudder-cmd-norm" value="0.0" action="FG_RAMP" tc="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="12. Return - Pitch Reversal In (arrest forward tilt)">
+      <condition>simulation/sim-time-sec ge 60.0</condition>
+      <set name="fcs/elevator-cmd-norm" value="0.06" action="FG_RAMP" tc="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="13. Return - Pitch Reversal Out (level attitude)">
+      <condition>simulation/sim-time-sec ge 62.0</condition>
+      <set name="fcs/elevator-cmd-norm" value="0.0" action="FG_RAMP" tc="1.0"/>
+      <notify/>
+    </event>
+
+    <event name="14. Pre-Descent Checkpoint">
+      <condition>simulation/sim-time-sec ge 65.0</condition>
+      <notify/>
+    </event>
+
+    <event name="15. Descent Begin - Lower Altitude-Hold Target to ~1m">
+      <!-- 상승 때와 마찬가지로, 직접 스로틀을 낮추는 대신 목표고도만 낮춰
+           고도홀드 폐루프가 하강을 담당하게 함(오버슈트/오버슛다운 방지). -->
+      <condition>simulation/sim-time-sec ge 70.0</condition>
+      <set name="fcs/target-altitude-agl-ft" value="3.0"/>
+      <notify/>
+    </event>
+
+    <event name="16. Approach Flare - Handoff to Raw Throttle for Touchdown">
+      <!-- 접지 직전(4ft 이하) 또는 82초 안전판에서 고도홀드를 끄고
+           수동 스로틀(hover보다 약간 낮은 0.30)로 완만히 착지시킨다.
+           접지 반력이 섞이는 구간에서는 폐루프보다 open-loop 램프다운이
+           더 예측 가능하다고 판단함. -->
+      <condition logic="OR">
+        position/h-agl-ft le 4.0
+        simulation/sim-time-sec ge 82.0
+      </condition>
+      <set name="fcs/AltHoldEngage" value="0.0"/>
+      <set name="fcs/throttle-cmd-norm-raw" value="0.30" action="FG_RAMP" tc="1.5"/>
+      <notify/>
+    </event>
+
+    <event name="17. Touchdown - Throttle to Idle / Disengage SCAS">
+      <condition logic="AND">
+        simulation/sim-time-sec ge 70.0
+        <condition logic="OR">
+          position/h-agl-ft le 0.2
+          simulation/sim-time-sec ge 89.0
+        </condition>
+      </condition>
+      <set name="fcs/throttle-cmd-norm-raw" value="0.0" action="FG_RAMP" tc="2.0"/>
+      <set name="fcs/ScasEngage" value="0.0"/>
+      <notify/>
+    </event>
+
+    <event name="18. End of Mission">
+      <condition>simulation/sim-time-sec ge 89.0</condition>
+      <notify/>
+    </event>
+
+    <!-- ================= 1초 간격 콘솔 체크포인트 =================
+         위 미션 이벤트가 이미 notify를 발생시키는 시각(2,3,4,20,25,27,35,
+         40,55,60,62,65,70,89초)은 중복을 피하기 위해 아래 목록에서 제외함.
+         상세 시계열 데이터는 <output> CSV를 참고할 것. -->
+
+    <event name="Notify t=1s"><condition>simulation/sim-time-sec ge 1.0</condition><notify/></event>
+    <event name="Notify t=5s"><condition>simulation/sim-time-sec ge 5.0</condition><notify/></event>
+    <event name="Notify t=6s"><condition>simulation/sim-time-sec ge 6.0</condition><notify/></event>
+    <event name="Notify t=7s"><condition>simulation/sim-time-sec ge 7.0</condition><notify/></event>
+    <event name="Notify t=8s"><condition>simulation/sim-time-sec ge 8.0</condition><notify/></event>
+    <event name="Notify t=9s"><condition>simulation/sim-time-sec ge 9.0</condition><notify/></event>
+    <event name="Notify t=10s"><condition>simulation/sim-time-sec ge 10.0</condition><notify/></event>
+    <event name="Notify t=11s"><condition>simulation/sim-time-sec ge 11.0</condition><notify/></event>
+    <event name="Notify t=12s"><condition>simulation/sim-time-sec ge 12.0</condition><notify/></event>
+    <event name="Notify t=13s"><condition>simulation/sim-time-sec ge 13.0</condition><notify/></event>
+    <event name="Notify t=14s"><condition>simulation/sim-time-sec ge 14.0</condition><notify/></event>
+    <event name="Notify t=15s"><condition>simulation/sim-time-sec ge 15.0</condition><notify/></event>
+    <event name="Notify t=16s"><condition>simulation/sim-time-sec ge 16.0</condition><notify/></event>
+    <event name="Notify t=17s"><condition>simulation/sim-time-sec ge 17.0</condition><notify/></event>
+    <event name="Notify t=18s"><condition>simulation/sim-time-sec ge 18.0</condition><notify/></event>
+    <event name="Notify t=19s"><condition>simulation/sim-time-sec ge 19.0</condition><notify/></event>
+    <event name="Notify t=21s"><condition>simulation/sim-time-sec ge 21.0</condition><notify/></event>
+    <event name="Notify t=22s"><condition>simulation/sim-time-sec ge 22.0</condition><notify/></event>
+    <event name="Notify t=23s"><condition>simulation/sim-time-sec ge 23.0</condition><notify/></event>
+    <event name="Notify t=24s"><condition>simulation/sim-time-sec ge 24.0</condition><notify/></event>
+    <event name="Notify t=26s"><condition>simulation/sim-time-sec ge 26.0</condition><notify/></event>
+    <event name="Notify t=28s"><condition>simulation/sim-time-sec ge 28.0</condition><notify/></event>
+    <event name="Notify t=29s"><condition>simulation/sim-time-sec ge 29.0</condition><notify/></event>
+    <event name="Notify t=30s"><condition>simulation/sim-time-sec ge 30.0</condition><notify/></event>
+    <event name="Notify t=31s"><condition>simulation/sim-time-sec ge 31.0</condition><notify/></event>
+    <event name="Notify t=32s"><condition>simulation/sim-time-sec ge 32.0</condition><notify/></event>
+    <event name="Notify t=33s"><condition>simulation/sim-time-sec ge 33.0</condition><notify/></event>
+    <event name="Notify t=34s"><condition>simulation/sim-time-sec ge 34.0</condition><notify/></event>
+    <event name="Notify t=36s"><condition>simulation/sim-time-sec ge 36.0</condition><notify/></event>
+    <event name="Notify t=37s"><condition>simulation/sim-time-sec ge 37.0</condition><notify/></event>
+    <event name="Notify t=38s"><condition>simulation/sim-time-sec ge 38.0</condition><notify/></event>
+    <event name="Notify t=39s"><condition>simulation/sim-time-sec ge 39.0</condition><notify/></event>
+    <event name="Notify t=41s"><condition>simulation/sim-time-sec ge 41.0</condition><notify/></event>
+    <event name="Notify t=42s"><condition>simulation/sim-time-sec ge 42.0</condition><notify/></event>
+    <event name="Notify t=43s"><condition>simulation/sim-time-sec ge 43.0</condition><notify/></event>
+    <event name="Notify t=44s"><condition>simulation/sim-time-sec ge 44.0</condition><notify/></event>
+    <event name="Notify t=45s"><condition>simulation/sim-time-sec ge 45.0</condition><notify/></event>
+    <event name="Notify t=46s"><condition>simulation/sim-time-sec ge 46.0</condition><notify/></event>
+    <event name="Notify t=47s"><condition>simulation/sim-time-sec ge 47.0</condition><notify/></event>
+    <event name="Notify t=48s"><condition>simulation/sim-time-sec ge 48.0</condition><notify/></event>
+    <event name="Notify t=49s"><condition>simulation/sim-time-sec ge 49.0</condition><notify/></event>
+    <event name="Notify t=50s"><condition>simulation/sim-time-sec ge 50.0</condition><notify/></event>
+    <event name="Notify t=51s"><condition>simulation/sim-time-sec ge 51.0</condition><notify/></event>
+    <event name="Notify t=52s"><condition>simulation/sim-time-sec ge 52.0</condition><notify/></event>
+    <event name="Notify t=53s"><condition>simulation/sim-time-sec ge 53.0</condition><notify/></event>
+    <event name="Notify t=54s"><condition>simulation/sim-time-sec ge 54.0</condition><notify/></event>
+    <event name="Notify t=56s"><condition>simulation/sim-time-sec ge 56.0</condition><notify/></event>
+    <event name="Notify t=57s"><condition>simulation/sim-time-sec ge 57.0</condition><notify/></event>
+    <event name="Notify t=58s"><condition>simulation/sim-time-sec ge 58.0</condition><notify/></event>
+    <event name="Notify t=59s"><condition>simulation/sim-time-sec ge 59.0</condition><notify/></event>
+    <event name="Notify t=61s"><condition>simulation/sim-time-sec ge 61.0</condition><notify/></event>
+    <event name="Notify t=63s"><condition>simulation/sim-time-sec ge 63.0</condition><notify/></event>
+    <event name="Notify t=64s"><condition>simulation/sim-time-sec ge 64.0</condition><notify/></event>
+    <event name="Notify t=66s"><condition>simulation/sim-time-sec ge 66.0</condition><notify/></event>
+    <event name="Notify t=67s"><condition>simulation/sim-time-sec ge 67.0</condition><notify/></event>
+    <event name="Notify t=68s"><condition>simulation/sim-time-sec ge 68.0</condition><notify/></event>
+    <event name="Notify t=69s"><condition>simulation/sim-time-sec ge 69.0</condition><notify/></event>
+    <event name="Notify t=71s"><condition>simulation/sim-time-sec ge 71.0</condition><notify/></event>
+    <event name="Notify t=72s"><condition>simulation/sim-time-sec ge 72.0</condition><notify/></event>
+    <event name="Notify t=73s"><condition>simulation/sim-time-sec ge 73.0</condition><notify/></event>
+    <event name="Notify t=74s"><condition>simulation/sim-time-sec ge 74.0</condition><notify/></event>
+    <event name="Notify t=75s"><condition>simulation/sim-time-sec ge 75.0</condition><notify/></event>
+    <event name="Notify t=76s"><condition>simulation/sim-time-sec ge 76.0</condition><notify/></event>
+    <event name="Notify t=77s"><condition>simulation/sim-time-sec ge 77.0</condition><notify/></event>
+    <event name="Notify t=78s"><condition>simulation/sim-time-sec ge 78.0</condition><notify/></event>
+    <event name="Notify t=79s"><condition>simulation/sim-time-sec ge 79.0</condition><notify/></event>
+    <event name="Notify t=80s"><condition>simulation/sim-time-sec ge 80.0</condition><notify/></event>
+    <event name="Notify t=81s"><condition>simulation/sim-time-sec ge 81.0</condition><notify/></event>
+    <event name="Notify t=82s"><condition>simulation/sim-time-sec ge 82.0</condition><notify/></event>
+    <event name="Notify t=83s"><condition>simulation/sim-time-sec ge 83.0</condition><notify/></event>
+    <event name="Notify t=84s"><condition>simulation/sim-time-sec ge 84.0</condition><notify/></event>
+    <event name="Notify t=85s"><condition>simulation/sim-time-sec ge 85.0</condition><notify/></event>
+    <event name="Notify t=86s"><condition>simulation/sim-time-sec ge 86.0</condition><notify/></event>
+    <event name="Notify t=87s"><condition>simulation/sim-time-sec ge 87.0</condition><notify/></event>
+    <event name="Notify t=88s"><condition>simulation/sim-time-sec ge 88.0</condition><notify/></event>
+
+  </run>
+
+  <!--
+    CSV 출력: rate=20(Hz). F450 공식 테스트 스크립트(rate=250)보다 낮춘 이유는
+    이번 미션이 90초짜리 완만한 프로파일이라 고주파 성분이 없고, 250Hz로 로깅
+    시 파일이 불필요하게 커지기 때문(20Hz*90s=1800행 수준). 과도응답을 정밀
+    분석하려면 scripts/QuadX_control_response_test.xml에서 더 높은 rate를 쓸 것.
+
+    propulsion/engine[n]/power-hp, propeller-rpm은 Codex의 JSBSim 1.2.4 실행에서
+    실제로 CSV에 기록됨을 확인함(docs/QuadX_Baseline_model.md 9절). 새로 추가한
+    fcs/throttle-cmd-norm-raw, fcs/AltHoldEngage, fcs/target-altitude-agl-ft,
+    fcs/altError_ft는 고도홀드 폐루프 디버깅용으로 이번에 추가했으며 아직
+    실행 검증 전이다.
+  -->
+  <output name="QuadX_nominal_mission_output.csv" type="CSV" rate="20">
+    <property>position/h-agl-ft</property>
+    <property>attitude/phi-rad</property>
+    <property>attitude/theta-rad</property>
+    <property>attitude/psi-rad</property>
+    <property>velocities/p-rad_sec</property>
+    <property>velocities/q-rad_sec</property>
+    <property>velocities/r-rad_sec</property>
+    <property>velocities/vtrue-kts</property>
+    <property>fcs/throttle-cmd-norm</property>
+    <property>fcs/throttle-cmd-norm-raw</property>
+    <property>fcs/AltHoldEngage</property>
+    <property>fcs/target-altitude-agl-ft</property>
+    <property>fcs/altError_ft</property>
+    <property>fcs/throttle-pos-norm[0]</property>
+    <property>fcs/throttle-pos-norm[1]</property>
+    <property>fcs/throttle-pos-norm[2]</property>
+    <property>fcs/throttle-pos-norm[3]</property>
+    <property>propulsion/engine[0]/thrust-lbs</property>
+    <property>propulsion/engine[1]/thrust-lbs</property>
+    <property>propulsion/engine[2]/thrust-lbs</property>
+    <property>propulsion/engine[3]/thrust-lbs</property>
+    <property>propulsion/engine[0]/propeller-rpm</property>
+    <property>propulsion/engine[1]/propeller-rpm</property>
+    <property>propulsion/engine[2]/propeller-rpm</property>
+    <property>propulsion/engine[3]/propeller-rpm</property>
+    <property>propulsion/engine[0]/power-hp</property>
+    <property>propulsion/engine[1]/power-hp</property>
+    <property>propulsion/engine[2]/power-hp</property>
+    <property>propulsion/engine[3]/power-hp</property>
+  </output>
+
+</runscript>

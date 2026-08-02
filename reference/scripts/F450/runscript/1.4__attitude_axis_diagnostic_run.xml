@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd" name="F450 attitude axis diagnostic">
+  <description>
+    Diagnostic run for F450 attitude axis signs. Hold altitude at 10 m AGL and
+    command small roll/pitch references in mode 2 to observe local north/east
+    velocity response.
+  </description>
+  <use aircraft="F450" initialize="initGrnd" />
+  <run start="0.0" end="70.0" dt="0.002">
+    <property value="0">simulation/notify-time-trigger</property>
+    <property value="0">simulation/mission-state</property>
+    <event name="Initialize F450 axis diagnostic">
+      <condition>simulation/frame le 1</condition>
+      <set name="simulation/mission-state" value="0" />
+      <set name="ap/mode" value="0" />
+      <set name="fcs/throttle-cmd-norm" value="0.0" />
+      <set name="ap/altitude-reference" value="0" />
+      <set name="ap/heading-setpoint-rad" value="0.0" />
+      <set name="ap/roll-setpoint-rad" value="0.0" />
+      <set name="ap/pitch-setpoint-rad" value="0.0" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="ap/altitude-setpoint-ft" value="0.55" />
+    </event>
+    <event name="Trim F450 ground state">
+      <condition>simulation/frame gt 1</condition>
+      <set name="simulation/do_simple_trim" value="2" />
+    </event>
+    <event name="Climb with altitude hold and level attitude">
+      <condition>simulation/sim-time-sec ge 2.0</condition>
+      <set name="simulation/mission-state" value="1" />
+      <set name="ap/mode" value="2" />
+      <set name="ap/roll-setpoint-rad" value="0.0" />
+      <set name="ap/pitch-setpoint-rad" value="0.0" />
+      <set name="ap/altitude-setpoint-ft" value="32.80839895" />
+    </event>
+    <event name="Command positive roll">
+      <condition>simulation/sim-time-sec ge 20.0</condition>
+      <set name="simulation/mission-state" value="2" />
+      <set name="ap/roll-setpoint-rad" value="0.08" />
+      <set name="ap/pitch-setpoint-rad" value="0.0" />
+    </event>
+    <event name="Command negative roll">
+      <condition>simulation/sim-time-sec ge 30.0</condition>
+      <set name="simulation/mission-state" value="3" />
+      <set name="ap/roll-setpoint-rad" value="-0.08" />
+      <set name="ap/pitch-setpoint-rad" value="0.0" />
+    </event>
+    <event name="Command positive pitch">
+      <condition>simulation/sim-time-sec ge 40.0</condition>
+      <set name="simulation/mission-state" value="4" />
+      <set name="ap/roll-setpoint-rad" value="0.0" />
+      <set name="ap/pitch-setpoint-rad" value="0.08" />
+    </event>
+    <event name="Command negative pitch">
+      <condition>simulation/sim-time-sec ge 50.0</condition>
+      <set name="simulation/mission-state" value="5" />
+      <set name="ap/roll-setpoint-rad" value="0.0" />
+      <set name="ap/pitch-setpoint-rad" value="-0.08" />
+    </event>
+    <event name="Return level">
+      <condition>simulation/sim-time-sec ge 60.0</condition>
+      <set name="simulation/mission-state" value="6" />
+      <set name="ap/roll-setpoint-rad" value="0.0" />
+      <set name="ap/pitch-setpoint-rad" value="0.0" />
+    </event>
+    <event name="Terminate axis diagnostic">
+      <condition>simulation/sim-time-sec ge 70.0</condition>
+      <set name="simulation/mission-state" value="7" />
+      <set name="simulation/terminate" value="1" />
+    </event>
+    <event name="Repeating notify" persistent="true">
+      <condition>simulation/sim-time-sec ge simulation/notify-time-trigger</condition>
+      <set name="simulation/notify-time-trigger" value="1.0" type="FG_DELTA" />
+      <notify>
+        <property>simulation/mission-state</property>
+        <property>ap/mode</property>
+        <property>ap/roll-setpoint-rad</property>
+        <property>ap/pitch-setpoint-rad</property>
+        <property>position/h-agl-ft</property>
+        <property>velocities/v-north-fps</property>
+        <property>velocities/v-east-fps</property>
+        <property>attitude/phi-rad</property>
+        <property>attitude/theta-rad</property>
+        <property>ap/roll-cmd-norm</property>
+        <property>ap/pitch-cmd-norm</property>
+      </notify>
+    </event>
+  </run>
+</runscript>

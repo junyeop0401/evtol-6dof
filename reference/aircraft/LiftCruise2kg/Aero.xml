@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<aerodynamics>
+  <!-- Preliminary NACA-2412-like whole-aircraft lift/drag curves. Values are estimates, not constants. -->
+  <function name="aero/coefficient/CL-alpha">
+    <table>
+      <independentVar lookup="row">aero/alpha-deg</independentVar>
+      <tableData>
+        -20.0 -0.70
+        -15.0 -0.90
+        -10.0 -0.55
+         -5.0 -0.15
+          0.0  0.25
+          5.0  0.72
+         10.0  1.15
+         15.0  1.35
+         18.0  1.10
+         25.0  0.75
+      </tableData>
+    </table>
+  </function>
+  <function name="aero/coefficient/CL-elevator">
+    <table>
+      <independentVar lookup="row">fcs/fw-elevator-pos-rad</independentVar>
+      <tableData>
+        -0.349066  -0.16
+              0.0    0.0
+         0.349066   0.16
+      </tableData>
+    </table>
+  </function>
+  <function name="aero/coefficient/CD-alpha">
+    <table>
+      <independentVar lookup="row">aero/alpha-deg</independentVar>
+      <tableData>
+        -20.0 0.22
+        -15.0 0.14
+        -10.0 0.075
+         -5.0 0.040
+          0.0 0.030
+          5.0 0.038
+         10.0 0.065
+         15.0 0.120
+         18.0 0.180
+         25.0 0.300
+      </tableData>
+    </table>
+  </function>
+  <function name="aero/coefficient/CY-beta">
+    <table>
+      <independentVar lookup="row">aero/beta-rad</independentVar>
+      <tableData>
+            -0.35   0.18
+            -0.17   0.09
+              0.0    0.0
+             0.17  -0.09
+             0.35  -0.18
+      </tableData>
+    </table>
+  </function>
+  <function name="aero/coefficient/CY-rudder">
+    <table>
+      <independentVar lookup="row">fcs/fw-rudder-pos-rad</independentVar>
+      <tableData>
+        -0.436332  -0.12
+              0.0    0.0
+         0.436332   0.12
+      </tableData>
+    </table>
+  </function>
+  <axis name="LIFT">
+    <function name="aero/force/lift-alpha">
+      <product><property>aero/qbar-area</property><property>aero/coefficient/CL-alpha</property></product>
+    </function>
+    <function name="aero/force/lift-elevator">
+      <product><property>aero/qbar-area</property><property>aero/coefficient/CL-elevator</property></product>
+    </function>
+  </axis>
+  <axis name="DRAG">
+    <function name="aero/force/drag-alpha">
+      <product><property>aero/qbar-area</property><property>aero/coefficient/CD-alpha</property></product>
+    </function>
+  </axis>
+  <axis name="SIDE">
+    <function name="aero/force/side-beta">
+      <product><property>aero/qbar-area</property><property>aero/coefficient/CY-beta</property></product>
+    </function>
+    <function name="aero/force/side-rudder">
+      <product><property>aero/qbar-area</property><property>aero/coefficient/CY-rudder</property></product>
+    </function>
+  </axis>
+  <axis name="ROLL">
+    <function name="aero/moment/roll-beta">
+      <product>
+        <property>aero/qbar-area</property><property>metrics/bw-ft</property>
+        <table><independentVar lookup="row">aero/beta-rad</independentVar>
+          <tableData>
+                -0.35   0.10
+                -0.17   0.05
+                  0.0    0.0
+                 0.17  -0.05
+                 0.35  -0.10
+          </tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/moment/roll-aileron">
+      <product>
+        <property>aero/qbar-area</property><property>metrics/bw-ft</property>
+        <table><independentVar lookup="row">fcs/fw-aileron-pos-rad</independentVar>
+          <tableData>
+            -0.349066  -0.09
+                  0.0    0.0
+             0.349066   0.09
+          </tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/moment/roll-rate-damping">
+      <product><property>aero/qbar-area</property><property>metrics/bw-ft</property>
+        <property>aero/bi2vel</property><property>velocities/p-aero-rad_sec</property><value>-0.50</value>
+      </product>
+    </function>
+  </axis>
+  <axis name="PITCH">
+    <function name="aero/moment/pitch-alpha">
+      <product>
+        <property>aero/qbar-area</property><property>metrics/cbarw-ft</property>
+        <table><independentVar lookup="row">aero/alpha-rad</independentVar>
+          <tableData>
+                -0.35   0.22
+                -0.17   0.11
+                  0.0    0.0
+                 0.17  -0.11
+                 0.35  -0.22
+          </tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/moment/pitch-elevator">
+      <product>
+        <property>aero/qbar-area</property><property>metrics/cbarw-ft</property>
+        <table><independentVar lookup="row">fcs/fw-elevator-pos-rad</independentVar>
+          <tableData>
+            -0.349066  -0.55
+                  0.0    0.0
+             0.349066   0.55
+          </tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/moment/pitch-rate-damping">
+      <product><property>aero/qbar-area</property><property>metrics/cbarw-ft</property>
+        <property>aero/ci2vel</property><property>velocities/q-aero-rad_sec</property><value>-8.0</value>
+      </product>
+    </function>
+  </axis>
+  <axis name="YAW">
+    <function name="aero/moment/yaw-beta">
+      <product>
+        <property>aero/qbar-area</property><property>metrics/bw-ft</property>
+        <table><independentVar lookup="row">aero/beta-rad</independentVar>
+          <tableData>
+                -0.35  -0.08
+                -0.17  -0.04
+                  0.0    0.0
+                 0.17   0.04
+                 0.35   0.08
+          </tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/moment/yaw-rudder">
+      <product>
+        <property>aero/qbar-area</property><property>metrics/bw-ft</property>
+        <table><independentVar lookup="row">fcs/fw-rudder-pos-rad</independentVar>
+          <tableData>
+            -0.436332  -0.08
+                  0.0    0.0
+             0.436332   0.08
+          </tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/moment/yaw-rate-damping">
+      <product><property>aero/qbar-area</property><property>metrics/bw-ft</property>
+        <property>aero/bi2vel</property><property>velocities/r-aero-rad_sec</property><value>-0.20</value>
+      </product>
+    </function>
+  </axis>
+</aerodynamics>

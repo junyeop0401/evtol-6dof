@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+<!--
+  QuadX_FCS.xml — QuadX_Baseline 자체완결형 FCS (Rate-SCAS + X-쿼드 믹서 + ESC)
+
+  PX4 미연동. models/systems/FCS_template.xml(PX4 브릿지 패스스루 템플릿)과는
+  별개의 독립 산출물이며 그 템플릿은 건드리지 않았음.
+
+  구조 출처: JSBSim 공식 F450 예제의 FlightControl.xml + Effectors.xml을 하나의
+  파일로 병합하여 재사용/각색함(actuator 컴포넌트는 flight_control/system 어디에
+  두어도 동작하는 범용 컴포넌트이므로 병합 가능). 원문의 "External Input
+  Summations"(PX4 등 외부 입력 합산) 채널은 이번 자체완결 FCS 범위 밖이라 생략함.
+
+  파이프라인:
+    Pilot_Inputs(조종 입력 정규화, gain 0.75로 rate 기준값 스케일)
+    -> InnerLoop-Rates(자세가 아닌 "각속도" 오차를 PID로 제어하는 rate-SCAS)
+    -> Control Mixer(heave+roll+pitch+yaw를 4개 모터로 부호별 합산)
+    -> Effectors(0~1 클립 후 fcs/throttle-pos-norm[0..3]에 출력, engine 순서와
+       반드시 일치해야 함: [0]=front right, [1]=aft left, [2]=front left,
+       [3]=aft right)
+
+  === 믹서 부호 규약(구조좌표계 vs 동체좌표계 관점에서 재검산) ===
+  모터 위치(구조좌표계, QuadX_Baseline.xml 기준):
+    FR(front right): x=-0.1651(전방), y=+0.1651(우측), sense=+1(CW)
+    AL(aft left)   : x=+0.1651(후방), y=-0.1651(좌측), sense=+1(CW)
+    FL(front left) : x=-0.1651(전방), y=-0.1651(좌측), sense=-1(CCW)
+    AR(aft right)  : x=+0.1651(후방), y=+0.1651(우측), sense=-1(CCW)
+  (JSBSim 동체좌표계는 X=전방+, Y=우측+, Z=하방+이며, 구조좌표계 y와 동체좌표계
+  y는 부호가 같음 — 우측이 양수인 것은 동일. 차이는 X/Z뿐.)
+
+  롤(양수=우측이 내려가는 방향, 동체 Y+축 기준 우선회 롤): 우측 모터(FR, AR,
+  y=+0.1651)의 추력을 줄이고 좌측 모터(AL, FL, y=-0.1651)의 추력을 늘려야 함.
+  아래 믹서는 FR: roll gain -1, AR: roll gain -1 (감소), AL: roll gain +1,
+  FL: roll gain +1 (증가) — 부호 논리 일치 확인.
+
+  피치(양수=기수가 드는(nose-up) 방향, 전방 모터 추력 증가·후방 모터 추력 감소):
+  FR(전방, x=-0.1651): pitch gain +1(증가) → 이는 F450 원문 그대로이며, 이는
+  "pitch 양수 = 기수를 드는(nose-up) 방향"으로 정의한 규약임(전방 모터를 늘리면
+  기수가 들림). 후방 모터 AL(x=+0.1651): pitch gain -1(감소). 즉 이 믹서에서
+  fcs/pilotPitch_norm(=elevator-cmd-norm) 양수는 nose-up 방향 rate 명령이다.
+  (docs/QuadX_Baseline_model.md 5절에 이 부호 규약과 미션 스크립트에서의 실제
+  사용 방향을 명시함 — 전진 비행을 위해서는 elevator-cmd-norm에 "음수"를 주어
+  nose-down 피치를 만들어야 함.)
+
+  요(양수=시계방향(위에서 볼 때, 우선회) 회전, JSBSim 표준 관례: 양의 요레이트
+  r>0은 기수가 우측으로 도는 방향):
+  FR(sense+1): yaw +1(증가), AL(sense+1): yaw +1(증가),
+  FL(sense-1): yaw -1(감소), AR(sense-1): yaw -1(감소).
+  즉 각 모터의 yaw 게인 부호가 그 모터 자신의 sense 부호와 정확히 일치한다
+  (sense+1 모터는 +cmdYaw, sense-1 모터는 -cmdYaw). 이는 F450 원문 부호를 그대로
+  재사용한 것이며, "같은 회전방향(sense)의 대각 페어를 함께 늘리고 반대 페어를
+  함께 줄인다"는 논리 자체는 반작용토크 기반 요 제어의 표준적인 쿼드-X 믹서
+  구조와 정합한다(대각 CW 페어 강화 시 CW 방향 반작용토크가 커지고 CCW 페어가
+  약화되어 합성 요모멘트가 한쪽으로 쏠림). 다만 sense 부호가 실제로 어느
+  회전방향(CW/CCW)에 대응하는지는 JSBSim 스러스터 내부 구현에 의존하므로,
+  이 문서만으로 절대 방향(우선회 vs 좌선회)까지 100% 단정하지는 않으며,
+  실행 검증 시 rudder-cmd-norm에 작은 양수를 주고 velocities/r-rad_sec 부호를
+  실제로 확인해 볼 것을 권장한다(docs/QuadX_Baseline_model.md 검증 체크리스트
+  참고).
+
+  === 알려진 특성 ===
+  이 믹서는 "자세 유지(attitude hold)"가 아니라 "각속도(rate) 제어" 구조다.
+  refRoll/Pitch/Yaw_rps는 각속도 기준값이므로, pilot 입력이 0이 아닌 동안은
+  기체가 계속 회전하며, 원하는 자세각에 도달한 뒤 입력을 다시 0으로 되돌려야
+  그 자세가 유지된다(실제 쿼드콥터의 acro/rate 모드와 동일한 특성). 미션
+  스크립트(scripts/QuadX_nominal_mission.xml)는 이 특성을 반영해 "펄스 입력 후
+  중립 복귀" 방식으로 자세를 만든다.
+-->
+<flight_control name="QuadX FCS: rate-SCAS + X-quad mixer + ESC">
+  <channel name="Pilot_Inputs">
+    <summer name="pilotRoll_norm">
+      <input>fcs/aileron-cmd-norm</input>
+      <input>fcs/roll-trim-cmd-norm</input>
+      <clipto><min>-1.0</min><max>1.0</max></clipto>
+      <output>fcs/pilotRoll_norm</output>
+    </summer>
+    <summer name="pilotPitch_norm">
+      <input>fcs/elevator-cmd-norm</input>
+      <input>fcs/pitch-trim-cmd-norm</input>
+      <clipto><min>-1.0</min><max>1.0</max></clipto>
+      <output>fcs/pilotPitch_norm</output>
+    </summer>
+    <summer name="pilotYaw_norm">
+      <input>fcs/rudder-cmd-norm</input>
+      <input>fcs/yaw-trim-cmd-norm</input>
+      <clipto><min>-1.0</min><max>1.0</max></clipto>
+      <output>fcs/pilotYaw_norm</output>
+    </summer>
+    <pure_gain name="refPhi_rad">
+      <input>fcs/pilotRoll_norm</input>
+      <gain>0.75</gain>
+      <output>fcs/refRoll_rps</output>
+    </pure_gain>
+    <pure_gain name="refTheta_rad">
+      <input>fcs/pilotPitch_norm</input>
+      <gain>0.75</gain>
+      <output>fcs/refPitch_rps</output>
+    </pure_gain>
+    <pure_gain name="refYaw_rps">
+      <input>fcs/pilotYaw_norm</input>
+      <gain>0.75</gain>
+      <output>fcs/refYaw_rps</output>
+    </pure_gain>
+  </channel>
+
+  <property value="0.0"> fcs/ScasEngage </property>
+
+  <channel name="InnerLoop-Rates">
+    <summer>
+      <input>fcs/refRoll_rps</input>
+      <input>-velocities/pi-rad_sec</input>
+      <output>fcs/errRoll_rps</output>
+    </summer>
+    <pure_gain>
+      <input>fcs/errRoll_rps</input>
+      <gain>fcs/ScasEngage</gain>
+      <output>fcs/errRoll_rps</output>
+    </pure_gain>
+    <pid name="fcs/cmdRoll_rps">
+      <input>fcs/errRoll_rps</input>
+      <kp>0.150</kp>
+      <ki>0.050</ki>
+      <kd>0.003</kd>
+    </pid>
+
+    <summer>
+      <input>fcs/refPitch_rps</input>
+      <input>-velocities/qi-rad_sec</input>
+      <output>fcs/errPitch_rps</output>
+    </summer>
+    <pure_gain>
+      <input>fcs/errPitch_rps</input>
+      <gain>fcs/ScasEngage</gain>
+      <output>fcs/errPitch_rps</output>
+    </pure_gain>
+    <pid name="fcs/cmdPitch_rps">
+      <input>fcs/errPitch_rps</input>
+      <kp>0.150</kp>
+      <ki>0.050</ki>
+      <kd>0.003</kd>
+    </pid>
+
+    <summer>
+      <input>fcs/refYaw_rps</input>
+      <input>-velocities/ri-rad_sec</input>
+      <output>fcs/errYaw_rps</output>
+    </summer>
+    <pure_gain>
+      <input>fcs/errYaw_rps</input>
+      <gain>fcs/ScasEngage</gain>
+      <output>fcs/errYaw_rps</output>
+    </pure_gain>
+    <pid name="fcs/cmdYaw_rps">
+      <input>fcs/errYaw_rps</input>
+      <kp>0.300</kp>
+      <ki>0.100</ki>
+      <kd>0.000</kd>
+    </pid>
+  </channel>
+
+  <property value="1.0"> fcs/one_nd </property>
+  <property value="0.0"> fcs/AltHoldEngage </property>
+  <property value="0.0"> fcs/target-altitude-agl-ft </property>
+  <property value="0.0"> fcs/throttle-cmd-norm-raw </property>
+
+  <channel name="Altitude Hold (outer loop, added after Codex 실행검증)">
+    <!--
+      배경(2026-08-01 추가): Codex가 JSBSim 1.2.4로 QuadX_nominal_mission.xml을
+      실제 실행한 결과, open-loop 스로틀 이벤트(시간/고도 임계값에 따라 몇 단계로
+      throttle-cmd-norm을 램프)만으로는 목표 10m AGL 대비 최대 약 243.8 ft(약 74m)
+      까지 치솟는 큰 오버슈트가 발생함을 확인했다(docs/QuadX_Baseline_model.md 9절,
+      docs/agent-log/PROGRESS.md 참고). 상승 중 축적된 수직속도가 스로틀을
+      호버값으로 되돌려도 즉시 사라지지 않고 관성으로 계속 상승하는, 속도 피드백이
+      없는 open-loop 제어의 전형적인 오버슈트다. 이를 근본적으로 해결하기 위해
+      고도 오차 기반 PID(사실상 PD가 지배적, 적분은 작게) 외곽 루프를 추가한다.
+
+      플랜트 선형화(호버 스로틀 0.347 근방): 손계산상 스로틀 0.347→0.39 구간에서
+      총추력이 약 13.73N→14.84N로 변하는 것으로 추정되어(docs/QuadX_Baseline_model.md
+      3절 손계산 참고), d(총추력)/d(스로틀)≈25.8 N/unit, 질량 1.4kg로 나누면
+      d(수직가속도)/d(스로틀)≈18.4 m/s²/unit ≈60.4 ft/s²/unit. 이 값으로 2차 플랜트
+      h_ddot=60.4*u를 가정하고 감쇠비 ζ=0.8, 고유주파수 ωn≈0.83 rad/s(정착시간 약
+      6초 목표)로 역산해 아래 kp/kd를 도출했다. 이것은 실행 검증 전 1차 설계값이며,
+      Codex가 실제로 재실행해 오버슈트/진동 여부를 보고 반드시 재튜닝해야 한다
+      (오버슈트가 남으면 kp를 낮추거나 kd를 높일 것, 응답이 너무 느리면 반대로).
+
+      동작 방식: fcs/AltHoldEngage=0이면 throttle-cmd-norm은
+      throttle-cmd-norm-raw를 그대로 통과시킨다(모터 아이들/최종 터치다운처럼
+      스로틀을 직접 지정하고 싶을 때 사용). AltHoldEngage=1이면
+      target-altitude-agl-ft를 목표로 한 고도홀드 출력(호버 베이스라인 0.347 +
+      PID 보정, ±0.20로 클립)으로 전환한다. 게이팅은 이 파일에서 이미 검증된(
+      ScasEngage와 동일한) "게인=프로퍼티" 패턴을 그대로 재사용해 새 문법을
+      최소화했다.
+    -->
+    <summer name="altError_ft">
+      <input>fcs/target-altitude-agl-ft</input>
+      <input>-position/h-agl-ft</input>
+      <output>fcs/altError_ft</output>
+    </summer>
+
+    <pid name="fcs/altHoldBias_nd">
+      <input>fcs/altError_ft</input>
+      <kp>0.0115</kp>
+      <ki>0.0010</ki>
+      <kd>0.0221</kd>
+      <clipto><min>-0.20</min><max>0.20</max></clipto>
+    </pid>
+
+    <pure_gain name="altHoldBias_gated">
+      <input>fcs/altHoldBias_nd</input>
+      <gain>fcs/AltHoldEngage</gain>
+      <output>fcs/altHoldBias_gated_nd</output>
+    </pure_gain>
+
+    <pure_gain name="altHoldBaseline_gated">
+      <input>fcs/AltHoldEngage</input>
+      <gain>0.347</gain>
+      <output>fcs/altHoldBaseline_gated_nd</output>
+    </pure_gain>
+
+    <summer name="rawThrottleGate_nd">
+      <input>fcs/one_nd</input>
+      <input>-fcs/AltHoldEngage</input>
+      <output>fcs/rawThrottleGate_nd</output>
+    </summer>
+    <pure_gain name="rawThrottle_gated">
+      <input>fcs/throttle-cmd-norm-raw</input>
+      <gain>fcs/rawThrottleGate_nd</gain>
+      <output>fcs/rawThrottle_gated_nd</output>
+    </pure_gain>
+
+    <summer name="throttle-cmd-norm_blend">
+      <input>fcs/altHoldBaseline_gated_nd</input>
+      <input>fcs/altHoldBias_gated_nd</input>
+      <input>fcs/rawThrottle_gated_nd</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-cmd-norm</output>
+    </summer>
+  </channel>
+
+  <channel name="Control Mixer">
+    <!-- FR: front right, sense +1 (CW) -->
+    <pure_gain name="cmdHeave_2_FR"><input>fcs/throttle-cmd-norm</input><gain>1.0</gain><output>fcs/cmdHeave_nd_2_FR</output></pure_gain>
+    <pure_gain name="cmdRoll_2_FR"><input>fcs/cmdRoll_rps</input><gain>-1.0</gain><output>fcs/cmdRoll_rps_2_FR</output></pure_gain>
+    <pure_gain name="cmdPitch_2_FR"><input>fcs/cmdPitch_rps</input><gain>1.0</gain><output>fcs/cmdPitch_rps_2_FR</output></pure_gain>
+    <pure_gain name="cmdYaw_2_FR"><input>fcs/cmdYaw_rps</input><gain>1.0</gain><output>fcs/cmdYaw_rps_2_FR</output></pure_gain>
+    <summer name="cmdFR_nd">
+      <input>fcs/cmdHeave_nd_2_FR</input>
+      <input>fcs/cmdRoll_rps_2_FR</input>
+      <input>fcs/cmdPitch_rps_2_FR</input>
+      <input>fcs/cmdYaw_rps_2_FR</input>
+      <output>fcs/cmdFR_nd</output>
+    </summer>
+
+    <!-- AL: aft left, sense +1 (CW) -->
+    <pure_gain name="cmdHeave_2_AL"><input>fcs/throttle-cmd-norm</input><gain>1.0</gain><output>fcs/cmdHeave_nd_2_AL</output></pure_gain>
+    <pure_gain name="cmdRoll_2_AL"><input>fcs/cmdRoll_rps</input><gain>1.0</gain><output>fcs/cmdRoll_rps_2_AL</output></pure_gain>
+    <pure_gain name="cmdPitch_2_AL"><input>fcs/cmdPitch_rps</input><gain>-1.0</gain><output>fcs/cmdPitch_rps_2_AL</output></pure_gain>
+    <pure_gain name="cmdYaw_2_AL"><input>fcs/cmdYaw_rps</input><gain>1.0</gain><output>fcs/cmdYaw_rps_2_AL</output></pure_gain>
+    <summer name="cmdAL_nd">
+      <input>fcs/cmdHeave_nd_2_AL</input>
+      <input>fcs/cmdRoll_rps_2_AL</input>
+      <input>fcs/cmdPitch_rps_2_AL</input>
+      <input>fcs/cmdYaw_rps_2_AL</input>
+      <output>fcs/cmdAL_nd</output>
+    </summer>
+
+    <!-- FL: front left, sense -1 (CCW) -->
+    <pure_gain name="cmdHeave_2_FL"><input>fcs/throttle-cmd-norm</input><gain>1.0</gain><output>fcs/cmdHeave_nd_2_FL</output></pure_gain>
+    <pure_gain name="cmdRoll_2_FL"><input>fcs/cmdRoll_rps</input><gain>1.0</gain><output>fcs/cmdRoll_rps_2_FL</output></pure_gain>
+    <pure_gain name="cmdPitch_2_FL"><input>fcs/cmdPitch_rps</input><gain>1.0</gain><output>fcs/cmdPitch_rps_2_FL</output></pure_gain>
+    <pure_gain name="cmdYaw_2_FL"><input>fcs/cmdYaw_rps</input><gain>-1.0</gain><output>fcs/cmdYaw_rps_2_FL</output></pure_gain>
+    <summer name="cmdFL_nd">
+      <input>fcs/cmdHeave_nd_2_FL</input>
+      <input>fcs/cmdRoll_rps_2_FL</input>
+      <input>fcs/cmdPitch_rps_2_FL</input>
+      <input>fcs/cmdYaw_rps_2_FL</input>
+      <output>fcs/cmdFL_nd</output>
+    </summer>
+
+    <!-- AR: aft right, sense -1 (CCW) -->
+    <pure_gain name="cmdHeave_2_AR"><input>fcs/throttle-cmd-norm</input><gain>1.0</gain><output>fcs/cmdHeave_nd_2_AR</output></pure_gain>
+    <pure_gain name="cmdRoll_2_AR"><input>fcs/cmdRoll_rps</input><gain>-1.0</gain><output>fcs/cmdRoll_rps_2_AR</output></pure_gain>
+    <pure_gain name="cmdPitch_2_AR"><input>fcs/cmdPitch_rps</input><gain>-1.0</gain><output>fcs/cmdPitch_rps_2_AR</output></pure_gain>
+    <pure_gain name="cmdYaw_2_AR"><input>fcs/cmdYaw_rps</input><gain>-1.0</gain><output>fcs/cmdYaw_rps_2_AR</output></pure_gain>
+    <summer name="cmdAR_nd">
+      <input>fcs/cmdHeave_nd_2_AR</input>
+      <input>fcs/cmdRoll_rps_2_AR</input>
+      <input>fcs/cmdPitch_rps_2_AR</input>
+      <input>fcs/cmdYaw_rps_2_AR</input>
+      <output>fcs/cmdAR_nd</output>
+    </summer>
+  </channel>
+
+  <channel name="Effectors: Electronic Speed Controllers">
+    <!--
+      engine 순서와 반드시 일치: [0]=front right, [1]=aft left,
+      [2]=front left, [3]=aft right (models/aircraft/QuadX_Baseline.xml
+      propulsion 블록 참고)
+    -->
+    <actuator name="ESC Front Right">
+      <input>fcs/cmdFR_nd</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[0]</output>
+    </actuator>
+    <actuator name="ESC Aft Left">
+      <input>fcs/cmdAL_nd</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[1]</output>
+    </actuator>
+    <actuator name="ESC Front Left">
+      <input>fcs/cmdFL_nd</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[2]</output>
+    </actuator>
+    <actuator name="ESC Aft Right">
+      <input>fcs/cmdAR_nd</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[3]</output>
+    </actuator>
+  </channel>
+
+</flight_control>

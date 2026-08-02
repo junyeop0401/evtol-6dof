@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<system name="Lift and pusher effectors">
+  <channel name="Electronic speed controllers">
+    <actuator name="Lift Front Right">
+      <input>fcs/cmdEscFR-norm</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[0]</output>
+    </actuator>
+    <actuator name="Lift Aft Left">
+      <input>fcs/cmdEscAL-norm</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[1]</output>
+    </actuator>
+    <actuator name="Lift Front Left">
+      <input>fcs/cmdEscFL-norm</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[2]</output>
+    </actuator>
+    <actuator name="Lift Aft Right">
+      <input>fcs/cmdEscAR-norm</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[3]</output>
+    </actuator>
+    <actuator name="Pusher">
+      <input>fcs/pusher-throttle-cmd-norm</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+      <output>fcs/throttle-pos-norm[4]</output>
+    </actuator>
+  </channel>
+</system>

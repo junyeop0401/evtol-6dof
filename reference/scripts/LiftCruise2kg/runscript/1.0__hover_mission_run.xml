@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd"
+  name="LiftCruise2kg multicopter hover mission">
+  <description>
+    Lift motors only: climb to 10 m AGL, move +5 m north and return, move -5 m north and return,
+    move +5 m east and return, move -5 m east and return, hover 20 s, descend and disarm.
+  </description>
+  <use aircraft="LiftCruise2kg" initialize="initGrnd"/>
+  <run start="0.0" end="145.0" dt="0.002">
+    <property value="0">simulation/notify-time-trigger</property>
+
+    <event name="Initialize and inhibit non-lift effectors">
+      <condition>simulation/frame le 1</condition>
+      <set name="ap/mode" value="0"/>
+      <set name="fcs/throttle-cmd-norm" value="0.0"/>
+      <set name="fcs/pusher-throttle-cmd-norm" value="0.0"/>
+      <set name="fcs/fw-aileron-cmd-norm" value="0.0"/>
+      <set name="fcs/fw-elevator-cmd-norm" value="0.0"/>
+      <set name="fcs/fw-rudder-cmd-norm" value="0.0"/>
+      <set name="ap/altitude-reference" value="0"/>
+      <set name="ap/heading-setpoint-rad" value="0.0"/>
+      <set name="ap/north-setpoint-m" value="0.0"/>
+      <set name="ap/east-setpoint-m" value="0.0"/>
+    </event>
+
+    <event name="Engage hover and climb to 10 m AGL">
+      <condition>simulation/sim-time-sec ge 2.0</condition>
+      <set name="ap/mode" value="3"/>
+      <set name="ap/altitude-setpoint-ft" value="32.80839895"/>
+    </event>
+
+    <event name="Move forward 5 m">
+      <condition>simulation/sim-time-sec ge 20.0</condition>
+      <set name="ap/north-setpoint-m" value="5.0"/>
+      <set name="ap/east-setpoint-m" value="0.0"/>
+    </event>
+    <event name="Return from forward point">
+      <condition>simulation/sim-time-sec ge 30.0</condition>
+      <set name="ap/north-setpoint-m" value="0.0"/>
+    </event>
+    <event name="Move backward 5 m">
+      <condition>simulation/sim-time-sec ge 40.0</condition>
+      <set name="ap/north-setpoint-m" value="-5.0"/>
+    </event>
+    <event name="Return from backward point">
+      <condition>simulation/sim-time-sec ge 50.0</condition>
+      <set name="ap/north-setpoint-m" value="0.0"/>
+    </event>
+    <event name="Move right 5 m">
+      <condition>simulation/sim-time-sec ge 60.0</condition>
+      <set name="ap/east-setpoint-m" value="5.0"/>
+    </event>
+    <event name="Return from right point">
+      <condition>simulation/sim-time-sec ge 70.0</condition>
+      <set name="ap/east-setpoint-m" value="0.0"/>
+    </event>
+    <event name="Move left 5 m">
+      <condition>simulation/sim-time-sec ge 80.0</condition>
+      <set name="ap/east-setpoint-m" value="-5.0"/>
+    </event>
+    <event name="Return from left point">
+      <condition>simulation/sim-time-sec ge 90.0</condition>
+      <set name="ap/east-setpoint-m" value="0.0"/>
+    </event>
+
+    <!-- 100-120 s: 20-second hover at the origin. -->
+    <event name="Vertical descent">
+      <condition>simulation/sim-time-sec ge 120.0</condition>
+      <set name="ap/north-setpoint-m" value="0.0"/>
+      <set name="ap/east-setpoint-m" value="0.0"/>
+      <set name="ap/altitude-setpoint-ft" value="0.55"/>
+    </event>
+    <event name="Disarm after landing window">
+      <condition>simulation/sim-time-sec ge 140.0</condition>
+      <set name="ap/mode" value="0"/>
+      <set name="fcs/throttle-cmd-norm" value="0.0"/>
+      <set name="fcs/pusher-throttle-cmd-norm" value="0.0"/>
+    </event>
+
+    <event name="Repeating notify" persistent="true">
+      <condition>simulation/sim-time-sec ge simulation/notify-time-trigger</condition>
+      <set name="simulation/notify-time-trigger" value="1.0" type="FG_DELTA"/>
+      <notify>
+        <property>ap/mode</property>
+        <property>position/h-agl-ft</property>
+        <property>position/distance-from-start-lat-mt</property>
+        <property>position/distance-from-start-lon-mt</property>
+        <property>attitude/phi-rad</property>
+        <property>attitude/theta-rad</property>
+        <property>ap/collective-cmd-norm</property>
+      </notify>
+    </event>
+  </run>
+
+  <output name="LiftCruise2kg_hover_mission.csv" type="CSV" rate="50">
+    <property>ap/mode</property>
+    <property>ap/north-setpoint-m</property>
+    <property>ap/east-setpoint-m</property>
+    <property>ap/altitude-setpoint-ft</property>
+    <property>position/distance-from-start-lat-mt</property>
+    <property>position/distance-from-start-lon-mt</property>
+    <property>position/h-agl-ft</property>
+    <property>position/h-sl-ft</property>
+    <property>velocities/v-north-fps</property>
+    <property>velocities/v-east-fps</property>
+    <property>velocities/h-dot-fps</property>
+    <property>attitude/phi-rad</property>
+    <property>attitude/theta-rad</property>
+    <property>attitude/psi-rad</property>
+    <property>ap/roll-cmd-norm</property>
+    <property>ap/pitch-cmd-norm</property>
+    <property>ap/yaw-cmd-norm</property>
+    <property>ap/collective-cmd-norm</property>
+    <property>fcs/throttle-pos-norm[0]</property>
+    <property>fcs/throttle-pos-norm[1]</property>
+    <property>fcs/throttle-pos-norm[2]</property>
+    <property>fcs/throttle-pos-norm[3]</property>
+    <property>fcs/throttle-pos-norm[4]</property>
+    <property>fcs/fw-aileron-pos-rad</property>
+    <property>fcs/fw-elevator-pos-rad</property>
+    <property>fcs/fw-rudder-pos-rad</property>
+  </output>
+</runscript>

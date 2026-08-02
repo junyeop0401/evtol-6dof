@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  QuadX_Motor.xml — QuadX_Baseline 전기모터 정의 (JSBSim engine file)
+
+  타입: electric_engine (FGElectric 클래스)
+
+  채택 근거:
+  - JSBSim 공식 F450(DJI 프레임 기반) 예제는 brushless_dc_motor 타입(전압/전류/코일저항
+    기반 상세 모델, DJI_E305)을 사용하지만, GitHub Discussion #1183
+    (JSBSim-Team/jsbsim)에 "failed to tie property" 실행 오류가 보고되었고, 예제에
+    쓰인 version="3.0" 속성도 존재하지 않는 스키마 버전(정답은 "2.0", collaborator
+    andgi 확인 답변)이라는 문제가 있다.
+  - 이번 베이스라인은 실행 안정성을 최우선으로 두고, 오래 검증된 electric_engine
+    (FGElectric) 타입을 채택한다. 배터리/전류 모델 없이 throttle에 선형 비례해
+    기계출력을 내는 단순 모델이지만, JSBSim 1.2.4 및 최신 master(1.3.x)에서
+    동일하게 안정적으로 동작한다.
+
+  정격 전력 100W의 근거 (docs/QuadX_Baseline_model.md 손계산 참고):
+  - 호버 필요추력 3.432 N/motor(AUW 1.4kg 기준)를 내기 위한 필요 기계동력이
+    DJI 9450 프로펠러 정지계수(J=0) 기준 약 34.7 W/motor로 계산되며,
+    이 값이 정격 100W의 약 35%가 되도록(즉 호버 스로틀 ~35%, T/W~2.0을 만족하도록)
+    역산하여 정격 전력을 100W로 설정하였다.
+-->
+<electric_engine name="QuadX_Motor">
+  <power unit="WATTS">100.0</power>
+</electric_engine>

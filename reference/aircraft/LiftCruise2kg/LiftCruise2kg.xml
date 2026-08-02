@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<fdm_config name="LiftCruise2kg" release="ALPHA" version="2.0">
+  <fileheader>
+    <author>OpenAI draft model for JSBSim evaluation</author>
+    <filecreationdate>2026-07-25</filecreationdate>
+    <version>0.1</version>
+    <description>
+      Initial 2 kg lift-plus-cruise eVTOL model. Four DJI E305/9450 lift units,
+      one disabled pusher unit, a conventional fixed wing and tail, and a
+      JSBSim-native multicopter autopilot are included.
+    </description>
+    <limitation>Aerodynamic tables are preliminary engineering estimates and are not flight-test validated.</limitation>
+    <limitation>Autopilot gains are initial values and require simulation tuning.</limitation>
+    <limitation>The test mission does not use the pusher motor or fixed-wing control surfaces.</limitation>
+  </fileheader>
+
+  <metrics file="Metrics.xml"/>
+  <mass_balance file="Mass.xml"/>
+  <ground_reactions file="Gear.xml"/>
+  <propulsion file="Propulsion.xml"/>
+  <system file="Effectors.xml"/>
+  <flight_control file="FlightControl.xml"/>
+  <autopilot file="LiftCruiseAP.xml"/>
+  <aerodynamics file="Aero.xml"/>
+</fdm_config>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runscript name="F450_ground_launch_scas_workflow">
+  <description>F450 minimal multirotor sanity run: ground start, simple trim, launch, then hold the model's nominal hover throttle with SCAS enabled.</description>
+  <use aircraft="F450" initialize="/home/junyeopkwon/jsbsim_workflow/scripts/F450/initial_condition/1.0__ground_park_init.xml"/>
+
+  <run start="0.0" end="12.0" dt="0.002">
+    <property value="0" persistent="true"> simulation/gravity-model </property>
+    <property value="0" persistent="true"> simulation/notify-time-trigger </property>
+    <property value="0" persistent="true"> fcs/ScasEngage </property>
+
+    <event name="Motor idle">
+      <condition> simulation/frame le 1 </condition>
+      <set name="fcs/throttle-cmd-norm" value="0.0"/>
+      <set name="fcs/aileron-cmd-norm" value="0.0"/>
+      <set name="fcs/elevator-cmd-norm" value="0.0"/>
+      <set name="fcs/rudder-cmd-norm" value="0.0"/>
+      <notify/>
+    </event>
+
+    <event name="Ground trim">
+      <condition> simulation/frame gt 1 </condition>
+      <set name="simulation/do_simple_trim" value="2"/>
+      <notify/>
+    </event>
+
+    <event name="Motor launch">
+      <condition> simulation/sim-time-sec ge 1.0 </condition>
+      <set name="fcs/throttle-cmd-norm" value="0.50"/>
+      <notify/>
+    </event>
+
+    <event name="SCAS hover command">
+      <condition> simulation/sim-time-sec ge 2.0 </condition>
+      <set name="fcs/ScasEngage" value="1.0"/>
+      <set name="fcs/throttle-cmd-norm" value="0.49"/>
+      <set name="fcs/aileron-cmd-norm" value="0.0"/>
+      <set name="fcs/elevator-cmd-norm" value="0.0"/>
+      <set name="fcs/rudder-cmd-norm" value="0.0"/>
+      <notify/>
+    </event>
+
+    <event name="Repeating notify" persistent="true">
+      <condition> simulation/sim-time-sec ge simulation/notify-time-trigger </condition>
+      <set name="simulation/notify-time-trigger" value="1.0" type="FG_DELTA"/>
+      <notify>
+        <property> fcs/ScasEngage </property>
+        <property> fcs/throttle-cmd-norm </property>
+        <property> position/h-agl-ft </property>
+        <property> velocities/v-down-fps </property>
+        <property> attitude/phi-deg </property>
+        <property> attitude/theta-deg </property>
+        <property> attitude/psi-deg </property>
+        <property> propulsion/engine[0]/propeller-rpm </property>
+        <property> propulsion/engine[1]/propeller-rpm </property>
+        <property> propulsion/engine[2]/propeller-rpm </property>
+        <property> propulsion/engine[3]/propeller-rpm </property>
+      </notify>
+    </event>
+  </run>
+</runscript>

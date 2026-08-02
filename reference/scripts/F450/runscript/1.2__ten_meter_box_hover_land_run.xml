@@ -1,0 +1,723 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd" name="F450 10 m box hover and land mission">
+  <description>
+    Start at local (0, 0, 0), climb to (0, 0, 10), then visit
+    (10, 0, 10), (0, 0, 10), (-10, 0, 10), (0, 0, 10),
+    (0, 10, 10), (0, 0, 10), (0, -10, 10), (0, 0, 10),
+    holding 5 seconds after each translation before vertical landing and disarm.
+    Local x maps to north setpoint, y maps to east setpoint, z is altitude AGL. F450 uses the same schedule with heading-zero initialization.
+  </description>
+  <use aircraft="F450" initialize="initGrnd" />
+  <run start="0.0" end="215.0" dt="0.002">
+    <property value="0">simulation/notify-time-trigger</property>
+    <property value="0">simulation/mission-state</property>
+    <property value="0">simulation/next-event-time</property>
+    <event name="Initialize and inhibit non-lift effectors">
+      <condition>simulation/frame le 1</condition>
+      <set name="simulation/mission-state" value="0" />
+      <set name="ap/mode" value="0" />
+      <set name="fcs/throttle-cmd-norm" value="0.0" />
+      <set name="ap/altitude-reference" value="0" />
+      <set name="ap/heading-setpoint-rad" value="0.0" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="ap/altitude-setpoint-ft" value="0.55" />
+    </event>
+    <event name="Trim F450 ground state">
+      <condition>simulation/frame gt 1</condition>
+      <set name="simulation/do_simple_trim" value="2" />
+    </event>
+    <event name="Start motors and climb to local point 0 0 10">
+      <condition logic="AND">
+        simulation/mission-state eq 0
+        simulation/sim-time-sec ge 2.0
+      </condition>
+      <set name="simulation/mission-state" value="1" />
+      <set name="ap/mode" value="3" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="ap/altitude-setpoint-ft" value="32.80839895" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Move to local point 10 0 10">
+      <condition logic="AND">
+        simulation/mission-state eq 1
+        simulation/sim-time-sec ge 25.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="2" />
+      <set name="ap/north-setpoint-m" value="10.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="ap/altitude-setpoint-ft" value="32.80839895" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Hover 5 seconds at local point 10 0 10">
+      <condition logic="AND">
+        simulation/mission-state eq 2
+        simulation/sim-time-sec ge 40.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="3" />
+      <set name="simulation/next-event-time" value="5.0" type="FG_DELTA" />
+    </event>
+    <event name="Return to local point 0 0 10 from forward point">
+      <condition logic="AND">
+        simulation/mission-state eq 3
+        simulation/sim-time-sec ge 45.0
+      </condition>
+      <set name="simulation/mission-state" value="4" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Hover 5 seconds at local point 0 0 10 after forward return">
+      <condition logic="AND">
+        simulation/mission-state eq 4
+        simulation/sim-time-sec ge 60.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="5" />
+      <set name="simulation/next-event-time" value="5.0" type="FG_DELTA" />
+    </event>
+    <event name="Move to local point -10 0 10">
+      <condition logic="AND">
+        simulation/mission-state eq 5
+        simulation/sim-time-sec ge 65.0
+      </condition>
+      <set name="simulation/mission-state" value="6" />
+      <set name="ap/north-setpoint-m" value="-10.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Hover 5 seconds at local point -10 0 10">
+      <condition logic="AND">
+        simulation/mission-state eq 6
+        simulation/sim-time-sec ge 80.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="7" />
+      <set name="simulation/next-event-time" value="5.0" type="FG_DELTA" />
+    </event>
+    <event name="Return to local point 0 0 10 from backward point">
+      <condition logic="AND">
+        simulation/mission-state eq 7
+        simulation/sim-time-sec ge 85.0
+      </condition>
+      <set name="simulation/mission-state" value="8" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Hover 5 seconds at local point 0 0 10 after backward return">
+      <condition logic="AND">
+        simulation/mission-state eq 8
+        simulation/sim-time-sec ge 100.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="9" />
+      <set name="simulation/next-event-time" value="5.0" type="FG_DELTA" />
+    </event>
+    <event name="Move to local point 0 10 10">
+      <condition logic="AND">
+        simulation/mission-state eq 9
+        simulation/sim-time-sec ge 105.0
+      </condition>
+      <set name="simulation/mission-state" value="10" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="10.0" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Hover 5 seconds at local point 0 10 10">
+      <condition logic="AND">
+        simulation/mission-state eq 10
+        simulation/sim-time-sec ge 120.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="11" />
+      <set name="simulation/next-event-time" value="5.0" type="FG_DELTA" />
+    </event>
+    <event name="Return to local point 0 0 10 from right point">
+      <condition logic="AND">
+        simulation/mission-state eq 11
+        simulation/sim-time-sec ge 125.0
+      </condition>
+      <set name="simulation/mission-state" value="12" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Hover 5 seconds at local point 0 0 10 after right return">
+      <condition logic="AND">
+        simulation/mission-state eq 12
+        simulation/sim-time-sec ge 140.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="13" />
+      <set name="simulation/next-event-time" value="5.0" type="FG_DELTA" />
+    </event>
+    <event name="Move to local point 0 -10 10">
+      <condition logic="AND">
+        simulation/mission-state eq 13
+        simulation/sim-time-sec ge 145.0
+      </condition>
+      <set name="simulation/mission-state" value="14" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="-10.0" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Hover 5 seconds at local point 0 -10 10">
+      <condition logic="AND">
+        simulation/mission-state eq 14
+        simulation/sim-time-sec ge 160.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="15" />
+      <set name="simulation/next-event-time" value="5.0" type="FG_DELTA" />
+    </event>
+    <event name="Return to local point 0 0 10 from left point">
+      <condition logic="AND">
+        simulation/mission-state eq 15
+        simulation/sim-time-sec ge 165.0
+      </condition>
+      <set name="simulation/mission-state" value="16" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Hover 5 seconds at local point 0 0 10 before landing">
+      <condition logic="AND">
+        simulation/mission-state eq 16
+        simulation/sim-time-sec ge 180.0
+        ap/north-position-error-m ge -2.0
+        ap/north-position-error-m le 2.0
+        ap/east-position-error-m ge -2.0
+        ap/east-position-error-m le 2.0
+        ap/altitude-error-ft ge -3.0
+        ap/altitude-error-ft le 3.0
+        velocities/v-north-fps ge -3.0
+        velocities/v-north-fps le 3.0
+        velocities/v-east-fps ge -3.0
+        velocities/v-east-fps le 3.0
+        velocities/h-dot-fps ge -2.0
+        velocities/h-dot-fps le 2.0
+      </condition>
+      <set name="simulation/mission-state" value="17" />
+      <set name="simulation/next-event-time" value="5.0" type="FG_DELTA" />
+    </event>
+    <event name="Vertical landing at local origin">
+      <condition logic="AND">
+        simulation/mission-state eq 17
+        simulation/sim-time-sec ge 185.0
+      </condition>
+      <set name="simulation/mission-state" value="18" />
+      <set name="ap/north-setpoint-m" value="0.0" />
+      <set name="ap/east-setpoint-m" value="0.0" />
+      <set name="ap/altitude-setpoint-ft" value="0.55" />
+      <set name="simulation/next-event-time" value="2.0" type="FG_DELTA" />
+    </event>
+    <event name="Disarm after vertical landing">
+      <condition logic="AND">
+        simulation/mission-state eq 18
+        simulation/sim-time-sec ge 205.0
+        position/h-agl-ft le 1.0
+        velocities/h-dot-fps ge -1.5
+        velocities/h-dot-fps le 1.5
+      </condition>
+      <set name="simulation/mission-state" value="19" />
+      <set name="ap/mode" value="0" />
+      <set name="fcs/throttle-cmd-norm" value="0.0" />
+      <set name="simulation/next-event-time" value="0.2" type="FG_DELTA" />
+    </event>
+    <event name="Terminate mission after disarm">
+      <condition logic="AND">
+        simulation/mission-state eq 19
+        simulation/sim-time-sec ge 210.0
+      </condition>
+      <set name="simulation/mission-state" value="20" />
+      <set name="simulation/terminate" value="1" />
+    </event>
+    <event name="Repeating notify" persistent="true">
+      <condition>simulation/sim-time-sec ge simulation/notify-time-trigger</condition>
+      <set name="simulation/notify-time-trigger" value="1.0" type="FG_DELTA" />
+      <notify>
+        <property>simulation/mission-state</property>
+        <property>ap/mode</property>
+        <property>ap/north-setpoint-m</property>
+        <property>ap/east-setpoint-m</property>
+        <property>ap/altitude-setpoint-ft</property>
+        <property>position/h-agl-ft</property>
+        <property>position/distance-from-start-lat-mt</property>
+        <property>position/distance-from-start-lon-mt</property>
+        <property>attitude/phi-rad</property>
+        <property>attitude/theta-rad</property>
+        <property>ap/collective-cmd-norm</property>
+      </notify>
+    </event>
+  </run>
+  <output name="F450_10m_box_hover_land.csv" type="CSV" rate="50">
+    <property> position/lat-gc-deg </property>
+    <property> position/lat-geod-deg </property>
+    <property> position/long-gc-deg </property>
+    <property> position/h-sl-meters </property>
+    <property> position/geod-alt-ft </property>
+    <property> position/h-agl-ft </property>
+    <property> position/ecef-x-ft </property>
+    <property> position/ecef-y-ft </property>
+    <property> position/ecef-z-ft </property>
+    <property> velocities/vt-fps </property>
+    <property> velocities/vc-kts </property>
+    <property> velocities/h-dot-fps </property>
+    <property> velocities/v-north-fps </property>
+    <property> velocities/v-east-fps </property>
+    <property> velocities/v-down-fps </property>
+    <property> velocities/u-fps </property>
+    <property> velocities/v-fps </property>
+    <property> velocities/w-fps </property>
+    <property> velocities/p-rad_sec </property>
+    <property> velocities/q-rad_sec </property>
+    <property> velocities/r-rad_sec </property>
+    <property> attitude/phi-deg </property>
+    <property> attitude/theta-deg </property>
+    <property> attitude/psi-deg </property>
+    <property> fcs/elevator-cmd-norm </property>
+    <property> fcs/pitch-trim-cmd-norm </property>
+    <property> fcs/elevator-pos-rad </property>
+    <property> fcs/left-aileron-pos-rad </property>
+    <property> fcs/right-aileron-pos-rad </property>
+    <property> fcs/rudder-pos-rad </property>
+    <property> fcs/rudder-cmd-norm </property>
+    <property> fcs/throttle-cmd-norm </property>
+    <property> fcs/throttle-pos-norm </property>
+    <property> fcs/mixture-cmd-norm </property>
+    <property> fcs/mixture-pos-norm </property>
+    <property> propulsion/engine/power-hp </property>
+    <property> propulsion/engine/thrust-lbs </property>
+    <property> propulsion/engine/engine-rpm </property>
+    <property> propulsion/engine/propeller-rpm </property>
+    <property> propulsion/engine/propeller-power-ftlbps </property>
+    <property> propulsion/engine/advance-ratio </property>
+    <property> accelerations/gravity-ft_sec2 </property>
+    <property> inertia/mass-slugs </property>
+    <property> inertia/cg-x-in </property>
+    <property> inertia/cg-y-in </property>
+    <property> inertia/cg-z-in </property>
+    <property> inertia/ixx-slugs_ft2 </property>
+    <property> inertia/iyy-slugs_ft2 </property>
+    <property> inertia/izz-slugs_ft2 </property>
+    <property> aero/alpha-deg </property>
+    <property> ap/mode </property>
+    <property> ap/altitude-reference </property>
+    <property> ap/heading-setpoint-rad </property>
+    <property> ap/north-setpoint-m </property>
+    <property> ap/east-setpoint-m </property>
+    <property> ap/altitude-setpoint-ft </property>
+    <property> simulation/terminate </property>
+    <property> position/distance-from-start-lat-mt </property>
+    <property> position/distance-from-start-lon-mt </property>
+    <property> attitude/phi-rad </property>
+    <property> attitude/theta-rad </property>
+    <property> ap/collective-cmd-norm </property>
+    <property> attitude/psi-rad </property>
+    <property> ap/roll-cmd-norm </property>
+    <property> ap/pitch-cmd-norm </property>
+    <property> ap/yaw-cmd-norm </property>
+    <property> fcs/cmdEscFR_nd </property>
+    <property> fcs/cmdEscAL_nd </property>
+    <property> fcs/cmdEscFL_nd </property>
+    <property> fcs/cmdEscAR_nd </property>
+    <property> fcs/throttle-pos-norm[1] </property>
+    <property> fcs/throttle-pos-norm[2] </property>
+    <property> fcs/throttle-pos-norm[3] </property>
+    <property> simulation/sim-time-sec </property>
+    <property> fcs/aileron-cmd-norm </property>
+    <property> fcs/flap-cmd-norm </property>
+    <property> fcs/speedbrake-cmd-norm </property>
+    <property> fcs/spoiler-cmd-norm </property>
+    <property> fcs/roll-trim-cmd-norm </property>
+    <property> fcs/yaw-trim-cmd-norm </property>
+    <property> fcs/left-aileron-pos-deg </property>
+    <property> fcs/left-aileron-pos-norm </property>
+    <property> fcs/mag-left-aileron-pos-rad </property>
+    <property> fcs/right-aileron-pos-deg </property>
+    <property> fcs/right-aileron-pos-norm </property>
+    <property> fcs/mag-right-aileron-pos-rad </property>
+    <property> fcs/elevator-pos-deg </property>
+    <property> fcs/elevator-pos-norm </property>
+    <property> fcs/mag-elevator-pos-rad </property>
+    <property> fcs/rudder-pos-deg </property>
+    <property> fcs/rudder-pos-norm </property>
+    <property> fcs/mag-rudder-pos-rad </property>
+    <property> fcs/flap-pos-rad </property>
+    <property> fcs/flap-pos-deg </property>
+    <property> fcs/flap-pos-norm </property>
+    <property> fcs/speedbrake-pos-rad </property>
+    <property> fcs/speedbrake-pos-deg </property>
+    <property> fcs/speedbrake-pos-norm </property>
+    <property> fcs/mag-speedbrake-pos-rad </property>
+    <property> fcs/spoiler-pos-rad </property>
+    <property> fcs/spoiler-pos-deg </property>
+    <property> fcs/spoiler-pos-norm </property>
+    <property> fcs/mag-spoiler-pos-rad </property>
+    <property> fcs/left-brake-cmd-norm </property>
+    <property> fcs/right-brake-cmd-norm </property>
+    <property> fcs/center-brake-cmd-norm </property>
+    <property> fcs/wing-fold-pos-norm </property>
+    <property> fcs/steer-cmd-norm </property>
+    <property> fcs/advance-cmd-norm </property>
+    <property> fcs/advance-pos-norm </property>
+    <property> fcs/feather-cmd-norm </property>
+    <property> fcs/feather-pos-norm </property>
+    <property> fcs/throttle-cmd-norm[1] </property>
+    <property> fcs/mixture-cmd-norm[1] </property>
+    <property> fcs/mixture-pos-norm[1] </property>
+    <property> fcs/advance-cmd-norm[1] </property>
+    <property> fcs/advance-pos-norm[1] </property>
+    <property> fcs/feather-cmd-norm[1] </property>
+    <property> fcs/feather-pos-norm[1] </property>
+    <property> fcs/throttle-cmd-norm[2] </property>
+    <property> fcs/mixture-cmd-norm[2] </property>
+    <property> fcs/mixture-pos-norm[2] </property>
+    <property> fcs/advance-cmd-norm[2] </property>
+    <property> fcs/advance-pos-norm[2] </property>
+    <property> fcs/feather-cmd-norm[2] </property>
+    <property> fcs/feather-pos-norm[2] </property>
+    <property> fcs/throttle-cmd-norm[3] </property>
+    <property> fcs/mixture-cmd-norm[3] </property>
+    <property> fcs/mixture-pos-norm[3] </property>
+    <property> fcs/advance-cmd-norm[3] </property>
+    <property> fcs/advance-pos-norm[3] </property>
+    <property> fcs/feather-cmd-norm[3] </property>
+    <property> fcs/feather-pos-norm[3] </property>
+    <property> fcs/throttle-cmd-norm[4] </property>
+    <property> fcs/mixture-cmd-norm[4] </property>
+    <property> fcs/mixture-pos-norm[4] </property>
+    <property> fcs/advance-cmd-norm[4] </property>
+    <property> fcs/advance-pos-norm[4] </property>
+    <property> fcs/feather-cmd-norm[4] </property>
+    <property> fcs/feather-pos-norm[4] </property>
+    <property> fcs/lift-front-right/malfunction/fail_zero </property>
+    <property> fcs/lift-front-right/malfunction/fail_hardover </property>
+    <property> fcs/lift-front-right/malfunction/fail_stuck </property>
+    <property> fcs/lift-front-right/saturated </property>
+    <property> fcs/lift-aft-left/malfunction/fail_zero </property>
+    <property> fcs/lift-aft-left/malfunction/fail_hardover </property>
+    <property> fcs/lift-aft-left/malfunction/fail_stuck </property>
+    <property> fcs/lift-aft-left/saturated </property>
+    <property> fcs/lift-front-left/malfunction/fail_zero </property>
+    <property> fcs/lift-front-left/malfunction/fail_hardover </property>
+    <property> fcs/lift-front-left/malfunction/fail_stuck </property>
+    <property> fcs/lift-front-left/saturated </property>
+    <property> fcs/lift-aft-right/malfunction/fail_zero </property>
+    <property> fcs/lift-aft-right/malfunction/fail_hardover </property>
+    <property> fcs/lift-aft-right/malfunction/fail_stuck </property>
+    <property> fcs/lift-aft-right/saturated </property>
+    <property> fcs/pusher/malfunction/fail_zero </property>
+    <property> fcs/pusher/malfunction/fail_hardover </property>
+    <property> fcs/pusher/malfunction/fail_stuck </property>
+    <property> fcs/pusher/saturated </property>
+    <property> fcs/manual-roll-mix </property>
+    <property> fcs/manual-pitch-mix </property>
+    <property> fcs/manual-yaw-mix </property>
+    <property> fcs/selected-collective-norm </property>
+    <property> fcs/selected-roll-mix </property>
+    <property> fcs/selected-pitch-mix </property>
+    <property> fcs/selected-yaw-mix </property>
+    <property> fcs/fw-aileron-pos-rad </property>
+    <property> fcs/fw-elevator-pos-rad </property>
+    <property> fcs/fw-rudder-pos-rad </property>
+    <property> gear/unit/AGL-ft </property>
+    <property> gear/unit/WOW </property>
+    <property> gear/unit/x-position </property>
+    <property> gear/unit/y-position </property>
+    <property> gear/unit/z-position </property>
+    <property> gear/unit/compression-ft </property>
+    <property> gear/unit/compression-velocity-fps </property>
+    <property> gear/unit/static_friction_coeff </property>
+    <property> gear/unit/dynamic_friction_coeff </property>
+    <property> gear/unit/slip-angle-deg </property>
+    <property> gear/unit/wheel-speed-fps </property>
+    <property> gear/unit/side_friction_coeff </property>
+    <property> gear/unit/rolling_friction_coeff </property>
+    <property> gear/unit/solid </property>
+    <property> gear/unit/bumpiness </property>
+    <property> gear/unit/maximum-force-lbs </property>
+    <property> gear/unit/rolling_friction-factor </property>
+    <property> gear/unit/static-friction-factor </property>
+    <property> gear/unit[1]/AGL-ft </property>
+    <property> gear/unit[1]/WOW </property>
+    <property> gear/unit[1]/x-position </property>
+    <property> gear/unit[1]/y-position </property>
+    <property> gear/unit[1]/z-position </property>
+    <property> gear/unit[1]/compression-ft </property>
+    <property> gear/unit[1]/compression-velocity-fps </property>
+    <property> gear/unit[1]/static_friction_coeff </property>
+    <property> gear/unit[1]/dynamic_friction_coeff </property>
+    <property> gear/unit[1]/slip-angle-deg </property>
+    <property> gear/unit[1]/wheel-speed-fps </property>
+    <property> gear/unit[1]/side_friction_coeff </property>
+    <property> gear/unit[1]/rolling_friction_coeff </property>
+    <property> gear/unit[1]/solid </property>
+    <property> gear/unit[1]/bumpiness </property>
+    <property> gear/unit[1]/maximum-force-lbs </property>
+    <property> gear/unit[1]/rolling_friction-factor </property>
+    <property> gear/unit[1]/static-friction-factor </property>
+    <property> gear/unit[2]/AGL-ft </property>
+    <property> gear/unit[2]/WOW </property>
+    <property> gear/unit[2]/x-position </property>
+    <property> gear/unit[2]/y-position </property>
+    <property> gear/unit[2]/z-position </property>
+    <property> gear/unit[2]/compression-ft </property>
+    <property> gear/unit[2]/compression-velocity-fps </property>
+    <property> gear/unit[2]/static_friction_coeff </property>
+    <property> gear/unit[2]/dynamic_friction_coeff </property>
+    <property> gear/unit[2]/slip-angle-deg </property>
+    <property> gear/unit[2]/wheel-speed-fps </property>
+    <property> gear/unit[2]/side_friction_coeff </property>
+    <property> gear/unit[2]/rolling_friction_coeff </property>
+    <property> gear/unit[2]/solid </property>
+    <property> gear/unit[2]/bumpiness </property>
+    <property> gear/unit[2]/maximum-force-lbs </property>
+    <property> gear/unit[2]/rolling_friction-factor </property>
+    <property> gear/unit[2]/static-friction-factor </property>
+    <property> propulsion/engine/x-reference-position </property>
+    <property> propulsion/engine/y-reference-position </property>
+    <property> propulsion/engine/z-reference-position </property>
+    <property> propulsion/engine/x-position </property>
+    <property> propulsion/engine/y-position </property>
+    <property> propulsion/engine/z-position </property>
+    <property> propulsion/engine/pitch-angle-rad </property>
+    <property> propulsion/engine/yaw-angle-rad </property>
+    <property> propulsion/engine/blade-angle </property>
+    <property> propulsion/engine/thrust-coefficient </property>
+    <property> propulsion/engine/helical-tip-Mach </property>
+    <property> propulsion/engine/constant-speed-mode </property>
+    <property> propulsion/engine/prop-induced-velocity_fps </property>
+    <property> propulsion/engine/propeller-torque-ftlb </property>
+    <property> propulsion/engine/propeller-sense </property>
+    <property> propulsion/engine/set-running </property>
+    <property> propulsion/engine/fuel-flow-rate-pps </property>
+    <property> propulsion/engine/fuel-flow-rate-gph </property>
+    <property> propulsion/engine/fuel-used-lbs </property>
+    <property> propulsion/engine/current-amperes </property>
+    <property> propulsion/engine[1]/x-reference-position </property>
+    <property> propulsion/engine[1]/y-reference-position </property>
+    <property> propulsion/engine[1]/z-reference-position </property>
+    <property> propulsion/engine[1]/x-position </property>
+    <property> propulsion/engine[1]/y-position </property>
+    <property> propulsion/engine[1]/z-position </property>
+    <property> propulsion/engine[1]/pitch-angle-rad </property>
+    <property> propulsion/engine[1]/yaw-angle-rad </property>
+    <property> propulsion/engine[1]/engine-rpm </property>
+    <property> propulsion/engine[1]/advance-ratio </property>
+    <property> propulsion/engine[1]/blade-angle </property>
+    <property> propulsion/engine[1]/thrust-coefficient </property>
+    <property> propulsion/engine[1]/propeller-rpm </property>
+    <property> propulsion/engine[1]/helical-tip-Mach </property>
+    <property> propulsion/engine[1]/constant-speed-mode </property>
+    <property> propulsion/engine[1]/prop-induced-velocity_fps </property>
+    <property> propulsion/engine[1]/propeller-power-ftlbps </property>
+    <property> propulsion/engine[1]/propeller-torque-ftlb </property>
+    <property> propulsion/engine[1]/propeller-sense </property>
+    <property> propulsion/engine[1]/set-running </property>
+    <property> propulsion/engine[1]/thrust-lbs </property>
+    <property> propulsion/engine[1]/fuel-flow-rate-pps </property>
+    <property> propulsion/engine[1]/fuel-flow-rate-gph </property>
+    <property> propulsion/engine[1]/fuel-used-lbs </property>
+    <property> propulsion/engine[1]/power-hp </property>
+    <property> propulsion/engine[1]/current-amperes </property>
+    <property> propulsion/engine[2]/x-reference-position </property>
+    <property> propulsion/engine[2]/y-reference-position </property>
+    <property> propulsion/engine[2]/z-reference-position </property>
+    <property> propulsion/engine[2]/x-position </property>
+    <property> propulsion/engine[2]/y-position </property>
+    <property> propulsion/engine[2]/z-position </property>
+    <property> propulsion/engine[2]/pitch-angle-rad </property>
+    <property> propulsion/engine[2]/yaw-angle-rad </property>
+    <property> propulsion/engine[2]/engine-rpm </property>
+    <property> propulsion/engine[2]/advance-ratio </property>
+    <property> propulsion/engine[2]/blade-angle </property>
+    <property> propulsion/engine[2]/thrust-coefficient </property>
+    <property> propulsion/engine[2]/propeller-rpm </property>
+    <property> propulsion/engine[2]/helical-tip-Mach </property>
+    <property> propulsion/engine[2]/constant-speed-mode </property>
+    <property> propulsion/engine[2]/prop-induced-velocity_fps </property>
+    <property> propulsion/engine[2]/propeller-power-ftlbps </property>
+    <property> propulsion/engine[2]/propeller-torque-ftlb </property>
+    <property> propulsion/engine[2]/propeller-sense </property>
+    <property> propulsion/engine[2]/set-running </property>
+    <property> propulsion/engine[2]/thrust-lbs </property>
+    <property> propulsion/engine[2]/fuel-flow-rate-pps </property>
+    <property> propulsion/engine[2]/fuel-flow-rate-gph </property>
+    <property> propulsion/engine[2]/fuel-used-lbs </property>
+    <property> propulsion/engine[2]/power-hp </property>
+    <property> propulsion/engine[2]/current-amperes </property>
+    <property> propulsion/engine[3]/x-reference-position </property>
+    <property> propulsion/engine[3]/y-reference-position </property>
+    <property> propulsion/engine[3]/z-reference-position </property>
+    <property> propulsion/engine[3]/x-position </property>
+    <property> propulsion/engine[3]/y-position </property>
+    <property> propulsion/engine[3]/z-position </property>
+    <property> propulsion/engine[3]/pitch-angle-rad </property>
+    <property> propulsion/engine[3]/yaw-angle-rad </property>
+    <property> propulsion/engine[3]/engine-rpm </property>
+    <property> propulsion/engine[3]/advance-ratio </property>
+    <property> propulsion/engine[3]/blade-angle </property>
+    <property> propulsion/engine[3]/thrust-coefficient </property>
+    <property> propulsion/engine[3]/propeller-rpm </property>
+    <property> propulsion/engine[3]/helical-tip-Mach </property>
+    <property> propulsion/engine[3]/constant-speed-mode </property>
+    <property> propulsion/engine[3]/prop-induced-velocity_fps </property>
+    <property> propulsion/engine[3]/propeller-power-ftlbps </property>
+    <property> propulsion/engine[3]/propeller-torque-ftlb </property>
+    <property> propulsion/engine[3]/propeller-sense </property>
+    <property> propulsion/engine[3]/set-running </property>
+    <property> propulsion/engine[3]/thrust-lbs </property>
+    <property> propulsion/engine[3]/fuel-flow-rate-pps </property>
+    <property> propulsion/engine[3]/fuel-flow-rate-gph </property>
+    <property> propulsion/engine[3]/fuel-used-lbs </property>
+    <property> propulsion/engine[3]/power-hp </property>
+    <property> propulsion/engine[3]/current-amperes </property>
+    <property> propulsion/engine[4]/x-reference-position </property>
+    <property> propulsion/engine[4]/y-reference-position </property>
+    <property> propulsion/engine[4]/z-reference-position </property>
+    <property> propulsion/engine[4]/x-position </property>
+    <property> propulsion/engine[4]/y-position </property>
+    <property> propulsion/engine[4]/z-position </property>
+    <property> propulsion/engine[4]/pitch-angle-rad </property>
+    <property> propulsion/engine[4]/yaw-angle-rad </property>
+    <property> propulsion/engine[4]/engine-rpm </property>
+    <property> propulsion/engine[4]/advance-ratio </property>
+    <property> propulsion/engine[4]/blade-angle </property>
+    <property> propulsion/engine[4]/thrust-coefficient </property>
+    <property> propulsion/engine[4]/propeller-rpm </property>
+    <property> propulsion/engine[4]/helical-tip-Mach </property>
+    <property> propulsion/engine[4]/constant-speed-mode </property>
+    <property> propulsion/engine[4]/prop-induced-velocity_fps </property>
+    <property> propulsion/engine[4]/propeller-power-ftlbps </property>
+    <property> propulsion/engine[4]/propeller-torque-ftlb </property>
+    <property> propulsion/engine[4]/propeller-sense </property>
+    <property> propulsion/engine[4]/set-running </property>
+    <property> propulsion/engine[4]/thrust-lbs </property>
+    <property> propulsion/engine[4]/fuel-flow-rate-pps </property>
+    <property> propulsion/engine[4]/fuel-flow-rate-gph </property>
+    <property> propulsion/engine[4]/fuel-used-lbs </property>
+    <property> propulsion/engine[4]/power-hp </property>
+    <property> propulsion/engine[4]/current-amperes </property>
+    <property> ap/roll-setpoint-rad </property>
+    <property> ap/pitch-setpoint-rad </property>
+    <property> ap/hover-throttle-base </property>
+    <property> ap/north-position-error-m </property>
+    <property> ap/east-position-error-m </property>
+    <property> ap/north-velocity-setpoint-mps </property>
+    <property> ap/east-velocity-setpoint-mps </property>
+    <property> ap/north-velocity-setpoint-fps </property>
+    <property> ap/east-velocity-setpoint-fps </property>
+    <property> ap/north-velocity-error-fps </property>
+    <property> ap/east-velocity-error-fps </property>
+    <property> ap/hover-pitch-reference-rad </property>
+    <property> ap/hover-roll-reference-rad </property>
+    <property> ap/selected-roll-reference-rad </property>
+    <property> ap/selected-pitch-reference-rad </property>
+    <property> ap/roll-error-rad </property>
+    <property> ap/roll-controller/initial-integrator-value </property>
+    <property> ap/pitch-error-rad </property>
+    <property> ap/pitch-controller/initial-integrator-value </property>
+    <property> ap/heading-error-rad </property>
+    <property> ap/yaw-controller/initial-integrator-value </property>
+    <property> ap/current-altitude-ft </property>
+    <property> ap/altitude-error-ft </property>
+    <property> ap/climb-rate-setpoint-fps </property>
+    <property> ap/climb-rate-error-fps </property>
+    <property> ap/altitude-throttle-correction/initial-integrator-value </property>
+    <property> ap/altitude-collective-unclipped </property>
+    <property> ap/altitude-collective-clipped </property>
+  </output>
+</runscript>

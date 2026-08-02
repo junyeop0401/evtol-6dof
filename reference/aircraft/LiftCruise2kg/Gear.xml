@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ground_reactions>
+  <!-- Three-point skid representation, selected to avoid four-point ground-trim ambiguity. -->
+  <contact name="Front_Center" type="BOGEY">
+    <location unit="M"><x>-0.300</x><y>0.000</y><z>-0.160</z></location>
+    <static_friction>0.80</static_friction>
+    <dynamic_friction>0.50</dynamic_friction>
+    <rolling_friction>0.02</rolling_friction>
+    <spring_coeff unit="N/M">3500</spring_coeff>
+    <damping_coeff unit="N/M/SEC">140</damping_coeff>
+  </contact>
+  <contact name="Aft_Left" type="BOGEY">
+    <location unit="M"><x>0.260</x><y>-0.220</y><z>-0.160</z></location>
+    <static_friction>0.80</static_friction>
+    <dynamic_friction>0.50</dynamic_friction>
+    <rolling_friction>0.02</rolling_friction>
+    <spring_coeff unit="N/M">3500</spring_coeff>
+    <damping_coeff unit="N/M/SEC">140</damping_coeff>
+  </contact>
+  <contact name="Aft_Right" type="BOGEY">
+    <location unit="M"><x>0.260</x><y>0.220</y><z>-0.160</z></location>
+    <static_friction>0.80</static_friction>
+    <dynamic_friction>0.50</dynamic_friction>
+    <rolling_friction>0.02</rolling_friction>
+    <spring_coeff unit="N/M">3500</spring_coeff>
+    <damping_coeff unit="N/M/SEC">140</damping_coeff>
+  </contact>
+</ground_reactions>

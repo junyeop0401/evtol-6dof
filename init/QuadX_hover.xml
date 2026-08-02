@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  QuadX_hover.xml — QuadX_Baseline 공중 호버 초기화(참고용)
+
+  지면 위 10m AGL(고도 50m + 10m = 60m MSL)에서 정지 호버 상태로 직접
+  스폰하는 초기조건. 이착륙 과정을 생략하고 곧바로 제어권한 검증(예:
+  scripts/QuadX_control_response_test.xml)을 하고 싶을 때 사용.
+  ScasEngage 등 FCS 내부 프로퍼티는 run script의 <initialize> 이후 이벤트에서
+  별도로 set 해줘야 함(이 IC 파일 자체는 자세/위치/속도만 정의).
+  Codex note: JSBSim 1.2.4 treats initialize/altitude as AGL over elevation; hover uses altitude=10m.
+-->
+<initialize name="QuadX_hover">
+  <vt unit="KTS">0.0</vt>
+  <latitude type="geodetic" unit="DEG">37.4000</latitude>
+  <longitude unit="DEG">127.0000</longitude>
+  <altitude unit="M">10.0</altitude>
+  <elevation unit="M">50.0</elevation>
+  <phi unit="DEG">0.0</phi>
+  <theta unit="DEG">0.0</theta>
+  <psi unit="DEG">0.0</psi>
+  <ubody unit="FT/SEC">0.0</ubody>
+  <vbody unit="FT/SEC">0.0</vbody>
+  <wbody unit="FT/SEC">0.0</wbody>
+  <p unit="DEG/SEC">0.0</p>
+  <q unit="DEG/SEC">0.0</q>
+  <r unit="DEG/SEC">0.0</r>
+</initialize>

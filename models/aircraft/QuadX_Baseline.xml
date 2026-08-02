@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!--
+  QuadX_Baseline.xml — 순수 멀티콥터(쿼드-X, 450mm급) 베이스라인 기체 정의
+
+  목적: eVTOL 6DOF 연구의 선행 단계로, JSBSim 추진계/FCS 모델링·검증·문서화
+  파이프라인을 확립하기 위한 "가장 단순한" 비행체. 틸트로터/이형 eVTOL
+  (models/aircraft/eVTOL_template.xml)과는 별개의 독립 산출물이며, 그 템플릿은
+  건드리지 않았음.
+
+  형상/질량/관성/추진계 제원 출처: JSBSim 공식 저장소(JSBSim-Team/jsbsim)의
+  F450(DJI F450 프레임) 예제(Mass.xml, Propulsion.xml, Gear.xml, Aero.xml의
+  공개된 실측/설계값)를 재사용/각색함. 상세 근거와 손계산 과정은
+  docs/QuadX_Baseline_model.md 참고.
+
+  구조좌표계(structural frame) 주의: 아래 <location> 요소들(mass_balance/CG,
+  propulsion/engine, ground_reactions/contact)은 모두 JSBSim의 구조좌표계
+  (X: 기체 후방(aft)이 양수, Z: 위(up)가 양수)로 표기됨. 이는 속도/각속도/공력
+  계산에 쓰이는 동체좌표계(body frame: X 전방(forward)이 양수, Z 하방이 양수)와
+  다르다. 예) 전방 모터의 x가 음수(-0.1651)인 이유가 바로 이것.
+  docs/coordinate_frame_checklist.md 참고.
+-->
+<fdm_config name="QuadX_Baseline" version="2.0" release="ALPHA"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
+
+  <fileheader>
+    <author>Claude (claude-sonnet-5), eVTOL 6DOF 석사 졸업논문 프로젝트</author>
+    <filecreationdate>2026-08-01</filecreationdate>
+    <version>0.1 QuadX baseline (ALPHA, 실행 미검증)</version>
+    <description>
+      순수 멀티콥터(쿼드-X) 베이스라인 모델. JSBSim 공식 F450 예제의 실측
+      질량/관성/추진계 데이터를 재사용. 실행 검증은 사용자 로컬 WSL(JSBSim
+      1.2.4 / 1.3.2.dev1)에서 수행 필요 — docs/QuadX_Baseline_model.md 참고.
+    </description>
+  </fileheader>
+
+  <metrics>
+    <!--
+      쿼드콥터는 고정익이 없으므로 wingarea/wingspan/chord는 공력 항력 계수
+      (aerodynamics 섹션의 flat-drag 모델) 계산용 기준면적/기준길이로만 쓰이는
+      placeholder임. 프레임 정면투영 면적을 대략적으로 근사한 값(0.02 m2)과
+      대각 모터간 거리(0.467 m, F450 모터 위치 좌표에서 직접 산출)를 사용함.
+      이 값들은 비행성능에 큰 영향이 없는 최소 항력 모델용이며 정밀 공력
+      모델은 아님 — 후속 연구에서 CFD/풍동 데이터로 교체 권장.
+    -->
+    <wingarea unit="M2">0.02</wingarea>
+    <wingspan unit="M">0.467</wingspan>
+    <chord unit="M">0.0428</chord>
+    <htailarea unit="M2">0</htailarea>
+    <htailarm unit="M">0</htailarm>
+    <vtailarea unit="M2">0</vtailarea>
+    <vtailarm unit="M">0</vtailarm>
+    <location name="AERORP" unit="M"><x>0</x><y>0</y><z>0</z></location>
+    <location name="EYEPOINT" unit="M"><x>0</x><y>0</y><z>0</z></location>
+    <location name="VRP" unit="M"><x>0</x><y>0</y><z>0</z></location>
+  </metrics>
+
+  <mass_balance>
+    <!-- F450 실측치 그대로 재사용 (AUW=emptywt, 배터리/페이로드 미분리 단순화) -->
+    <emptywt unit="KG">1.4</emptywt>
+    <location name="CG" unit="M"><x>0.0</x><y>0.0</y><z>0.0</z></location>
+    <ixx unit="KG*M2">0.0190</ixx>
+    <iyy unit="KG*M2">0.0190</iyy>
+    <izz unit="KG*M2">0.0252</izz>
+    <ixy unit="KG*M2">0.0</ixy>
+    <ixz unit="KG*M2">0.0</ixz>
+    <iyz unit="KG*M2">0.0</iyz>
+  </mass_balance>
+
+  <ground_reactions>
+    <!--
+      3점 스킵(BOGEY) 접지. 스프링/댐핑 상수는 F450 Gear.xml 값(3000 N/M,
+      100 N/M/SEC)을 그대로 재사용. 단, 스킵 다리의 정확한 좌표는 F450 원문이
+      제공되지 않아 이번 작업에서 프레임 형상(모터 암 길이 0.1651m 기준)에 맞춰
+      합리적으로 가정한 3점 트라이포드 배치임(가정치, 문서에 명시).
+    -->
+    <contact type="BOGEY" name="NOSE_SKID">
+      <location unit="M"><x>-0.15</x><y>0.0</y><z>-0.06</z></location>
+      <static_friction>0.8</static_friction>
+      <dynamic_friction>0.5</dynamic_friction>
+      <rolling_friction>0.02</rolling_friction>
+      <spring_coeff unit="N/M">3000</spring_coeff>
+      <damping_coeff unit="N/M/SEC">100</damping_coeff>
+      <max_steer unit="DEG">0.0</max_steer>
+      <brake_group>NONE</brake_group>
+      <retractable>0</retractable>
+    </contact>
+    <contact type="BOGEY" name="AFT_LEFT_SKID">
+      <location unit="M"><x>0.13</x><y>-0.12</y><z>-0.06</z></location>
+      <static_friction>0.8</static_friction>
+      <dynamic_friction>0.5</dynamic_friction>
+      <rolling_friction>0.02</rolling_friction>
+      <spring_coeff unit="N/M">3000</spring_coeff>
+      <damping_coeff unit="N/M/SEC">100</damping_coeff>
+      <max_steer unit="DEG">0.0</max_steer>
+      <brake_group>NONE</brake_group>
+      <retractable>0</retractable>
+    </contact>
+    <contact type="BOGEY" name="AFT_RIGHT_SKID">
+      <location unit="M"><x>0.13</x><y>0.12</y><z>-0.06</z></location>
+      <static_friction>0.8</static_friction>
+      <dynamic_friction>0.5</dynamic_friction>
+      <rolling_friction>0.02</rolling_friction>
+      <spring_coeff unit="N/M">3000</spring_coeff>
+      <damping_coeff unit="N/M/SEC">100</damping_coeff>
+      <max_steer unit="DEG">0.0</max_steer>
+      <brake_group>NONE</brake_group>
+      <retractable>0</retractable>
+    </contact>
+  </ground_reactions>
+
+  <propulsion>
+    <!--
+      모터 4개, X 배치. 엔진 순서(0=front right, 1=aft left, 2=front left,
+      3=aft right)는 models/systems/QuadX_FCS.xml의 Effectors 채널이
+      fcs/throttle-pos-norm[0..3]에 쓰는 순서와 반드시 일치해야 함.
+      <orient><pitch>90</pitch></orient>로 추력 벡터를 기체 아래→위로 세움.
+      sense +1/-1로 대각 CW/CCW 페어링(FR·AL = +1, FL·AR = -1).
+    -->
+    <engine file="QuadX_Motor" name="front right">
+      <thruster file="QuadX_Prop">
+        <location unit="M"><x>-0.1651</x><y>0.1651</y><z>0.025</z></location>
+        <orient unit="DEG"><roll>0</roll><pitch>90</pitch><yaw>0</yaw></orient>
+        <sense>1.0</sense>
+        <p_factor>0.0</p_factor>
+      </thruster>
+    </engine>
+    <engine file="QuadX_Motor" name="aft left">
+      <thruster file="QuadX_Prop">
+        <location unit="M"><x>0.1651</x><y>-0.1651</y><z>0.025</z></location>
+        <orient unit="DEG"><roll>0</roll><pitch>90</pitch><yaw>0</yaw></orient>
+        <sense>1.0</sense>
+        <p_factor>0.0</p_factor>
+      </thruster>
+    </engine>
+    <engine file="QuadX_Motor" name="front left">
+      <thruster file="QuadX_Prop">
+        <location unit="M"><x>-0.1651</x><y>-0.1651</y><z>0.025</z></location>
+        <orient unit="DEG"><roll>0</roll><pitch>90</pitch><yaw>0</yaw></orient>
+        <sense>-1.0</sense>
+        <p_factor>0.0</p_factor>
+      </thruster>
+    </engine>
+    <engine file="QuadX_Motor" name="aft right">
+      <thruster file="QuadX_Prop">
+        <location unit="M"><x>0.1651</x><y>0.1651</y><z>0.025</z></location>
+        <orient unit="DEG"><roll>0</roll><pitch>90</pitch><yaw>0</yaw></orient>
+        <sense>-1.0</sense>
+        <p_factor>0.0</p_factor>
+      </thruster>
+    </engine>
+  </propulsion>
+
+  <flight_control file="QuadX_FCS.xml"/>
+
+  <aerodynamics>
+    <!--
+      쿼드콥터는 날개가 없으므로 단순 항력만 모델링(F450 Aero.xml 패턴을 그대로
+      따름). 독립 검증 과정에서, 최초 초안이 axis function에 계수값(value)만
+      두고 aero/qbar-area를 곱하지 않은 것을 발견해 수정함 — JSBSim의
+      <axis><function> 결과값은 "무차원 계수"가 아니라 해당 축에 그대로 적용되는
+      "힘(또는 모멘트) 그 자체"이므로, 계수를 실제 힘으로 환산하려면 반드시
+      aero/qbar-area(동압*기준면적, 모멘트는 추가로 기준길이)를 곱해야 한다.
+      곱하지 않으면 저속/호버 구간에서도 상수 힘(예: CD=1.0 그대로 약 4.45N)이
+      풍향 불명확한 방향으로 계속 걸려 트림을 오염시키는 실질적 버그가 된다.
+      CL=0, CD=1.0(평판 근사, wingarea 기준) 상수. 나머지 모멘트 계수는 0.
+    -->
+    <axis name="LIFT">
+      <function name="aero/force/LIFT">
+        <description>Lift = qbar*S * CL (CL=0, quadcopter has no wing)</description>
+        <product>
+          <property>aero/qbar-area</property>
+          <value>0.0</value>
+        </product>
+      </function>
+    </axis>
+    <axis name="DRAG">
+      <function name="aero/force/DRAG">
+        <description>Drag = qbar*S * CD (flat-plate approximation, CD=1.0 constant)</description>
+        <product>
+          <property>aero/qbar-area</property>
+          <value>1.0</value>
+        </product>
+      </function>
+    </axis>
+    <axis name="SIDE">
+      <function name="aero/force/SIDE">
+        <description>Side force placeholder (CY=0)</description>
+        <product>
+          <property>aero/qbar-area</property>
+          <value>0.0</value>
+        </product>
+      </function>
+    </axis>
+    <axis name="ROLL">
+      <function name="aero/moment/ROLL">
+        <description>Aerodynamic roll moment placeholder (Cl=0)</description>
+        <product>
+          <property>aero/qbar-area</property>
+          <property>metrics/bw-ft</property>
+          <value>0.0</value>
+        </product>
+      </function>
+    </axis>
+    <axis name="PITCH">
+      <function name="aero/moment/PITCH">
+        <description>Aerodynamic pitch moment placeholder (Cm=0)</description>
+        <product>
+          <property>aero/qbar-area</property>
+          <property>metrics/cbarw-ft</property>
+          <value>0.0</value>
+        </product>
+      </function>
+    </axis>
+    <axis name="YAW">
+      <function name="aero/moment/YAW">
+        <description>Aerodynamic yaw moment placeholder (Cn=0)</description>
+        <product>
+          <property>aero/qbar-area</property>
+          <property>metrics/bw-ft</property>
+          <value>0.0</value>
+        </product>
+      </function>
+    </axis>
+  </aerodynamics>
+
+</fdm_config>
