@@ -19,6 +19,22 @@ AGL 높이로 처리한다. 이 프로젝트의 QuadX_Baseline을 Codex가 실�
 설계·검증되어 있다는 뜻이며, 틸트로터 본체의 초기조건/미션 스크립트를 새로 쓸 때도
 동일하게 AGL 기준으로 접근해야 한다.
 
+**추가 발견(2026-08-02, F450 초기조건 좌표계 재검증 중)**: 이 AGL 해석 규칙을
+지키지 않고 "지면 주기"를 표현하겠다고 `altitude`를 `elevation`과 같은 값으로
+채우면(MSL 방식 습관) 오히려 그 값만큼 AGL로 붕 뜬 채 스폰된다.
+`jsbsim_workflow/scripts/F450/initial_condition/1.0__ground_park_init.xml`이
+`altitude=285.2111 M`을 `elevation=285.2111 M`과 같게 둔 사례가 실제로 이
+버그를 가지고 있었다 — 콘솔 로그(`2.0__nominal_mission_profile` 실행, 첫
+notify)에서 `position/h-agl-ft = 935.731957`(≈285.2 m 상공)로 확인됨. 같은
+지점을 쓰는 `1.1__ground_park_heading0_init.xml`은 `altitude=0.0 M`으로
+정확히 AGL 0을 지정해 첫 notify부터 `h-agl-ft = -0.000000`으로 정상이었다.
+결론: "지면 주기"를 원하면 `altitude`는 `elevation`을 베끼지 말고 **항상
+0(또는 스키드 높이 정도의 미세값)으로 직접 지정**할 것 — `elevation`은 어디까지나
+지형 고도(참고용)이지 `altitude`에 그대로 넣을 값이 아니다. 상세는
+`docs/mission_reports/F450/2.0__nominal_mission_profile.md`와
+`docs/mission_reports/F450/1.2__ten_meter_box_hover_land.md`의 "좌표계 확인"
+절 참고.
+
 ## 2. JSBSim 1.2.4는 `--aircraft-path`/`--engine-path`/`--systems-path`를 지원하지 않는다 (실행 검증됨)
 
 master(1.3.2.dev1) 문서에 있는 이 세 옵션이 실제 설치된 1.2.4 바이너리에는 없다.
@@ -85,6 +101,25 @@ F450 공식 예제가 쓰는 `brushless_dc_motor` 타입은 "failed to tie prope
 현재 그 폴더에 접근 권한이 없다(Cowork 폴더 연결 도구의 UNC 경로 버그로 요청이
 반복 실패함). 이 폴더를 수동으로 evtol-6dof 안에 복사해 넣어 주면, F450의 실제
 질량/추진/FCS 파라미터까지 비교 근거로 확보할 수 있다.
+
+## 8. 자동조종이 매 프레임 덮어쓰는 프로퍼티에 런스크립트로 직접 `<set>`하면 무효화된다 (실행 검증됨, 2026-08-02)
+
+`F450AP.xml`은 `fcs/throttle-cmd-norm`, `fcs/ScasEngage`, `fcs/aileron/elevator/rudder-cmd-norm`을
+전부 `ap/mode` 값에 따라 매 프레임 재계산하는 SWITCH 컴포넌트의 출력으로 정의한다
+(`ap/mode`가 1/2/3이 아니면 기본값 0으로 매 프레임 강제됨). 이 상태에서
+`scripts/F450/runscript/2.0__nominal_mission_profile_run.xml`처럼 `ap/mode`를 한 번도
+설정하지 않고 위 프로퍼티들을 런스크립트 `<set>`으로 직접 지정하면, 그 순간에는
+값이 들어가지만 바로 다음 프레임에 자동조종이 `ap/mode=0` 기준값(대부분 0)으로
+덮어써버린다. 실제로 이 스크립트를 JSBSim 1.2.4로 실행해보니(2026-08-02),
+콘솔 에러는 전혀 없이 정상 종료됐지만 `position/h-agl-ft`가 32초 내내 지상
+높이(0.494 ft)로 고정, 프로펠러 RPM 4개 전부 0.0으로 고정 — **기체가 단 한 번도
+이륙하지 않았다.** 종료코드나 콘솔 로그만으로는 이 실패를 알 수 없고, 실제
+notify/CSV 값을 시계열로 봐야만 드러나는 "조용한 실패"였다. 반면 같은 F450
+기체의 `1.2__ten_meter_box_hover_land_run.xml`은 `ap/mode=3`으로 자동조종을
+명시적으로 engage하는 방식이라 이 문제가 없다. 결론: 자동조종이 있는 기체에서는
+FCS 출력 프로퍼티를 런스크립트에서 직접 조작하지 말고, 반드시 `ap/mode`(와
+관련 setpoint)를 통해서 명령할 것. 틸트로터 본체에도 자동조종을 둔다면 동일한
+함정에 주의해야 한다.
 
 ## 요약: 다음 설계에 바로 적용할 것
 

@@ -56,6 +56,11 @@ jsbsim-bridge에서 JSBSim ↔ PX4 값을 주고받을 때 부호/축 정의가 
       작성되어 있어(예: 호버 목표 고도를 `position/h-agl-ft`와 직접 비교) 서로
       다른 시점·다른 기체에서 같은 결론이 재확인됐다. 틸트로터 본체의 초기조건도
       AGL 기준으로 설계할 것. 상세는 `reference/docs/lessons_learned.md` 1절 참고.
+- [x] (실행 검증 완료, 반례) `altitude`를 `elevation`과 같은 값으로 채우면(MSL
+      습관) 그 값만큼 AGL로 떠서 스폰된다 — F450 `1.0__ground_park_init.xml`
+      (`altitude=elevation=285.2111 M`)이 h-agl-ft=935.7 ft(285 m 상공)에서
+      스폰된 것으로 실제 확인. "지면 주기"는 `altitude=0`으로 직접 지정할 것.
+      `reference/docs/lessons_learned.md` 1절 추가 발견 참고.
 
 ## 자세(Attitude)
 
