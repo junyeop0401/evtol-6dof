@@ -12,8 +12,9 @@ __pycache__/
 automation/usage_log.jsonl
 automation/run_logs/
 
-# Windows/WSL 파일 다운로드 메타데이터 (실제 콘텐츠 아님)
+# Windows/WSL 파일 다운로드 메타데이터 (실제 콘텐츠 아님, 손상된 콜론 인코딩 변형 포함)
 *:Zone.Identifier
+*Zone.Identifier
 
 # 원저작물 아닌 개별 참고 PDF (직접 작성한 산출물이 아니라 저작권/용량 이슈로 제외,
 # 필요시 git add -f로 개별 추가 가능)

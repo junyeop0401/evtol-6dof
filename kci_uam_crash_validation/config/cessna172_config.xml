@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<aircraft name="Cessna172">
+  <!--
+    Revision notes (this update):
+    - mass_properties.mass changed from 1157 kg (MTOW) to 754 kg (standard empty weight)
+      to match the inertia tensor / CG below. The source report (Cel, "Cessna 172 Flight
+      Simulation Data", 2019, CC0) only provides Ix/Iy/Iz/Ixz and CG for the EMPTY aircraft
+      (structure-group breakdown on p.24 sums to 754.0 kg exactly). Using 1157 kg (loaded)
+      with the empty-aircraft inertia tensor was physically inconsistent in the original file.
+      If a loaded-configuration run is needed later, the CG/inertia must be recomputed with
+      an explicit fuel + occupant point-mass model, not just by changing this scalar.
+    - inertia.Ixz added: -161.5 kg*m^2 (was missing; source report p.22, table
+      "Empty aircraft inertia tensor and center of mass coordinates").
+    - aero_derivatives block added (new): lateral-directional stability derivatives and
+      pitch damping, all pulled from JSBSim's official open-source c172p aircraft definition
+      (aircraft/c172p/c172p.xml, axes SIDE/ROLL/YAW/PITCH), evaluated at beta=0/alpha=0/
+      flap=0 where the source table has more than one breakpoint. These were NOT in the
+      Cel (2019) CFD report (that report only covers static CL/CD/Cm alpha sweeps plus an
+      isolated vertical-tail CY-vs-beta curve, not whole-aircraft Cl/Cn or any rate
+      derivatives), so this is a second, separate, clearly-labeled source. Cmq replaces the
+      previously hardcoded -10.0 placeholder in the Python model.
+  -->
+  <mass_properties>
+    <mass>754.0</mass>
+    <wing_area>16.17</wing_area>
+    <mean_chord>1.49</mean_chord>
+    <wing_span>11.0</wing_span>
+    <inertia>
+      <Ix>2424.2</Ix>
+      <Iy>2427.3</Iy>
+      <Iz>4372.5</Iz>
+      <Ixz>-161.5</Ixz>
+    </inertia>
+  </mass_properties>
+
+  <aero_coefficients>
+    <!-- SOURCE: Cel (2019) CFD report, basic configuration, alpha=0 deg row (p.16-17). -->
+    <CL>0.0306</CL>
+    <CD>0.0315</CD>
+    <Cm>0.0998</Cm>
+    <CY>0.0</CY>
+    <Cl>0.0</Cl>
+    <Cn>0.0</Cn>
+  </aero_coefficients>
+
+  <!-- SOURCE: JSBSim c172p.xml official aerodynamics (aircraft/c172p/c172p.xml). -->
+  <aero_derivatives>
+    <CYb>-0.3927</CYb>   <!-- per rad, beta=+-0.349 rad / flap=0 slice -->
+    <CYp>-0.0750</CYp>   <!-- per (b/2V)*p, alpha=0/flap=0 -->
+    <CYr>0.2140</CYr>    <!-- per (b/2V)*r, alpha=0/flap=0 -->
+    <Clb>-0.0923</Clb>   <!-- per rad, beta=+-0.349 rad slice -->
+    <Clp>-0.4840</Clp>   <!-- per (b/2V)*p -->
+    <Clr>0.0798</Clr>    <!-- per (b/2V)*r, alpha=0/flap=0 -->
+    <Cnb>0.0587</Cnb>    <!-- per rad, beta=+-0.349 rad slice -->
+    <Cnp>-0.0278</Cnp>   <!-- per (b/2V)*p -->
+    <Cnr>-0.0937</Cnr>   <!-- per (b/2V)*r -->
+    <Cmq>-12.4000</Cmq>  <!-- per (c/2V)*q, replaces the previous hardcoded -10.0 -->
+  </aero_derivatives>
+</aircraft>

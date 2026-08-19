@@ -93,24 +93,33 @@
       확인해 원인 특정, 아래 로그 참고). Read/Write/Edit/Glob 도구는 WSL UNC
       경로에서도 정상 동작하므로 문서 편집 자체는 계속 가능하나, git
       add/commit/push나 JSBSim 실행 같은 bash 필수 작업은 이 폴더가 연결된 채로는
-      불가능. 사용자가 `D:\evtol 6dof`를 새 작업 루트로 git clone해 우회하기로
-      결정함(다음 작업 0번 참고).
+      불가능. 사용자가 실제 WSL 터미널(Cowork 도구 우회)에서 직접 git
+      add/commit/push를 실행해 미커밋 변경사항은 이미 push 완료(commit
+      `40c038f`, 2026-08-02) — 이제 `D:\evtol 6dof`를 새 작업 루트로 git clone하는
+      단계만 남음(다음 작업 0번 참고).
 
 ## 다음 작업
 
-0. **[신규, 최우선] `D:\evtol 6dof`에 GitHub 저장소(`junyeop0401/evtol-6dof`)를 `git clone`해서
-   새 작업 루트로 삼을 것.** 이번 세션에서 bash 도구 버그의 원인을 특정함(아래
-   2026-08-02 로그 "bash 도구 마운트 버그 원인 특정" 항목 참고) — WSL UNC 경로
-   폴더(`\\wsl.localhost\...`)가 연결돼 있으면 대상 경로와 무관하게 세션의 모든
-   bash 호출이 마운트 단계에서 실패함. 사용자가 이를 우회하기 위해 D: 드라이브
-   경로(`D:\evtol 6dof`)를 새로 연결하기로 결정, 다음 세션(새 채팅)은 이 폴더만
-   연결한 상태로 git clone부터 시작해 진행하기로 함. **주의**: 이 전환이 끝나기
-   전까지는 WSL 폴더 쪽 미커밋 변경사항(`reference/` 병합분, STATUS.md 갱신분 등,
-   git 미커밋 상태 지속)이 유실되지 않도록 두 폴더 중 최종적으로 어느 쪽을 계속
-   원본으로 쓸지 다음 세션에서 사용자와 먼저 정리할 것.
-1. `reference/` 병합분과 이 STATUS.md/체크리스트 갱신분을 git add/commit/push.
-   `jsbsim_workflow/` 원본은 `.gitignore` 처리를 제안(용량/중복 방지) — 사용자
-   확인 후 확정.
+0. **[최우선, 준비 완료] `D:\evtol 6dof`에 GitHub 저장소(`junyeop0401/evtol-6dof`)를
+   `git clone`해서 새 작업 루트로 삼을 것.** WSL 쪽 미커밋 변경사항은 아래 1번
+   항목으로 전부 push 완료(commit `40c038f`)했으므로, GitHub 원격 저장소가 곧
+   최신 상태 — 이제 clone만 하면 됨. 이번 세션에서 bash 도구 버그의 원인도
+   특정함(아래 2026-08-02 로그 "bash 도구 마운트 버그 원인 특정" 항목 참고) —
+   WSL UNC 경로 폴더(`\\wsl.localhost\...`)가 연결돼 있으면 대상 경로와 무관하게
+   세션의 모든 bash 호출이 마운트 단계에서 실패함. 다음 세션(새 채팅)은
+   `D:\evtol 6dof`만 연결한 상태로 시작해 git clone부터 진행할 것.
+1. ~~`reference/` 병합분과 이 STATUS.md/체크리스트 갱신분을 git add/commit/push.~~
+   **완료(2026-08-02)** — commit `40c038f`, `b58d748..40c038f` push 성공(사용자가
+   실제 WSL 터미널에서 직접 실행, Cowork bash 도구 버그와 무관하게 정상 동작
+   확인). 커밋 범위: `docs/STATUS.md`, `docs/coordinate_frame_checklist.md`,
+   `reference/docs/lessons_learned.md`(수정) + `docs/mission_reports/` 전체,
+   `docs/F450_1.2_box_hover_land_report.md`, `docs/F450_mission_ppt_outline.md`(신규,
+   총 15개 파일). `reference/harness`·`aircraft/LiftCruise2kg`·`scripts`·
+   `earth_models`, `automation/`, `docs/agent-log/`, `docs/gpt_crosscheck_template.md`,
+   고도홀드 관련 `models/systems/QuadX_FCS.xml`/`scripts/QuadX_nominal_mission.xml`은
+   `git status`에 안 잡힌 것으로 보아 이전 세션에서 이미 커밋되어 있었던 것으로
+   확인됨. `jsbsim_workflow/` 원본은 기존 `.gitignore`가 이미 제외 처리 중이라
+   추가 조치 불필요했음.
 2. Claude가 추가한 고도홀드(Altitude Hold) 폐루프를 Codex가 JSBSim 1.2.4로
    재실행해 오버슈트 해소 여부 확인, 필요시 PID 게인 재튜닝
 3. JSBSim 1.2.4 표준 실행 루트 구성 방식을 실행 스크립트 또는 문서로 고정
@@ -130,6 +139,127 @@
 9. (선택) 사용자가 로컬 MATLAB에서 `run_jsbsim_csv_plotter_v7.m`으로 F450
    2.0.4/1.2.22 raw CSV의 "표준 분석 패키지"를 생성해 PNG 폴더를 공유해주면,
    c172x 5.16과 동일한 방식으로 F450 두 리포트에 "그래프 분석" 절 추가
+
+---
+
+### 2026-08-17 — [claude] 배터리/서보 예시값을 pointmass로 추가 (웹 검색 기반)
+
+- 사용자가 "인터넷에 minitalon 배터리/서보 스펙 나와있을 테니 그거 기준으로 예시
+  구현해봐"라고 요청. 직전 항목(구조체 CAD 값 + 모터 pointmass만 있던 상태)에
+  이어서 배터리/서보를 EXAMPLE로 추가.
+- 웹 검색 결과: 킷 정품 스펙은 서보 4x9g(HXT900급, 실측 9.8g), 배터리는 4S
+  5000~8000mAh 권장(ItsQv 빌드로그가 실제 사용한 8000mAh와 일치). "4S 8000mAh"
+  질량은 소매처마다 630g~1140g으로 크게 갈려서(스펙 표기 오류로 추정) 중간값
+  ~830g을 예시치로 채택 — SOURCE가 아니라 ASSUMPTION/EXAMPLE로 명시.
+- 부수적으로 CAD 보고서 6절에서 "Motor support" 부품 자체의 무게중심
+  (X≈781.2mm)이 모터 위치의 더 나은 추정치라는 예시 문구를 발견해, 기존에
+  추력기(프로펠러) 위치(x=0.920)로 근사했던 모터 pointmass 위치를 x=0.790으로
+  보정. 보고서 예시가 다른 모터(Cobra 2221/16, 88g)를 썼다는 점도 혼동 방지를
+  위해 주석에 명시(실제 장착 모터가 어느 쪽인지는 여전히 LIM-ENGINE-001로 OPEN).
+- `aircraft/MiniTalon/Mass.xml`: 배터리(0.830kg, x=0.20, 앞쪽 해치 자리 추정)와
+  서보 4개(각 0.0098kg, 에일러론 L/R + 러더베이터 L/R, 대략적 스팬/코드 위치
+  추정) pointmass를 활성화. ESC/수신기+FC는 여전히 주석 스텁으로 남김.
+- 합산 질량 점검: 구조체(761.38g)+모터(140g)+배터리(830g)+서보4개(39.2g) =
+  약 1770.6g. 실제 완성기체 무게(ItsQv 빌드로그 1890g)와 약 120g 차이인데, 이
+  갭이 아직 안 넣은 ESC+수신기/FC 무게로 설명 가능한 범위라 정합성 점검으로
+  나쁘지 않음(증명은 아님, 참고용).
+- `aircraft/MiniTalon/Metrics.xml`: htailarm/vtailarm을 새 합산 CG(x≈0.314m)
+  기준 0.407m로 재계산(직전 값 0.290m, 그 이전 0.330m에서 순차 갱신). 배터리/
+  서보 위치가 전부 추정치라 여전히 잠정치로 문서화.
+- `aircraft/MiniTalon/ASSUMPTIONS.md`: ASM-MASS-002(배터리), ASM-MASS-003(서보)
+  신규 행 추가, SRC-CAD-002(모터 위치 보정)/ASM-GEO-002/003/ASM-MASS-001 갱신.
+- 다음 작업: 실제 배터리 실측 무게/서보 장착 위치를 받으면 EXAMPLE 값을
+  교체하고, ESC/수신기+FC pointmass를 채워 최종 AUW 완성. 이후 do_simple_trim
+  재시도.
+
+---
+
+### 2026-08-17 — [claude] MiniTalon CAD 질량특성 코드 감사 + Mass.xml/Metrics.xml을 pointmass 구조로 갱신
+
+- 이전 세션(bash가 막힌 이 세션 대신 사용자가 새로 연 별도 세션)이 `Assem4.step`을
+  자체 제작 STEP 파서+NURBS 테셀레이터+다면체 질량적분기로 처리해 만든
+  `Mini_Talon_Mass_Properties_Report.md` + 파이썬 코드(`step_parse.py`,
+  `geom.py`, `tessellate.py`, `massprops.py`, `aggregate.py`, `final_report.py` 등
+  14개 파일, 사용자가 이번에 업로드)를 정독.
+- 코드 감사 결과: geom.py의 NURBS 평가(find_span/basis_funs)는 표준 알고리즘과
+  일치하고 자체 검증 테스트 포함, massprops.py의 질량적분 공식은 표준 다면체
+  질량특성 공식(Mirtich 계열)과 일치, aggregate.py/final_report.py의 평행축
+  정리 적용도 정확함을 확인 — 지어낸 결과가 아니라 방법론적으로 건전한 파이프라인.
+  하드웨어 질량(FILL_FACTOR=0.55, PLATE_THICKNESS_MM=2.5, 재질별 밀도표)은
+  코드에 명시적 가정치로 노출되어 있어 실측 시 바로 교체 가능한 구조.
+- 수치 정합성: CAD 스팬 1.280m/길이 0.814m가 실제 공개 스펙(1.300m/0.830m)과
+  1.5~2% 오차로 일치, CAD "구조물 전체" 질량(761.38g, 모터/배터리/전자장비 제외)과
+  실제 완성기체 무게(ItsQv 빌드로그 1890g)의 차이(~1130g)가 배터리+모터+전자장비
+  무게로 설명 가능함을 확인.
+- 사용자 제안("지금 있는 CAD 데이터로 구성해두고 모터/배터리/서보는 나중에
+  pointmass로 추가하면 되지 않냐")이 정확히 JSBSim의 의도된 사용법(emptywt+CG+관성은
+  구조체 기준, pointmass는 parallel-axis로 자동 합산)과 일치함을 확인하고 채택.
+- `aircraft/MiniTalon/Mass.xml` 갱신: emptywt/CG/Ixx~Iyz를 CAD 구조체 전용 값으로
+  교체(기존 ArduPilot-Gazebo seed 폐기), Cobra C-2820/14 모터(실측 아님, 제조사
+  스펙 140g, 소매처 2곳 교차확인)를 pointmass로 추가, 배터리/서보/ESC/수신기는
+  주석 처리된 pointmass 템플릿으로 남김(값 확보되는 대로 채우기만 하면 됨).
+- `aircraft/MiniTalon/Metrics.xml` 갱신: htailarm/vtailarm을 CAD V-tail 25%MAC점
+  기준 0.290m로 갱신(기존 0.330m ArduPilot-Gazebo 45도 투영 seed 폐기). 배터리/서보
+  추가 전까지는 잠정치로 명시(배터리가 보통 모터 반대편에 실려 CG가 다시 앞으로
+  이동할 가능성 문서화).
+- `aircraft/MiniTalon/ASSUMPTIONS.md` 갱신: SRC-CAD-001/002, ASM-GEO-002/003 신규
+  행 추가, ASM-INERTIA-001/ASM-MASS-001 상태 갱신. 부수적으로 발견한 불일치 2건도
+  플래그: (1) ASM-PROP-001의 추력기 위치(x=0.805)가 실제 Propulsion.xml(x=0.920)과
+  달라 STALE-FLAGGED 처리, (2) `engine/` 폴더에 Cobra 모터 XML이 2종(C2820/14,
+  C2221/16) 존재하는데 Propulsion.xml은 C2820/14만 참조 — 실제 장착 모터가
+  어느 쪽인지 사용자 확인 필요(LIM-ENGINE-001).
+- 다음 작업: 배터리 실측 무게(또는 4S 8000mAh 스펙)·서보 개수/무게·대략적 장착
+  위치를 받으면 Mass.xml의 주석 pointmass 템플릿을 채워 최종 AUW를 완성하고,
+  do_simple_trim 재시도 및 minitalon_config.xml(파이썬 크래시 모델용) 작성으로 이어갈 것.
+
+---
+
+### 2026-08-03 — [claude] "mini palcon"(=MiniTalon) 모델 검토 + jsbsim_workflow/script 폴더 생성
+
+- 새 채팅에서 사용자가 "jsbsim에 새로 mini palcon 모델을 구성해봤다, 검토해달라,
+  evtol-6dof/jsbsim_workflow/script에 초기조건·runscript 만들 건데 일단 폴더만
+  생성해두고 모델 검토만 하라"고 요청.
+- "mini palcon"이라는 이름은 evtol-6dof, junyeopkwon 홈, /home/junyeopkwon/jsbsim
+  어디에도 문자열 그대로는 존재하지 않음을 확인. 대신 /home/junyeopkwon/jsbsim의
+  agent-log에서 오늘(2026-08-03 15:28) Codex가 X-UAV **MiniTalon** 부트스트랩
+  모델(aircraft/MiniTalon/*, engine/MiniTalon_*, scripts/MiniTalon_*_run.xml 등)을
+  막 생성한 기록을 발견 — 시간상 정확히 일치해 이것을 지칭하는 것으로 판단하고 검토
+  진행(사용자에게 확인 요청 없이 합리적 추정으로 진행, 최종 답변에는 이 추정을 명시).
+- 정적 검토 결과: 문서화(SOURCE/DERIVED/ASSUMPTION/LIMITATION 분류) 품질 높음,
+  fdm_config version="2.0" 정상, qbar-area 곱셈 전 축 정상 적용, airborne init의
+  AGL 처리 정상. 원 저자가 이미 TODO로 남긴 문제(longitudinal trim 미수렴, CAD/AVL
+  데이터 미반영 등)도 확인.
+- **새로 발견한 위험(원 저자 TODO에 없던 것)**: MiniTalon 추진계가
+  `<brushless_dc_motor>` 타입을 쓰는데, 이는 `reference/docs/lessons_learned.md`
+  6절이 "failed to tie property" 버그(GitHub Discussion #1183)를 이유로
+  QuadX_Baseline에서 이미 electric_engine으로 대체한 바로 그 컴포넌트. smoke test는
+  exit 0 + CSV bad 0건으로 통과했지만, 이 기준은 propeller-rpm/power-hp가 실제로
+  0이 아닌지까지는 보장하지 않음 — F450AP의 "종료코드 정상인데 실제로는 이륙
+  안 함" 조용한 실패와 같은 패턴 위험. 다음 세션(Codex 권장)에서 CSV 실제 수치
+  확인 필요.
+- `jsbsim_workflow/scripts/MiniTalon/{initial_condition,runscript}/` 폴더를
+  README 자리표시자만으로 생성(사용자가 이번 턴엔 폴더 생성까지만 요청, 실제
+  init/runscript XML 작성은 다음 턴).
+- 이번 세션도 bash 도구가 WSL UNC 마운트 버그로 막혀 있어 JSBSim 실행이나 CSV
+  수치 직접 확인은 못 함 — Read/Glob/Grep 기반 정적 검토만 수행.
+- 다음 작업(신규, 이 항목이 최우선): (1) brushless_dc_motor 유지/교체 결정,
+  (2) MiniTalon_smoke_test.csv의 propeller-rpm/power-hp/thrust-lbs 실제 값 확인,
+  (3) trim 미수렴 해결(CG/Cm0/Cmde/thrust line 동시 조정), (4) 위 3가지 정리 후
+  jsbsim_workflow/scripts/MiniTalon에 실제 초기조건/runscript 작성.
+
+**추가(같은 날 후속)**: 사용자가 Codex에게 do_simple_trim 없는 오픈루프 근사평형
+비행시험을 맡김(지시문은 이 세션이 작성). Codex가 76개 조합 격자 탐색
+(`tools/minitalon_openloop_sweep.py`)을 수행해 theta=0.8deg/elevator=0.0/
+throttle=0.45 조합에서 90초간 추락·NaN 없이 유지되는 걸 확인(round2_38, score
+17.78). 이 세션이 원본 CSV(`MiniTalon_quasitrim_sweep_summary.csv`,
+`MiniTalon_quasitrim_flight.csv`, `MiniTalon_smoke_test.csv`)를 직접 열어 대조
+검증함 — Codex 보고 수치(h_end 854.29ft, v_end 54.06fps, propeller-rpm 6542.8,
+power-hp 0.0596, thrust-lbs 0.444)가 원본과 정확히 일치, 조작/과장 없음 확인.
+브러시리스 모터도 이번엔 실제로 0이 아닌 값이 나옴을 재확인(지난번 우려 해소).
+다만 이 결과는 진짜 트림이 아니라 "90초 동안은 안 터지는 근사값"일 뿐이며,
+고도가 5초 이후 +15.77 ft 계속 완만히 상승 중(theta도 0.8→1.52deg로 계속 증가)
+— Codex도 TODO-20260803-1733-001로 같은 한계를 스스로 기록해 둠. CAD/AVL 데이터
+반영과 정식 trim은 여전히 미해결.
 
 ---
 

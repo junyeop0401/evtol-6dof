@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>eVTOL 6DOF 주간 진행 보고 (2026-08-07 ~ 2026-08-11)</title>
+<style>
+  :root{
+    --green:#385723;
+    --green-light:#e8f0e2;
+    --gray:#6b6b6b;
+    --line:#d9d9d9;
+    --red:#b23b3b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Malgun Gothic","맑은 고딕",sans-serif;
+    margin:0; background:#f2f2f2; color:#222;
+  }
+  .slide{
+    width:1280px; min-height:720px; margin:24px auto; background:#fff;
+    padding:56px 64px; position:relative;
+    box-shadow:0 2px 10px rgba(0,0,0,0.15);
+    page-break-after:always;
+  }
+  .badge{
+    display:inline-block; background:var(--green); color:#fff; font-weight:bold;
+    font-size:20px; padding:6px 14px; border-radius:4px; margin-bottom:18px;
+  }
+  h1.title{
+    font-size:40px; color:#1a1a1a; margin:0 0 6px 0; font-weight:bold;
+  }
+  .subtitle{ font-size:18px; color:var(--gray); margin-bottom:30px; }
+  .section-num{ font-size:96px; color:var(--green); font-weight:bold; opacity:0.15; position:absolute; top:40px; right:64px; }
+  .section-title{ font-size:52px; color:var(--green); font-weight:bold; margin-top:220px; }
+  .section-sub{ font-size:16px; color:var(--gray); margin-top:16px; }
+  .footer-line{ position:absolute; bottom:40px; left:64px; right:64px; height:3px;
+    background:linear-gradient(90deg,var(--green),#a9c48a,transparent); }
+  ul.l0{ list-style:none; padding-left:0; margin:0; }
+  ul.l0 > li{ font-size:21px; font-weight:bold; color:#1a1a1a; margin:16px 0 6px 0; }
+  ul.l0 > li::before{ content:"◆ "; color:var(--green); }
+  ul.l1{ list-style:none; padding-left:26px; margin:2px 0 0 0; }
+  ul.l1 > li{ font-size:16px; font-weight:normal; color:#333; margin:4px 0; }
+  ul.l1 > li::before{ content:"■ "; color:#7a9a5e; }
+  table{ border-collapse:collapse; width:100%; margin-top:12px; font-size:15px; }
+  th{ background:var(--green); color:#fff; text-align:left; padding:10px 12px; font-size:15px; }
+  td{ padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tr:nth-child(even) td{ background:#fafafa; }
+  .cover{ display:flex; flex-direction:column; justify-content:center; align-items:flex-start; height:600px; }
+  .cover .badgebig{ color:var(--green); font-weight:bold; font-size:22px; letter-spacing:1px; margin-bottom:18px; }
+  .cover h1{ font-size:48px; color:#1a1a1a; margin:0 0 14px 0; }
+  .cover .sub{ font-size:22px; color:var(--gray); margin-bottom:60px; }
+  .cover .who{ font-size:16px; color:var(--gray); }
+  .num-badge{ position:absolute; top:40px; left:64px; background:var(--green); color:#fff;
+    font-weight:bold; font-size:16px; padding:6px 14px; border-radius:4px; }
+  .kicker{ font-size:14px; color:var(--gray); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;}
+  h2.slide-title{ font-size:30px; color:#1a1a1a; font-weight:bold; margin:0 0 24px 0; }
+  .chart-wrap{ display:flex; gap:40px; margin-top:10px; }
+  .chart-box{ flex:1; }
+  .chart-cap{ font-size:13px; color:var(--gray); margin-top:6px; }
+  .legend{ font-size:13px; color:var(--gray); }
+  .legend span{ display:inline-block; width:12px; height:12px; border-radius:2px; margin-right:6px; vertical-align:middle; }
+  .risk-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:16px; }
+  .risk-card{ border:1px solid var(--line); border-radius:6px; padding:16px 18px; }
+  .risk-card h3{ margin:0 0 8px 0; font-size:17px; color:var(--red); }
+  .risk-card p{ margin:4px 0; font-size:14px; color:#333; }
+  .risk-card .tag{ display:inline-block; background:#f6e6e6; color:var(--red); font-size:12px; padding:2px 8px; border-radius:10px; margin-right:6px;}
+  .stat{ display:flex; gap:28px; margin-top:8px; }
+  .stat .box{ flex:1; text-align:center; border:1px solid var(--line); border-radius:8px; padding:18px 8px; }
+  .stat .num{ font-size:38px; font-weight:bold; color:var(--green); }
+  .stat .lbl{ font-size:13px; color:var(--gray); margin-top:4px; }
+  .filelist{ font-size:14px; color:#333; line-height:1.9; }
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Cover -->
+<div class="slide cover">
+  <div class="badgebig">WEEKLY PROGRESS REPORT</div>
+  <h1>eVTOL 6DOF 비행동역학 시뮬레이션<br>주간 진행 보고</h1>
+  <div class="sub">기준일: 2026-08-07 ~ 2026-08-11</div>
+  <div class="who">2026-08-11 · junyeop</div>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 2: Section - 핵심 요약 -->
+<div class="slide">
+  <div class="section-num">01</div>
+  <div class="section-title">1. 핵심 요약</div>
+  <div class="section-sub">Executive Summary</div>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 3: 핵심 요약 본문 -->
+<div class="slide">
+  <div class="num-badge">01</div>
+  <h2 class="slide-title" style="margin-top:50px;">핵심 요약</h2>
+  <div class="stat">
+    <div class="box"><div class="num">0</div><div class="lbl">evtol-6dof(논문 본체) 활동 — 8/3 이후 갱신 없음</div></div>
+    <div class="box"><div class="num">4</div><div class="lbl">jsbsim/MiniTalon 실작업일 (8/8, 8/9, 8/11)</div></div>
+    <div class="box"><div class="num">1</div><div class="lbl">미해결 신규 리스크 — 받음각 범위 초과</div></div>
+    <div class="box"><div class="num">0</div><div class="lbl">reference/ 동기화 완료 건수</div></div>
+  </div>
+  <ul class="l0" style="margin-top:28px;">
+    <li>실제 작업은 jsbsim/MiniTalon(고정익 실습·검증용 모델)에 집중됨
+      <ul class="l1"><li>MTOW 갱신(8/8) → 기하/질량/추진 전면 고정 재구축(8/9, 최대 변경) → 좌표 원점 감사·전환(8/9) → 문서 정리(8/11)</li></ul>
+    </li>
+    <li>시뮬레이션 4종 실행, 전부 정상 종료(exit 0) · CSV 이상치 0건
+      <ul class="l1"><li>부호 규약(조종입력→모멘트 방향) 실행 검증 완료</li></ul>
+    </li>
+    <li>새 리스크 발견: 활공 시험 중 받음각 최대 16.4°로 검증된 공력 데이터 범위(±10°) 초과
+      <ul class="l1"><li>후반 구간 공력 신뢰도 미확보 — 다음 세션 최우선 과제</li></ul>
+    </li>
+    <li>MiniTalon 성과물은 아직 논문 본체 저장소(evtol-6dof reference/)로 동기화되지 않음</li>
+  </ul>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 4: Section - 진행 타임라인 -->
+<div class="slide">
+  <div class="section-num">02</div>
+  <div class="section-title">2. 진행 타임라인</div>
+  <div class="section-sub">Timeline (2026-08-07 ~ 08-11)</div>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 5: 타임라인 표 -->
+<div class="slide">
+  <div class="num-badge">02</div>
+  <h2 class="slide-title" style="margin-top:50px;">진행 타임라인</h2>
+  <table>
+    <tr><th style="width:14%">날짜</th><th style="width:46%">작업</th><th>산출물 / 비고</th></tr>
+    <tr><td>08-07</td><td>활동 없음</td><td>-</td></tr>
+    <tr><td>08-08 19:23</td><td>사용자 제공 STEP CAD 파일(Assem4.step) 검토</td><td>표면 모델 확인 → 질량/관성 직접 추출 불가, tools/step_probe.py</td></tr>
+    <tr><td>08-08 19:36</td><td>MTOW 1.7 → 2.0 kg 갱신, 관성모멘트 재계산</td><td>Mass.xml, tools/minitalon_apply_mtow.py</td></tr>
+    <tr><td>08-09 19:24</td><td>기하/질량/추진 전면 "Geometry-Locked" 재구축(최대 변경)</td><td>Aero.xml / Aero_SourceOnly.xml 등 신규 5종 문서, JSBSim 4회 실행</td></tr>
+    <tr><td>08-09 21:47</td><td>추진기 좌표를 공개 Gazebo 모델과 대조 감사</td><td>부호변환 후 일치 확인</td></tr>
+    <tr><td>08-09 22:00</td><td>기준 원점을 기체 코 끝(nose-tip)으로 전환 결정, +0.510 m 이동</td><td>CG/AERORP/VRP/추진기/착지점 전체 반영</td></tr>
+    <tr><td>08-11 11:05</td><td>전체 XML 값 근거 문서화(733줄)</td><td>XML_VALUE_REFERENCE.md, 모델/수치 변경 없음(순수 문서화)</td></tr>
+  </table>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 6: Section - 주요 진행 내용 상세 -->
+<div class="slide">
+  <div class="section-num">03</div>
+  <div class="section-title">3. 주요 진행 내용 상세</div>
+  <div class="section-sub">Details</div>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 7: 기하/질량 고정 -->
+<div class="slide">
+  <div class="num-badge">03</div>
+  <h2 class="slide-title" style="margin-top:50px;">기하·질량 고정 (Geometry-Locked, 08-09)</h2>
+  <ul class="l0">
+    <li>신규 기준 형상 확정 — 근거: Bacchini 박사논문 + eVTOL 리프트 프로펠러 항력 논문
+      <ul class="l1">
+        <li>날개면적 0.314 m² · 스팬 1.280 m · 기준시위 0.245 m (08-08 값에서 갱신)</li>
+        <li>질량 1.875 kg (Gazebo 집계 시드) · 관성 I_xx/I_yy/I_zz = 0.0279 / 0.0944 / 0.1147 kg·m²</li>
+        <li>추진계: Cobra C-2820/14 (840Kv) + APC 10x8E 로 변경</li>
+      </ul>
+    </li>
+    <li>공력 모델 이원화
+      <ul class="l1">
+        <li>실사용 <b>Aero.xml</b>(실행 참조) vs 논문 전용 감사 모듈 <b>Aero_SourceOnly.xml</b>(비참조, 대조용)</li>
+        <li>VTOL 구성요소·리프트 프로펠러 항력은 이번 고정익 전용 모델에 의도적으로 미포함</li>
+      </ul>
+    </li>
+  </ul>
+  <table style="margin-top:24px;">
+    <tr><th>항목</th><th>08-08 이전</th><th>08-09 이후</th></tr>
+    <tr><td>날개면적</td><td>0.300 m²</td><td>0.314 m²</td></tr>
+    <tr><td>스팬</td><td>1.300 m</td><td>1.280 m</td></tr>
+    <tr><td>질량</td><td>2.000 kg</td><td>1.875 kg</td></tr>
+    <tr><td>추진계</td><td>Cobra C-2221/16 (940Kv) + APC 9x7</td><td>Cobra C-2820/14 (840Kv) + APC 10x8E</td></tr>
+  </table>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 8: 시뮬레이션 검증 결과 - 차트 -->
+<div class="slide">
+  <div class="num-badge">03</div>
+  <h2 class="slide-title" style="margin-top:50px;">시뮬레이션 검증 결과 (JSBSim 실행, 08-09)</h2>
+  <div class="chart-wrap">
+    <div class="chart-box">
+      <svg viewBox="0 0 600 300" width="100%">
+        <line x1="40" y1="260" x2="560" y2="260" stroke="#999"/>
+        <line x1="40" y1="40" x2="40" y2="260" stroke="#999"/>
+        <polyline fill="none" stroke="#385723" stroke-width="2.5"
+          points="40,205 92,64.5 144,49.9 196,222.6 248,148.2 300,72.2 352,194.4 404,213.1 456,123.2 508,164.4 560,233.9"/>
+        <text x="300" y="20" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a1a1a">고도 h-AGL (ft) — Glide_Check_Output</text>
+        <text x="40" y="275" font-size="11" fill="#666">t=0</text>
+        <text x="545" y="275" font-size="11" fill="#666">t=20s</text>
+        <text x="4" y="45" font-size="11" fill="#666">1030ft</text>
+        <text x="4" y="264" font-size="11" fill="#666">994ft</text>
+      </svg>
+      <div class="chart-cap">스로틀 스텝 인가 후 고도가 990~1030ft 구간에서 페루고이드(phugoid) 형태로 진동 — 20초간 발산 없이 유지됨.</div>
+    </div>
+    <div class="chart-box">
+      <svg viewBox="0 0 600 300" width="100%">
+        <line x1="40" y1="260" x2="560" y2="260" stroke="#999"/>
+        <line x1="40" y1="40" x2="40" y2="260" stroke="#999"/>
+        <polyline fill="none" stroke="#7a9a5e" stroke-width="2.5"
+          points="40,56.3 92,205.1 144,221.2 196,84.8 248,167.1 300,242.3 352,121.2 404,129.3 456,212.7 508,162.8 560,118.6"/>
+        <text x="300" y="20" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a1a1a">진대기속도 vtrue (fps) — Glide_Check_Output</text>
+        <text x="40" y="275" font-size="11" fill="#666">t=0</text>
+        <text x="545" y="275" font-size="11" fill="#666">t=20s</text>
+        <text x="4" y="45" font-size="11" fill="#666">60fps</text>
+        <text x="4" y="264" font-size="11" fill="#666">25fps</text>
+      </svg>
+      <div class="chart-cap">속도도 27.8~57.4 fps 사이 동일 주기로 진동 — 고도 진동과 위상이 맞물린 전형적 페루고이드 응답.</div>
+    </div>
+  </div>
+  <table style="margin-top:18px;">
+    <tr><th>시험명</th><th>행수</th><th>결과</th></tr>
+    <tr><td>Glide_Check / Glide_Check_Output</td><td>1201</td><td>진대기속도 57.4→47.5 fps, 고도 1000→994.7 ft (20s), 스로틀 스텝 시 RPM 최대 4200.0, 추력 최대 0.496 lbf</td></tr>
+    <tr><td>Glide_Throttle0</td><td>1201</td><td>RPM/파워/전류/추력 전부 정상적으로 0 (동력 차단 확인)</td></tr>
+    <tr><td>Control_Sign_Check</td><td>1081</td><td>양(+) 조종입력 → 양(+) 모멘트 확인. l=0.00543 / m=0.00455 / n=0.00536 lbf·ft (부호 규약 정합)</td></tr>
+  </table>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 9: 받음각 이슈 차트 -->
+<div class="slide">
+  <div class="num-badge">03</div>
+  <h2 class="slide-title" style="margin-top:50px;">받음각(Alpha) 범위 초과 — 신규 발견 이슈</h2>
+  <svg viewBox="0 0 900 300" width="100%" style="max-width:820px;">
+    <line x1="50" y1="260" x2="880" y2="260" stroke="#999"/>
+    <line x1="50" y1="40" x2="50" y2="260" stroke="#999"/>
+    <line x1="50" y1="137.78" x2="880" y2="137.78" stroke="#b23b3b" stroke-dasharray="6,4"/>
+    <text x="885" y="141" font-size="12" fill="#b23b3b">±10° 검증 한계</text>
+    <polyline fill="none" stroke="#385723" stroke-width="2.5"
+      points="50,260 130,218.4 210,241.1 290,250.1 370,232.5 450,141.9 530,249.9 610,240.2 690,59.4 770,248.8 850,244.8"
+      transform="scale(1,1)"/>
+    <circle cx="690" cy="59.4" r="6" fill="#b23b3b"/>
+    <text x="690" y="45" text-anchor="middle" font-size="12" fill="#b23b3b" font-weight="bold">16.41° (t=16s)</text>
+    <text x="465" y="20" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a1a1a">받음각 alpha (deg) — Glide_Throttle0 (무동력 활공)</text>
+    <text x="50" y="275" font-size="11" fill="#666">t=0</text>
+    <text x="860" y="275" font-size="11" fill="#666">t=20s</text>
+  </svg>
+  <ul class="l0" style="margin-top:10px;">
+    <li>무동력 활공(Glide_Throttle0) 및 등속 활공(Glide_Check) 시험에서 받음각이 각 16.41°, 15.00°까지 상승
+      <ul class="l1">
+        <li>현재 채택한 논문(Bacchini) 기반 CL/CD 데이터가 지원하는 범위는 약 ±10°</li>
+        <li>t≈16s 부근에서 속도가 22.2 fps까지 떨어지며(실속 근접) 받음각이 급격히 상승 — 이 구간의 공력 계수는 테이블 클램핑에 의존, 신뢰 미검증</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 10: 좌표계 원점 감사 -->
+<div class="slide">
+  <div class="num-badge">03</div>
+  <h2 class="slide-title" style="margin-top:50px;">좌표계·원점 감사 및 전환 (08-09)</h2>
+  <ul class="l0">
+    <li>추진기 위치 대조 검증
+      <ul class="l1">
+        <li>모델 값 (x=0.410, y=0.0, z=-0.030 m) vs 공개 ArduPilot Gazebo 모델 (-0.41, 0, -0.03) — 부호변환 후 일치 확인</li>
+      </ul>
+    </li>
+    <li>결정(수락): 기준 원점을 임시 CG/base-link → 기체 코 끝(nose-tip)으로 전환
+      <ul class="l1">
+        <li>CG / AERORP / VRP / EYEPOINT / 추진기 위치 / 착지점 전부 +0.510 m X축 이동 반영</li>
+        <li>근거: 사용자 STEP 파일은 조립체 변환 추출 불가(WSL 환경에 OCCT/FreeCAD 등 CAD 툴 부재) → 공개 Gazebo 메쉬 기준 임시 시드 채택</li>
+        <li>검증: JSBSim 로드 출력 CG x=20.079 in(0.510 m), 프로펠러 x=36.221 in(0.920 m) — 이동 반영 확인</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 11: Section - 이슈 및 리스크 -->
+<div class="slide">
+  <div class="section-num">04</div>
+  <div class="section-title">4. 이슈 및 리스크</div>
+  <div class="section-sub">Issues &amp; Risks</div>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 12: 리스크 카드 -->
+<div class="slide">
+  <div class="num-badge">04</div>
+  <h2 class="slide-title" style="margin-top:50px;">이슈 및 리스크</h2>
+  <div class="risk-grid">
+    <div class="risk-card">
+      <h3>받음각 검증 범위 초과 (신규)</h3>
+      <p><span class="tag">미해결</span><span class="tag">최우선</span></p>
+      <p><b>영향:</b> 활공 후반 구간 공력값 신뢰 불가</p>
+      <p><b>담당/목표일:</b> 다음 세션, 미정</p>
+    </div>
+    <div class="risk-card">
+      <h3>질량·관성·CG 전부 시드값</h3>
+      <p><span class="tag">미해결</span></p>
+      <p><b>영향:</b> 실측 CAD 없이는 정량 결과가 잠정치에 불과</p>
+      <p><b>담당/목표일:</b> STEP 데이터 확보 후</p>
+    </div>
+    <div class="risk-card">
+      <h3>CL/CD 테이블 수동 디지타이징</h3>
+      <p><span class="tag">미해결</span></p>
+      <p><b>영향:</b> 저널 Table 1 수치(CL_min_drag=0.1712, CD_min=0.0227)와 대조 검증 안 됨</p>
+      <p><b>담당/목표일:</b> 미정</p>
+    </div>
+    <div class="risk-card">
+      <h3>코 끝 원점이 CAD 아닌 공개 메쉬 기준</h3>
+      <p><span class="tag">임시 확정</span></p>
+      <p><b>영향:</b> 실측 CAD 확보 시 재조정 필요</p>
+      <p><b>담당/목표일:</b> CAD 툴 확보 후</p>
+    </div>
+  </div>
+  <ul class="l0" style="margin-top:20px;">
+    <li>MiniTalon 성과물이 evtol-6dof <code>reference/</code>로 미동기화
+      <ul class="l1"><li>영향: 논문 본체 저장소엔 아직 반영 안 됨 · 상태: 대기 · 사용자 확인 필요</li></ul>
+    </li>
+  </ul>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 13: Section - 다음 단계 -->
+<div class="slide">
+  <div class="section-num">05</div>
+  <div class="section-title">5. 다음 단계</div>
+  <div class="section-sub">Next Steps</div>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 14: 다음 단계 본문 -->
+<div class="slide">
+  <div class="num-badge">05</div>
+  <h2 class="slide-title" style="margin-top:50px;">다음 단계</h2>
+  <ul class="l0">
+    <li>초기 theta / elevator / 속도 조정 후 재활공시험 — 받음각 ±10° 내 유지 목표</li>
+    <li>실측(CAD/저울/진자) 질량·관성값으로 Gazebo 시드값 교체</li>
+    <li>Bacchini 논문 CL/CD 곡선 재디지타이징 (정밀도 향상)</li>
+    <li>STEP 조립체 변환 추출 재시도 (CAD 툴 확보 시) → 코 끝 원점 실측값으로 대체</li>
+    <li>do_simple_trim 트림 수렴 시도 (기하 고정 모델 기준, 아직 미실시)</li>
+    <li>MiniTalon 결과를 evtol-6dof <code>reference/</code>로 동기화</li>
+  </ul>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 15: Section - 부록 -->
+<div class="slide">
+  <div class="section-num">06</div>
+  <div class="section-title">6. 부록 및 마무리</div>
+  <div class="section-sub">Appendix</div>
+  <div class="footer-line"></div>
+</div>
+
+<!-- Slide 16: 부록 본문 -->
+<div class="slide">
+  <div class="num-badge">06</div>
+  <h2 class="slide-title" style="margin-top:50px;">참고 파일 &amp; 마무리</h2>
+  <div class="filelist">
+    jsbsim/aircraft/MiniTalon/CHANGES.md<br>
+    jsbsim/aircraft/MiniTalon/VALIDATION_REPORT.md<br>
+    jsbsim/aircraft/MiniTalon/XML_VALUE_REFERENCE.md<br>
+    jsbsim/aircraft/MiniTalon/ASSUMPTIONS_AND_LIMITATIONS.md<br>
+    jsbsim/aircraft/MiniTalon/SOURCE_MATRIX.csv, GEOMETRY_BASIS.csv<br>
+    jsbsim/docs/agent-log/{PROGRESS, TODO, DECISIONS}.md<br>
+    jsbsim/MiniTalon_Glide_Check_Output.csv, MiniTalon_Glide_Throttle0.csv, MiniTalon_Control_Sign_Check.csv
+  </div>
+  <p style="margin-top:30px; font-size:16px;">다음 보고 기준일: <b>2026-08-11</b></p>
+  <p style="margin-top:40px; font-size:16px; color:var(--gray);">읽어주셔서 감사합니다.</p>
+  <div class="footer-line"></div>
+</div>
+
+</body>
+</html>
