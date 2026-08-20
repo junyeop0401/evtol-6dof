@@ -93,3 +93,16 @@
 - 남은 리스크: GitHub LFS quota 제한, WSL에는 git-lfs가 없어 해당 repo에서 LFS 파일 checkout/fetch가 제한될 수 있음
 - 후속 작업: commit/push 후 git status 및 git lfs ls-files 확인
 - Git commit: 예정
+
+## [2026-08-20 17:35] PROGRESS-20260820-1735-001 — DONE
+
+- 과업: CSV 로그 Git LFS push 완료
+- 대상 프로젝트: D:\dev\evtol-6dof
+- 수행한 작업: commit 5cff978 생성 후 GitHub origin/main으로 push 완료
+- 실행한 명령어: git commit -m "Track August CSV logs with Git LFS", git push origin main, git lfs ls-files, git status --short --branch
+- 검증 결과: Uploading LFS objects: 100% (37/37), 1.8 GB 완료, origin/main 02e2a24..5cff978 반영
+- 검증하지 못한 항목: WSL repo에서 LFS 실제 파일 checkout
+- 검증하지 못한 이유: WSL에는 git-lfs가 설치되어 있지 않음
+- 남은 리스크: 다른 PC/환경에서 pull할 때 Git LFS 설치가 필요함
+- 후속 작업: 필요 시 Windows Git 인증 계정을 junyeop0401로 정리해 다음 push 때 임시 인증 헤더 없이 진행
+- Git commit: 5cff978

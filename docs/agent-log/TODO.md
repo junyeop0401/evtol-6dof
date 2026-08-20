@@ -40,3 +40,11 @@
 - 권장 작업: git push origin main 실행 후 실패 시 quota 또는 대체 보관 전략 결정
 - 관련 파일: .gitattributes, jsbsim_workflow/logs/csv/**/*.csv
 - 상태: OPEN
+
+## [2026-08-20 17:35] TODO-20260820-1735-001 — DONE
+
+- 대상 TODO: TODO-20260820-1720-001
+- 완료 내용: GitHub LFS push 완료
+- 관련 파일: .gitattributes, jsbsim_workflow/logs/csv/**/*.csv
+- 검증 결과: LFS object 37개 1.8GB 업로드 성공, origin/main에 5cff978 반영
+- 남은 리스크: Git LFS 미설치 환경에서는 CSV 실제 내용 checkout 불가

@@ -48,3 +48,15 @@
 - 미완료 TODO: GitHub LFS push 성공 여부 최종 확인
 - 남은 리스크: GitHub LFS quota 또는 bandwidth 제한이 있으면 push가 실패할 수 있음
 - 권장 다음 작업: push 성공 후 origin/main과 D드라이브 clone 상태 확인
+
+## [2026-08-20 17:35] INDEX-20260820-1735-001 — DONE
+
+- 프로젝트명: evtol-6dof
+- 기록 시각: 2026-08-20 17:35 KST
+- 최근 수행 과업: 8월 이후 CSV 로그 Git LFS push 완료
+- 현재 상태: origin/main에 commit 5cff978까지 push 완료, D드라이브 clone은 main...origin/main 상태
+- 최근 변경 파일: .gitattributes, .gitignore, jsbsim_workflow/.gitignore, jsbsim_workflow/logs/csv/**/*.csv, docs/agent-log/*
+- 주요 결정: CSV 로그는 Git LFS로 연결하고, 7월 CSV는 D:\dev\evtol-6dof_log_archive\jsbsim_workflow_csv_pre_2026_08에 보관
+- 미완료 TODO: Windows가 아닌 WSL repo에서 실제 LFS CSV를 받아야 하면 WSL git-lfs 설치 필요
+- 남은 리스크: Git LFS를 사용하지 않는 환경에서는 CSV가 pointer로만 체크아웃될 수 있음
+- 권장 다음 작업: Claude/Codex는 D:\dev\evtol-6dof에서 작업하고, 새 CSV도 같은 LFS 패턴으로 관리

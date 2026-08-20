@@ -53,3 +53,11 @@
 - 완료 항목: 7월 CSV 4개 archive 이동, 8월 이후 CSV 47개 stage, CSV 외 PNG stage 제외, 가장 큰 CSV가 LFS pointer로 staged됨을 확인
 - 미완료 항목: GitHub push 최종 결과 확인 전
 - 최종 상태: IN_PROGRESS
+
+## [2026-08-20 17:35] TASK-20260820-1735-001 — DONE
+
+- 과업: jsbsim_workflow CSV 로그 날짜 기준 Git 연결 완료
+- 요청 내용: 로그 CSV 중 8월 전 파일은 다른 곳에 보관하고, 8월 이후 파일만 Git에 연결
+- 완료 항목: 7월 CSV 4개 archive 이동, 8월 이후 CSV 47개 Git LFS 추적, GitHub push 완료
+- 미완료 항목: 없음. 단, WSL에서 LFS 파일을 직접 받으려면 git-lfs 설치 필요
+- 최종 상태: DONE
