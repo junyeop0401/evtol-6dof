@@ -73,3 +73,23 @@
 - 남은 리스크: git diff --cached --check에서 편입된 기존 파일들의 trailing whitespace 및 EOF blank line 경고가 있었으나, 내용 보존을 위해 수정하지 않음
 - 후속 작업: D:\\dev\\evtol-6dof에서 git pull 실행
 - Git commit: 0530bb6
+
+## [2026-08-20 17:20] PROGRESS-20260820-1720-001 — IN_PROGRESS
+
+- 과업: CSV 로그 archive 및 Git LFS 추적 설정
+- 대상 프로젝트: D:\dev\evtol-6dof
+- 조사한 파일: jsbsim_workflow/logs/csv/**/*.csv, .gitignore, jsbsim_workflow/.gitignore
+- 생성한 파일: .gitattributes, D:\dev\evtol-6dof_log_archive\jsbsim_workflow_csv_pre_2026_08\MANIFEST.md
+- 수정한 파일: .gitignore, jsbsim_workflow/.gitignore, docs/agent-log/INDEX.md, docs/agent-log/TASK.md, docs/agent-log/PROGRESS.md, docs/agent-log/DECISIONS.md, docs/agent-log/TODO.md
+- 핵심 변경점: logs 전체 ignore에서 logs/csv/**/*.csv만 unignore하는 방식으로 변경, Git LFS tracking pattern 추가
+- 실행한 명령어: git lfs install --local, git lfs track "jsbsim_workflow/logs/csv/**/*.csv", git add, git lfs status, git cat-file -s
+- 테스트 결과: 해당 없음
+- lint 결과: 해당 없음
+- type check 결과: 해당 없음
+- build 결과: 해당 없음
+- 실행 확인 결과: 7월 CSV 4개 285,478,876 bytes archive 이동, 8월 이후 CSV 47개 1.9G 복사, LFS staged 47개 확인, 347,806,672 bytes CSV가 134 bytes LFS pointer로 staged됨 확인
+- 검증하지 못한 항목: GitHub LFS push 성공 여부
+- 검증하지 못한 이유: 아직 commit/push 전
+- 남은 리스크: GitHub LFS quota 제한, WSL에는 git-lfs가 없어 해당 repo에서 LFS 파일 checkout/fetch가 제한될 수 있음
+- 후속 작업: commit/push 후 git status 및 git lfs ls-files 확인
+- Git commit: 예정

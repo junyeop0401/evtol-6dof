@@ -36,3 +36,15 @@
 - 미완료 TODO: Windows D드라이브 clone에서 git pull 실행 필요
 - 남은 리스크: 기존 내부 repo 이력은 /home/junyeopkwon/jsbsim_workflow_git_backup_20260820_160500 백업에만 보존됨
 - 권장 다음 작업: D:\\dev\\evtol-6dof에서 git pull 후 jsbsim_workflow 존재 확인
+
+## [2026-08-20 17:20] INDEX-20260820-1720-001 — IN_PROGRESS
+
+- 프로젝트명: evtol-6dof
+- 기록 시각: 2026-08-20 17:20 KST
+- 최근 수행 과업: jsbsim_workflow CSV 로그를 날짜 기준으로 정리하고 8월 이후 로그를 Git LFS 추적 대상으로 추가
+- 현재 상태: D:\dev\evtol-6dof에서 8월 이후 CSV 47개가 Git LFS pointer로 staged됨
+- 최근 변경 파일: .gitattributes, .gitignore, jsbsim_workflow/.gitignore, jsbsim_workflow/logs/csv/**/*.csv, docs/agent-log/*
+- 주요 결정: 7월 CSV는 repo 밖 archive에 보관하고, 8월 이후 CSV는 Git LFS로 관리
+- 미완료 TODO: GitHub LFS push 성공 여부 최종 확인
+- 남은 리스크: GitHub LFS quota 또는 bandwidth 제한이 있으면 push가 실패할 수 있음
+- 권장 다음 작업: push 성공 후 origin/main과 D드라이브 clone 상태 확인

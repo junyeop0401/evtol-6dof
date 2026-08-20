@@ -7,7 +7,10 @@ __pycache__/
 .ruff_cache/
 
 # JSBSim generated outputs
-logs/
+logs/**
+!logs/csv/
+!logs/csv/**/
+!logs/csv/**/*.csv
 
 # Full JSBSim/PX4 execution data mirror (28GB+, harness runtime root, not source)
 jsbsim_workflow_data/

@@ -39,3 +39,17 @@
 - 완료 항목: 내부 .git 메타데이터 백업, 173개 파일 stage, .gitignore를 런타임 산출물 제외 중심으로 변경
 - 미완료 항목: commit/push 및 D드라이브 pull 확인은 후속 명령 성공 여부에 따라 확정
 - 최종 상태: DONE
+
+## [2026-08-20 17:20] TASK-20260820-1720-001 — IN_PROGRESS
+
+- 과업: jsbsim_workflow CSV 로그 날짜 기준 Git 연결
+- 요청 내용: 로그 CSV 중 8월 전 파일은 다른 곳에 보관하고, 8월 이후 파일만 Git에 연결
+- 목적: Windows 로컬 clone에서 8월 이후 실행 CSV를 Git으로 동기화하되 과거 7월 로그는 repo 밖에 보관
+- 대상 프로젝트: D:\dev\evtol-6dof, 원본 로그 위치 /home/junyeopkwon/evtol-6dof/jsbsim_workflow/logs
+- 작업 범위: CSV 분류, 7월 CSV archive 이동, 8월 이후 CSV D드라이브 clone 복사, Git LFS 설정, ignore 규칙 조정, commit/push
+- 제외 범위: CSV 외 plots/png 추적, logs 전체 폴더 추적, JSBSim 실행 검증, GitHub LFS quota 구매 또는 설정 변경
+- 가정: 현재 로그 파일명에서 0731은 2026년 7월 로그, 나머지 CSV는 파일명 또는 생성 시점 기준 2026년 8월 이후 로그로 간주
+- 완료 조건: 7월 CSV가 archive로 이동되고 8월 이후 CSV가 Git LFS로 push됨
+- 완료 항목: 7월 CSV 4개 archive 이동, 8월 이후 CSV 47개 stage, CSV 외 PNG stage 제외, 가장 큰 CSV가 LFS pointer로 staged됨을 확인
+- 미완료 항목: GitHub push 최종 결과 확인 전
+- 최종 상태: IN_PROGRESS

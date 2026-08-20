@@ -1,0 +1,1 @@
+jsbsim_workflow/logs/csv/**/*.csv filter=lfs diff=lfs merge=lfs -text

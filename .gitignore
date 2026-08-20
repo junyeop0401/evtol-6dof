@@ -1,6 +1,9 @@
 # jsbsim_workflow source/docs are tracked so Windows clones can use the workflow.
 # Keep generated runtime outputs and large data mirrors out of Git.
-jsbsim_workflow/logs/
+jsbsim_workflow/logs/**
+!jsbsim_workflow/logs/csv/
+!jsbsim_workflow/logs/csv/**/
+!jsbsim_workflow/logs/csv/**/*.csv
 jsbsim_workflow/jsbsim_workflow_data/
 jsbsim_workflow/tmp/
 jsbsim_workflow/temp/

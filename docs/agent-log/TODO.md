@@ -32,3 +32,11 @@
 - 관련 파일: jsbsim_workflow/*, .gitignore
 - 검증 결과: origin/main push 성공, commit 0530bb6 반영
 - 남은 리스크: 실제 D:\\dev\\evtol-6dof pull 및 파일 존재 확인은 아직 별도로 수행 필요
+
+## [2026-08-20 17:20] TODO-20260820-1720-001 — OPEN
+
+- 항목: GitHub LFS push 후 원격 반영 확인
+- 배경: 8월 이후 CSV 47개가 LFS로 staged되었으나, GitHub LFS quota 제한 가능성이 있음
+- 권장 작업: git push origin main 실행 후 실패 시 quota 또는 대체 보관 전략 결정
+- 관련 파일: .gitattributes, jsbsim_workflow/logs/csv/**/*.csv
+- 상태: OPEN
