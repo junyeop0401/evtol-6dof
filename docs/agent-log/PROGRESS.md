@@ -60,3 +60,16 @@
 - 남은 리스크: 기존 내부 repo의 commit 이력은 백업에만 남고 부모 repo에는 파일 스냅샷으로 편입됨
 - 후속 작업: commit/push 후 D:\\dev\\evtol-6dof에서 git pull 실행
 - Git commit: 예정
+
+## [2026-08-20 16:55] PROGRESS-20260820-1655-001 — DONE
+
+- 과업: jsbsim_workflow GitHub 업로드 완료
+- 대상 프로젝트: /home/junyeopkwon/evtol-6dof
+- 수행한 작업: commit 0530bb6 생성 후 origin/main으로 push 완료
+- 실행한 명령어: git commit, git push origin main
+- 검증 결과: push 출력에서 40c038f..0530bb6 main -> main 확인
+- 검증하지 못한 항목: Windows D드라이브 clone의 pull 후 파일 존재 여부
+- 검증하지 못한 이유: D드라이브 clone은 별도 작업 경로이며 pull을 실행해야 반영됨
+- 남은 리스크: git diff --cached --check에서 편입된 기존 파일들의 trailing whitespace 및 EOF blank line 경고가 있었으나, 내용 보존을 위해 수정하지 않음
+- 후속 작업: D:\\dev\\evtol-6dof에서 git pull 실행
+- Git commit: 0530bb6

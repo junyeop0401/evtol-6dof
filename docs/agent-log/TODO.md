@@ -24,3 +24,11 @@
 - 권장 작업: git push 성공 후 PowerShell에서 cd D:\\dev\\evtol-6dof; git pull; Test-Path .\jsbsim_workflow 실행
 - 관련 파일: jsbsim_workflow/*, .gitignore
 - 상태: OPEN
+
+## [2026-08-20 16:55] TODO-20260820-1655-001 — DONE
+
+- 대상 TODO: TODO-20260820-1610-001
+- 완료 내용: GitHub push 완료로 D드라이브 clone에서 pull 가능한 상태가 됨
+- 관련 파일: jsbsim_workflow/*, .gitignore
+- 검증 결과: origin/main push 성공, commit 0530bb6 반영
+- 남은 리스크: 실제 D:\\dev\\evtol-6dof pull 및 파일 존재 확인은 아직 별도로 수행 필요

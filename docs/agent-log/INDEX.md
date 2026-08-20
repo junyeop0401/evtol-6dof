@@ -24,3 +24,15 @@
 - 미완료 TODO: D:\\dev\\evtol-6dof clone에서 git pull 후 폴더 반영 확인
 - 남은 리스크: 내부 repo .git 메타데이터는 /home/junyeopkwon/jsbsim_workflow_git_backup_20260820_160500에 백업되어 있으며, 별도 repo 이력은 부모 Git 이력에 병합되지 않음
 - 권장 다음 작업: commit/push 후 Windows D드라이브 clone에서 git pull 실행
+
+## [2026-08-20 16:55] INDEX-20260820-1655-001 — DONE
+
+- 프로젝트명: evtol-6dof
+- 기록 시각: 2026-08-20 16:55 KST
+- 최근 수행 과업: jsbsim_workflow 부모 repo 편입 commit 및 GitHub push 완료
+- 현재 상태: origin/main에 commit 0530bb6까지 push 완료
+- 최근 변경 파일: .gitignore, jsbsim_workflow/*, docs/agent-log/*
+- 주요 결정: jsbsim_workflow는 submodule이 아닌 일반 폴더로 관리하고 대용량 logs/ 및 jsbsim_workflow_data/는 제외
+- 미완료 TODO: Windows D드라이브 clone에서 git pull 실행 필요
+- 남은 리스크: 기존 내부 repo 이력은 /home/junyeopkwon/jsbsim_workflow_git_backup_20260820_160500 백업에만 보존됨
+- 권장 다음 작업: D:\\dev\\evtol-6dof에서 git pull 후 jsbsim_workflow 존재 확인
