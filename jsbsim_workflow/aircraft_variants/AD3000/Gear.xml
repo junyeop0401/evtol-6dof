@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ground_reactions>
+  <contact name="Nose_Gear" type="BOGEY">
+    <location unit="M"><x>0.427997</x><y>0.000000</y><z>-0.182442</z></location>
+    <static_friction>0.80</static_friction>
+    <dynamic_friction>0.55</dynamic_friction>
+    <rolling_friction>0.03</rolling_friction>
+    <spring_coeff unit="N/M">18000</spring_coeff>
+    <damping_coeff unit="N/M/SEC">1200</damping_coeff>
+    <damping_coeff_rebound unit="N/M/SEC">600</damping_coeff_rebound>
+    <max_steer unit="DEG">0</max_steer>
+    <brake_group>NONE</brake_group>
+    <retractable>0</retractable>
+  </contact>
+  <contact name="Main_Left" type="BOGEY">
+    <location unit="M"><x>0.964650</x><y>-0.350000</y><z>-0.156158</z></location>
+    <static_friction>0.80</static_friction>
+    <dynamic_friction>0.55</dynamic_friction>
+    <rolling_friction>0.03</rolling_friction>
+    <spring_coeff unit="N/M">18000</spring_coeff>
+    <damping_coeff unit="N/M/SEC">1200</damping_coeff>
+    <damping_coeff_rebound unit="N/M/SEC">600</damping_coeff_rebound>
+    <max_steer unit="DEG">0</max_steer>
+    <brake_group>NONE</brake_group>
+    <retractable>0</retractable>
+  </contact>
+  <contact name="Main_Right" type="BOGEY">
+    <location unit="M"><x>0.964650</x><y>0.350000</y><z>-0.156158</z></location>
+    <static_friction>0.80</static_friction>
+    <dynamic_friction>0.55</dynamic_friction>
+    <rolling_friction>0.03</rolling_friction>
+    <spring_coeff unit="N/M">18000</spring_coeff>
+    <damping_coeff unit="N/M/SEC">1200</damping_coeff>
+    <damping_coeff_rebound unit="N/M/SEC">600</damping_coeff_rebound>
+    <max_steer unit="DEG">0</max_steer>
+    <brake_group>NONE</brake_group>
+    <retractable>0</retractable>
+  </contact>
+  <contact name="Left_Wing_Tip" type="STRUCTURE">
+    <location unit="M"><x>0.450000</x><y>-1.500000</y><z>-0.050000</z></location>
+    <static_friction>0.20</static_friction>
+    <dynamic_friction>0.20</dynamic_friction>
+    <spring_coeff unit="N/M">6000</spring_coeff>
+    <damping_coeff unit="N/M/SEC">800</damping_coeff>
+  </contact>
+  <contact name="Right_Wing_Tip" type="STRUCTURE">
+    <location unit="M"><x>0.450000</x><y>1.500000</y><z>-0.050000</z></location>
+    <static_friction>0.20</static_friction>
+    <dynamic_friction>0.20</dynamic_friction>
+    <spring_coeff unit="N/M">6000</spring_coeff>
+    <damping_coeff unit="N/M/SEC">800</damping_coeff>
+  </contact>
+</ground_reactions>

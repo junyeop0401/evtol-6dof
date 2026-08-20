@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<system name="PX4 default IMU sensor stub">
+  <property value="0.0"> sensor/imu/gyroX_rps </property>
+  <property value="0.0"> sensor/imu/gyroY_rps </property>
+  <property value="0.0"> sensor/imu/gyroZ_rps </property>
+  <property value="0.0"> sensor/imu/accelX_mps2 </property>
+  <property value="0.0"> sensor/imu/accelY_mps2 </property>
+  <property value="0.0"> sensor/imu/accelZ_mps2 </property>
+</system>

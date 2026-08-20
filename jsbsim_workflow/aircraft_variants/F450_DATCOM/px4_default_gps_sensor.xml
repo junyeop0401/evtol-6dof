@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<system name="PX4 default GPS sensor stub">
+  <property value="0.0"> sensor/gps/lat_deg </property>
+  <property value="0.0"> sensor/gps/lon_deg </property>
+  <property value="0.0"> sensor/gps/alt_m </property>
+  <property value="0.0"> sensor/gps/vn_mps </property>
+  <property value="0.0"> sensor/gps/ve_mps </property>
+  <property value="0.0"> sensor/gps/vd_mps </property>
+</system>

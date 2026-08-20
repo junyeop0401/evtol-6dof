@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<fdm_config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="standard_vtol_demo_motor_updated_ko" version="2.0" release="ALPHA" xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
+  <fileheader>
+    <author>IAMAI / Codex demo scaffold</author>
+    <filecreationdate>2026-05-06</filecreationdate>
+    <version>0.3</version>
+    <description>PX4/JSBSim 연동을 위한 2단계 VTOL 모델. 리프트 모터 4개와 푸셔 모터 1개를 구성하고, 기체 형상·질량/CG·DATCOM 공력 데이터 및 제조사 정지추력 시험 데이터를 반영함.</description>
+    <note>2단계 수정 사항. 리프트 모터는 Hobbywing V6212 180KV + VSC 22.1x7.4의 정지시험 데이터를 사용하고, 푸셔 모터는 Hobbywing V6215 210KV + VSC 22.1x7.4의 정지 인장시험 데이터를 사용함. 모든 시험 조건은 46V/12S임. 추력은 스로틀-정지추력 lookup table로 직접 모델링함. 리프트 모터 반작용 토크는 제조사 토크 데이터와 기존 CW/CCW 부호 패턴을 사용함. 제조사 데이터가 33% 스로틀부터 제공되므로 0~33% 구간은 스로틀 0에서 추력/토크 0, 33%에서 첫 시험값을 기준으로 선형보간함. 검증된 유입류/전진비 데이터가 확보될 때까지 푸셔의 전진속도 보정은 적용하지 않음. 관성모멘트, 지면 접촉점 좌표, 모터 좌표는 최종 CAD 값 반영 전까지 임시값으로 유지함.</note>
+  </fileheader>
+  <metrics file="Metrics.xml" />
+  <mass_balance file="Mass.xml" />
+  <ground_reactions file="Gear.xml" />
+  <system file="Effectors.xml" />
+  <flight_control file="FlightControl.xml" />
+  <external_reactions file="ExternalReactions.xml" />
+  <aerodynamics file="Aero.xml" />
+</fdm_config>

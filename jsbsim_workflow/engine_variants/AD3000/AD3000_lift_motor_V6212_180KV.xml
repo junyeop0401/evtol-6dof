@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<brushless_dc_motor name="Hobbywing V6212 180KV lift motor">
+  <documentation>Hobbywing V6212-180KV lift motor 기준 모델이다. 공식 공개 사양의 12S 46V, KV 180, 무부하전류 1.53A, 최대전류 58A, 저항 84mOhm, 질량 292g을 반영했다.</documentation>
+  <velocityconstant>180</velocityconstant>
+  <coilresistance>0.084</coilresistance>
+  <noloadcurrent>1.53</noloadcurrent>
+  <maxvolts>46.0</maxvolts>
+</brushless_dc_motor>

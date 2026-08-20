@@ -25,3 +25,17 @@
 - 완료 항목: 모델 위치 확정, 정적 검토(문서화 품질/부호규약/AGL 처리/qbar-area 곱셈 확인), lessons_learned.md 대조로 brushless_dc_motor 관련 위험 재발견, jsbsim_workflow/scripts/MiniTalon/{initial_condition,runscript} 폴더 생성(README만, 내용 없음)
 - 미완료 항목: 실제 초기조건/runscript XML 작성(사용자가 이번 턴엔 보류 지시), longitudinal trim 미수렴 문제 해결(원 저자 TODO로 남음)
 - 최종 상태: PARTIAL(사용자 지시 범위 내에서는 완료, 후속 작업 다수 남음)
+
+## [2026-08-20 16:10] TASK-20260820-1610-001 — DONE
+
+- 과업: jsbsim_workflow GitHub 업로드 준비
+- 요청 내용: D드라이브 clone에서 작업할 수 있도록 jsbsim_workflow를 Git에 올리기
+- 목적: Claude/Codex가 UNC 경로 대신 Windows 로컬 clone에서 jsbsim_workflow 파일을 사용할 수 있게 함
+- 대상 프로젝트: /home/junyeopkwon/evtol-6dof
+- 작업 범위: jsbsim_workflow 내부 repo 상태 확인, 대용량 로그 제외 확인, 부모 repo에 소스/문서 파일 stage, .gitignore 조정, 작업 기록 append
+- 제외 범위: 대용량 logs/ 및 jsbsim_workflow_data/ 업로드, 별도 submodule 구성, 기존 실행 로그 Git LFS 이전
+- 가정: 사용자는 jsbsim_workflow를 별도 submodule보다 evtol-6dof clone 안에서 바로 보이는 일반 폴더로 쓰려는 것으로 해석
+- 완료 조건: jsbsim_workflow 소스/문서가 부모 repo에 추가되고 GitHub push 가능한 상태가 됨
+- 완료 항목: 내부 .git 메타데이터 백업, 173개 파일 stage, .gitignore를 런타임 산출물 제외 중심으로 변경
+- 미완료 항목: commit/push 및 D드라이브 pull 확인은 후속 명령 성공 여부에 따라 확정
+- 최종 상태: DONE

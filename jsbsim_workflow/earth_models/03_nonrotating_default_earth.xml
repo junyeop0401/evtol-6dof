@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<planet name="NonRotatingEarth">
+  <!-- 기본 지구 형상은 유지하고 자전만 제거한다. -->
+  <equatorial_radius unit="FT">20925646.32546</equatorial_radius>
+  <polar_radius unit="FT">20855486.5951</polar_radius>
+
+  <!-- 무자전 지구. -->
+  <rotation_rate unit="RAD/SEC">0.0</rotation_rate>
+
+  <!-- 기본 지구 중력상수와 J2. -->
+  <GM unit="FT3/SEC2">14.0764417572E15</GM>
+  <J2>1.08262982E-03</J2>
+  <gravity_model>gtWGS84</gravity_model>
+</planet>

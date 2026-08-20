@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sf.net/JSBSimScript.xsl"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd"
+  name="AD3000 smoke hover sizing run">
+  <use aircraft="AD3000" initialize="initGrnd"/>
+  <run start="0.0" end="8.0" dt="0.004">
+    <event name="Initialize controls">
+      <condition>simulation/frame le 1</condition>
+      <set name="fcs/throttle-cmd-norm" value="0.0"/>
+      <set name="fcs/pusher-throttle-cmd-norm" value="0.0"/>
+      <set name="fcs/aileron-cmd-norm" value="0.0"/>
+      <set name="fcs/elevator-cmd-norm" value="0.0"/>
+      <set name="fcs/rudder-cmd-norm" value="0.0"/>
+      <set name="fcs/fw-aileron-cmd-norm" value="0.0"/>
+      <set name="fcs/fw-elevator-cmd-norm" value="0.0"/>
+      <set name="fcs/fw-rudder-cmd-norm" value="0.0"/>
+    </event>
+    <event name="Lift rotor static thrust check">
+      <condition>simulation/sim-time-sec ge 1.0</condition>
+      <set name="fcs/throttle-cmd-norm" value="0.707"/>
+    </event>
+  </run>
+  <output name="AD3000_smoke_hover.csv" type="CSV" rate="50">
+    <property>simulation/sim-time-sec</property>
+    <property>position/h-agl-ft</property>
+    <property>velocities/vc-kts</property>
+    <property>attitude/phi-rad</property>
+    <property>attitude/theta-rad</property>
+    <property>propulsion/engine[0]/propeller-rpm</property>
+    <property>propulsion/engine[0]/thrust-lbs</property>
+    <property>propulsion/engine[1]/propeller-rpm</property>
+    <property>propulsion/engine[1]/thrust-lbs</property>
+    <property>propulsion/engine[2]/propeller-rpm</property>
+    <property>propulsion/engine[2]/thrust-lbs</property>
+    <property>propulsion/engine[3]/propeller-rpm</property>
+    <property>propulsion/engine[3]/thrust-lbs</property>
+    <property>propulsion/engine[4]/propeller-rpm</property>
+    <property>propulsion/engine[4]/thrust-lbs</property>
+  </output>
+</runscript>

@@ -12,3 +12,15 @@
 - 미완료 TODO: nominal_mission 고도/착지 프로파일 재설계, JSBSim 실행 루트 구성 방식 고정
 - 남은 리스크: open-loop 정상 미션은 고도 안정성이 부족하고, 현재 문서의 실행 명령은 JSBSim 1.2.4와 완전히 일치하지 않음
 - 권장 다음 작업: nominal_mission을 고도 제어 포함 형태로 개정하고 재검증
+
+## [2026-08-20 16:10] INDEX-20260820-1610-001 — DONE
+
+- 프로젝트명: evtol-6dof
+- 기록 시각: 2026-08-20 16:10 KST
+- 최근 수행 과업: jsbsim_workflow를 부모 Git 저장소에 일반 폴더로 편입하고 GitHub push 준비
+- 현재 상태: jsbsim_workflow 소스/문서 173개와 최상위 .gitignore 변경이 staged 상태
+- 최근 변경 파일: .gitignore, jsbsim_workflow/*, docs/agent-log/*
+- 주요 결정: jsbsim_workflow를 submodule이 아니라 evtol-6dof의 일반 추적 폴더로 포함하고, logs/ 및 jsbsim_workflow_data/는 제외
+- 미완료 TODO: D:\\dev\\evtol-6dof clone에서 git pull 후 폴더 반영 확인
+- 남은 리스크: 내부 repo .git 메타데이터는 /home/junyeopkwon/jsbsim_workflow_git_backup_20260820_160500에 백업되어 있으며, 별도 repo 이력은 부모 Git 이력에 병합되지 않음
+- 권장 다음 작업: commit/push 후 Windows D드라이브 clone에서 git pull 실행

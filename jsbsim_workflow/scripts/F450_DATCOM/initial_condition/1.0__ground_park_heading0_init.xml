@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<initialize name="F450_ground_park_heading0_init">
+  <vt unit="M/S">0.0</vt>
+  <latitude unit="DEG" type="geodetic">44.725801</latitude>
+  <longitude unit="DEG">-93.075866</longitude>
+  <altitude unit="M">0.0</altitude>
+  <elevation unit="M">285.2111</elevation>
+  <phi unit="DEG">0.0</phi>
+  <theta unit="DEG">0.0</theta>
+  <psi unit="DEG">0.0</psi>
+</initialize>

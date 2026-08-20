@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<initialize name="standard_vtol_demo aero data check">
+  <vt unit="M/S">25.0</vt>
+  <gamma unit="DEG">0.0</gamma>
+  <latitude type="geodetic" unit="DEG">37.5583</latitude>
+  <longitude unit="DEG">126.7906</longitude>
+  <altitude unit="M">500.0</altitude>
+  <elevation unit="M">18.0</elevation>
+  <psi unit="DEG">315.0</psi>
+</initialize>

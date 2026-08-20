@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metrics>
+  <!-- DATCOM reference geometry copied from jsbsim_aerodynamic_database.xml; original F450 locations retained. -->
+  <wingarea unit="M2">1.0650005</wingarea>
+  <wingspan unit="M">3</wingspan>
+  <chord unit="M">0.36967129</chord>
+  <location name="AERORP" unit="M">
+    <x>0.0</x>
+    <y>0.0</y>
+    <z>0.0</z>
+  </location>
+  <location name="EYEPOINT" unit="M">
+    <x>0.0</x>
+    <y>0.0</y>
+    <z>0.0</z>
+  </location>
+  <location name="VRP" unit="M">
+    <x>0.0</x>
+    <y>0.0</y>
+    <z>0.0</z>
+  </location>
+</metrics>

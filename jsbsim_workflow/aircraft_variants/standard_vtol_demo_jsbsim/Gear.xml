@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<ground_reactions>
+  <contact type="BOGEY" name="front_foot">
+    <location unit="M">
+      <x>0.60</x>
+      <y>0.00</y>
+      <z>-0.18</z>
+    </location>
+    <static_friction>0.7</static_friction>
+    <dynamic_friction>0.5</dynamic_friction>
+    <rolling_friction>0.05</rolling_friction>
+    <spring_coeff unit="LBS/FT">600</spring_coeff>
+    <damping_coeff unit="LBS/FT/SEC">20</damping_coeff>
+    <max_steer unit="DEG">0.0</max_steer>
+    <brake_group>NONE</brake_group>
+  </contact>
+  <contact type="BOGEY" name="rear_left_foot">
+    <location unit="M">
+      <x>-0.60</x>
+      <y>-2.00</y>
+      <z>-0.18</z>
+    </location>
+    <static_friction>0.7</static_friction>
+    <dynamic_friction>0.5</dynamic_friction>
+    <rolling_friction>0.05</rolling_friction>
+    <spring_coeff unit="LBS/FT">300</spring_coeff>
+    <damping_coeff unit="LBS/FT/SEC">12</damping_coeff>
+    <max_steer unit="DEG">0.0</max_steer>
+    <brake_group>NONE</brake_group>
+  </contact>
+  <contact type="BOGEY" name="rear_right_foot">
+    <location unit="M">
+      <x>-0.60</x>
+      <y>2.00</y>
+      <z>-0.18</z>
+    </location>
+    <static_friction>0.7</static_friction>
+    <dynamic_friction>0.5</dynamic_friction>
+    <rolling_friction>0.05</rolling_friction>
+    <spring_coeff unit="LBS/FT">300</spring_coeff>
+    <damping_coeff unit="LBS/FT/SEC">12</damping_coeff>
+    <max_steer unit="DEG">0.0</max_steer>
+    <brake_group>NONE</brake_group>
+  </contact>
+</ground_reactions>
+
+  
+  

@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='utf-8'?>
+<flight_control name="standard_vtol_demo">
+  <channel name="Roll">
+    <summer name="fcs/aileron-sum">
+      <input>fcs/aileron-cmd-norm</input>
+      <clipto>
+        <min>-1</min>
+        <max>1</max>
+      </clipto>
+    </summer>
+    <aerosurface_scale name="fcs/left-aileron-control">
+      <input>fcs/aileron-sum</input>
+      <range>
+        <min>-25</min>
+        <max>25</max>
+      </range>
+      <gain>0.0174533</gain>
+    </aerosurface_scale>
+    <actuator name="fcs/left-aileron-actuator">
+      <input>fcs/left-aileron-control</input>
+      <clipto>
+        <min>-0.4363</min>
+        <max>0.4363</max>
+      </clipto>
+      <output>fcs/left-aileron-pos-rad</output>
+    </actuator>
+    <aerosurface_scale name="fcs/right-aileron-control">
+      <input>fcs/aileron-sum</input>
+      <range>
+        <min>-25</min>
+        <max>25</max>
+      </range>
+      <gain>0.0174533</gain>
+    </aerosurface_scale>
+    <actuator name="fcs/right-aileron-actuator">
+      <input>fcs/right-aileron-control</input>
+      <clipto>
+        <min>-0.4363</min>
+        <max>0.4363</max>
+      </clipto>
+      <output>fcs/right-aileron-pos-rad</output>
+    </actuator>
+    <summer name="fcs/effective-aileron-pos">
+      <input>fcs/left-aileron-pos-rad</input>
+      <input>fcs/right-aileron-pos-rad</input>
+      <gain>0.5</gain>
+    </summer>
+    <aerosurface_scale name="fcs/effective-aileron-control-deg">
+      <input>fcs/aileron-cmd-norm</input>
+      <range>
+        <min>-20</min>
+        <max>20</max>
+      </range>
+      <output>fcs/effective-aileron-pos-deg</output>
+    </aerosurface_scale>
+  </channel>
+  <channel name="Pitch">
+    <summer name="fcs/elevator-sum">
+      <input>fcs/elevator-cmd-norm</input>
+      <clipto>
+        <min>-1</min>
+        <max>1</max>
+      </clipto>
+    </summer>
+    <aerosurface_scale name="fcs/elevator-control">
+      <input>fcs/elevator-sum</input>
+      <range>
+        <min>-25</min>
+        <max>25</max>
+      </range>
+      <gain>0.0174533</gain>
+    </aerosurface_scale>
+    <actuator name="fcs/elevator-actuator">
+      <input>fcs/elevator-control</input>
+      <clipto>
+        <min>-0.4363</min>
+        <max>0.4363</max>
+      </clipto>
+      <output>fcs/elevator-pos-rad</output>
+    </actuator>
+    <fcs_function name="fcs/mag-elevator-pos-rad">
+      <function>
+        <abs>
+          <property>fcs/elevator-pos-rad</property>
+        </abs>
+      </function>
+    </fcs_function>
+  </channel>
+  <channel name="Yaw">
+    <summer name="fcs/rudder-sum">
+      <input>fcs/rudder-cmd-norm</input>
+      <clipto>
+        <min>-1</min>
+        <max>1</max>
+      </clipto>
+    </summer>
+    <aerosurface_scale name="fcs/rudder-control">
+      <input>fcs/rudder-sum</input>
+      <range>
+        <min>-25</min>
+        <max>25</max>
+      </range>
+      <gain>0.0174533</gain>
+    </aerosurface_scale>
+    <actuator name="fcs/rudder-actuator">
+      <input>fcs/rudder-control</input>
+      <clipto>
+        <min>-0.4363</min>
+        <max>0.4363</max>
+      </clipto>
+      <output>fcs/rudder-pos-rad</output>
+    </actuator>
+  </channel>
+</flight_control>
+  

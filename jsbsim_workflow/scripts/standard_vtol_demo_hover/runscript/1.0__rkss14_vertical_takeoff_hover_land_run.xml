@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sf.net/JSBSimScript.xsl"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd"
+  name="standard_vtol_demo_hover_rkss14_vertical_takeoff_hover_land">
+
+  <description>
+    JSBSim-only hover-controlled vertical mission from Gimpo/RKSS runway 14:
+    arm/start, climb to 10 m AGL, hover for 10 s, descend, disarm/stop.
+  </description>
+
+  <use aircraft="standard_vtol_demo_hover" initialize="/home/junyeopkwon/evtol-6dof/jsbsim_workflow/scripts/standard_vtol_demo_hover/initial_condition/1.0__rkss14_runway_ground_init.xml"/>
+
+  <run start="0.0" end="42.0" dt="0.01">
+    <property value="0.0">simulation/notify-time-trigger</property>
+    <property value="0.0">mission/state</property>
+
+    <event name="STATE 0 - pre-start disarmed">
+      <condition>simulation/sim-time-sec ge 0.01</condition>
+      <set name="mission/state" value="0.0"/>
+      <set name="fcs/motor-armed" value="0.0"/>
+      <set name="fcs/hover-altitude-enable" value="0.0"/>
+      <set name="fcs/hover-altitude-target-ft" value="0.0"/>
+      <set name="fcs/hover-manual-collective-cmd-norm" value="0.0"/>
+      <set name="fcs/hover-throttle-base-norm" value="0.578"/>
+      <set name="fcs/esc-cmd-norm[0]" value="0.0"/>
+      <set name="fcs/esc-cmd-norm[1]" value="0.0"/>
+      <set name="fcs/esc-cmd-norm[2]" value="0.0"/>
+      <set name="fcs/esc-cmd-norm[3]" value="0.0"/>
+      <set name="fcs/esc-cmd-norm[4]" value="0.0"/>
+      <set name="fcs/aileron-cmd-norm" value="0.0"/>
+      <set name="fcs/elevator-cmd-norm" value="0.0"/>
+      <set name="fcs/rudder-cmd-norm" value="0.0"/>
+    </event>
+
+    <event name="STATE 1 - arm and idle">
+      <condition>simulation/sim-time-sec ge 1.0</condition>
+      <set name="mission/state" value="1.0"/>
+      <set name="fcs/motor-armed" value="1.0"/>
+      <set name="fcs/hover-altitude-enable" value="0.0"/>
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.20" tc="0.6"/>
+      <set name="fcs/esc-cmd-norm[4]" value="0.0"/>
+    </event>
+
+    <event name="STATE 2 - vertical takeoff to 10 m">
+      <condition>simulation/sim-time-sec ge 3.0</condition>
+      <set name="mission/state" value="2.0"/>
+      <set name="fcs/hover-altitude-enable" value="1.0"/>
+      <set name="fcs/hover-altitude-target-ft" value="32.8084"/>
+      <set name="fcs/hover-throttle-base-norm" value="0.578"/>
+    </event>
+
+    <event name="STATE 3 - capture 10 m hover">
+      <condition logic="AND">
+        mission/state ge 2.0
+        position/h-agl-ft ge 29.5
+      </condition>
+      <set name="mission/state" value="3.0"/>
+      <set name="fcs/hover-altitude-target-ft" value="32.8084"/>
+    </event>
+
+    <event name="STATE 4 - descend after 10 s hover window">
+      <condition logic="AND">
+        simulation/sim-time-sec ge 20.0
+        mission/state ge 3.0
+      </condition>
+      <set name="mission/state" value="4.0"/>
+      <set name="fcs/hover-altitude-target-ft" value="0.8"/>
+      <set name="fcs/hover-throttle-base-norm" value="0.520"/>
+    </event>
+
+    <event name="STATE 5 - touchdown idle">
+      <condition logic="AND">
+        mission/state ge 4.0
+        position/h-agl-ft le 1.0
+      </condition>
+      <set name="mission/state" value="5.0"/>
+      <set name="fcs/hover-altitude-enable" value="0.0"/>
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.15" tc="0.5"/>
+    </event>
+
+    <event name="STATE 6 - shutdown">
+      <condition logic="AND">
+        mission/state ge 5.0
+        simulation/sim-time-sec ge 32.0
+      </condition>
+      <set name="mission/state" value="6.0"/>
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.0" tc="0.6"/>
+      <set name="fcs/esc-cmd-norm[4]" value="0.0"/>
+      <set name="fcs/motor-armed" value="0.0"/>
+    </event>
+
+    <event name="STATE 7 - terminate after shutdown">
+      <condition logic="AND">
+        mission/state ge 6.0
+        simulation/sim-time-sec ge 36.0
+      </condition>
+      <set name="mission/state" value="7.0"/>
+      <set name="simulation/terminate" value="1"/>
+    </event>
+
+    <event name="Mission monitor" persistent="true">
+      <condition>simulation/sim-time-sec ge simulation/notify-time-trigger</condition>
+      <notify>
+        <property>simulation/sim-time-sec</property>
+        <property>mission/state</property>
+        <property>position/lat-geod-deg</property>
+        <property>position/long-gc-deg</property>
+        <property>position/h-agl-ft</property>
+        <property>velocities/h-dot-fps</property>
+        <property>attitude/phi-deg</property>
+        <property>attitude/theta-deg</property>
+        <property>attitude/psi-deg</property>
+        <property>fcs/motor-armed</property>
+        <property>fcs/hover-collective-cmd-norm</property>
+        <property>fcs/esc-out[0]</property>
+        <property>fcs/esc-out[1]</property>
+        <property>fcs/esc-out[2]</property>
+        <property>fcs/esc-out[3]</property>
+        <property>fcs/esc-out[4]</property>
+      </notify>
+      <set name="simulation/notify-time-trigger" value="1.0" type="FG_DELTA"/>
+    </event>
+  </run>
+
+  <output name="standard_vtol_demo_rkss14_vertical_mission.csv" type="CSV" rate="100">
+    <property>simulation/sim-time-sec</property>
+    <property>mission/state</property>
+    <property>position/lat-geod-deg</property>
+    <property>position/long-gc-deg</property>
+    <property>position/h-agl-ft</property>
+    <property>velocities/h-dot-fps</property>
+    <property>velocities/u-fps</property>
+    <property>velocities/v-fps</property>
+    <property>attitude/phi-deg</property>
+    <property>attitude/theta-deg</property>
+    <property>attitude/psi-deg</property>
+    <property>fcs/motor-armed</property>
+    <property>fcs/hover-collective-cmd-norm</property>
+    <property>fcs/esc-cmd-norm[0]</property>
+    <property>fcs/esc-out[0]</property>
+    <property>fcs/esc-cmd-norm[1]</property>
+    <property>fcs/esc-out[1]</property>
+    <property>fcs/esc-cmd-norm[2]</property>
+    <property>fcs/esc-out[2]</property>
+    <property>fcs/esc-cmd-norm[3]</property>
+    <property>fcs/esc-out[3]</property>
+    <property>fcs/esc-cmd-norm[4]</property>
+    <property>fcs/esc-out[4]</property>
+  </output>
+</runscript>

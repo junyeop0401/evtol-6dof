@@ -16,3 +16,11 @@
 - 권장 작업: scripts/run_quadx_jsbsim.sh 같은 실행 헬퍼를 추가하거나 저장소 구조/문서 명령을 표준 루트 기준으로 정리
 - 관련 파일: docs/QuadX_Baseline_model.md, scripts/QuadX_nominal_mission.xml, scripts/QuadX_control_response_test.xml
 - 상태: OPEN
+
+## [2026-08-20 16:10] TODO-20260820-1610-001 — OPEN
+
+- 항목: D드라이브 clone에서 jsbsim_workflow 반영 확인
+- 배경: jsbsim_workflow를 부모 repo에 편입한 뒤 Windows 로컬 경로 D:\\dev\\evtol-6dof에서 작업하려면 push 이후 pull이 필요
+- 권장 작업: git push 성공 후 PowerShell에서 cd D:\\dev\\evtol-6dof; git pull; Test-Path .\jsbsim_workflow 실행
+- 관련 파일: jsbsim_workflow/*, .gitignore
+- 상태: OPEN

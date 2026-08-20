@@ -1,7 +1,9 @@
-# jsbsim_workflow는 harness의 하드코딩된 실행 홈(ROOT)이라 evtol-6dof 안에
-# 물리적으로 있어야 하지만(symlink 대상), 과거 이력 자료 + 계속 쌓이는 실행
-# 로그라 git으로는 추적하지 않는다. reference/ 에 선별 병합된 것만 git 추적.
-jsbsim_workflow/
+# jsbsim_workflow source/docs are tracked so Windows clones can use the workflow.
+# Keep generated runtime outputs and large data mirrors out of Git.
+jsbsim_workflow/logs/
+jsbsim_workflow/jsbsim_workflow_data/
+jsbsim_workflow/tmp/
+jsbsim_workflow/temp/
 
 # Python
 __pycache__/

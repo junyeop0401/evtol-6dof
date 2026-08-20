@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flight_control name="AD3000 lift-plus-cruise mixer">
+  <property value="0.0">fcs/pusher-throttle-cmd-norm</property>
+  <property value="0.0">fcs/fw-aileron-cmd-norm</property>
+  <property value="0.0">fcs/fw-elevator-cmd-norm</property>
+  <property value="0.0">fcs/fw-rudder-cmd-norm</property>
+
+  <channel name="Manual multicopter inputs">
+    <pure_gain name="fcs/manual-roll-mix">
+      <input>fcs/aileron-cmd-norm</input><gain>0.18</gain>
+      <clipto><min>-0.25</min><max>0.25</max></clipto>
+    </pure_gain>
+    <pure_gain name="fcs/manual-pitch-mix">
+      <input>fcs/elevator-cmd-norm</input><gain>0.18</gain>
+      <clipto><min>-0.25</min><max>0.25</max></clipto>
+    </pure_gain>
+    <pure_gain name="fcs/manual-yaw-mix">
+      <input>fcs/rudder-cmd-norm</input><gain>0.12</gain>
+      <clipto><min>-0.20</min><max>0.20</max></clipto>
+    </pure_gain>
+  </channel>
+
+  <channel name="Lift motor mixer">
+    <summer name="fcs/cmdEscFR-norm">
+      <input>fcs/throttle-cmd-norm</input>
+      <input>-fcs/manual-roll-mix</input>
+      <input>fcs/manual-pitch-mix</input>
+      <input>fcs/manual-yaw-mix</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+    </summer>
+    <summer name="fcs/cmdEscAL-norm">
+      <input>fcs/throttle-cmd-norm</input>
+      <input>fcs/manual-roll-mix</input>
+      <input>-fcs/manual-pitch-mix</input>
+      <input>fcs/manual-yaw-mix</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+    </summer>
+    <summer name="fcs/cmdEscFL-norm">
+      <input>fcs/throttle-cmd-norm</input>
+      <input>fcs/manual-roll-mix</input>
+      <input>fcs/manual-pitch-mix</input>
+      <input>-fcs/manual-yaw-mix</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+    </summer>
+    <summer name="fcs/cmdEscAR-norm">
+      <input>fcs/throttle-cmd-norm</input>
+      <input>-fcs/manual-roll-mix</input>
+      <input>-fcs/manual-pitch-mix</input>
+      <input>-fcs/manual-yaw-mix</input>
+      <clipto><min>0.0</min><max>1.0</max></clipto>
+    </summer>
+  </channel>
+
+  <channel name="Fixed-wing control surfaces">
+    <aerosurface_scale name="fcs/effective-aileron-control-deg">
+      <input>fcs/fw-aileron-cmd-norm</input>
+      <range><min>-20.0</min><max>20.0</max></range>
+      <output>fcs/effective-aileron-pos-deg</output>
+    </aerosurface_scale>
+    <aerosurface_scale name="fcs/elevator-control-deg">
+      <input>fcs/fw-elevator-cmd-norm</input>
+      <range><min>-15.0</min><max>15.0</max></range>
+      <output>fcs/elevator-pos-deg</output>
+    </aerosurface_scale>
+  </channel>
+</flight_control>

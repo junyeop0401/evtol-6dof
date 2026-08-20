@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<propeller name="Hobbywing VSC 22.1x7.4 cruise prop" version="1.1">
+  <documentation>AD3000 실기 cruise prop 의도 규격은 기체 Spec 시트의 Curise Prop 항목에 있는 20*10이다. 다만 해당 조합의 공개 thrust/power sheet가 기체 Spec 시트에 없으므로, 우선 같은 시트에 정리된 Hobbywing V6215 210KV와 VSC 22.1x7.4 46V 공식 pull test 표 전체 33-100% throttle 행을 사용한다. 전체 22개 행 평균으로 Ct0=0.07388, Cp0=0.02772를 환산했다. 주의: 기체 Spec 시트의 pull test 데이터는 정지 시험(static test)이므로 전진속도 V=0, 전진비 J=0 조건의 Ct/Cp만 직접 산출할 수 있다. 현재 XML의 J>0 C_THRUST/C_POWER 값은 전진비별 실측 데이터가 아니라 J=0 Ct/Cp에 일반적인 임시 advance-ratio 감소 shape를 곱한 초기 가정이다. 정확한 전진비 table을 만들려면 airspeed, RPM, thrust, power가 함께 있는 prop performance map이 필요하다.</documentation>
+  <ixx unit="KG*M2">0.0030</ixx>
+  <diameter unit="IN">22.1</diameter>
+  <numblades>2</numblades>
+  <constspeed>0</constspeed>
+  <table name="C_THRUST" type="internal">
+    <tableData>
+      0.00  0.07388
+      0.10  0.07314
+      0.20  0.07018
+      0.30  0.06501
+      0.40  0.05762
+      0.50  0.04728
+      0.60  0.03472
+      0.70  0.02069
+      0.80  0.00739
+      0.90  0.00000
+      1.00  -0.00296
+    </tableData>
+  </table>
+
+  <table name="C_POWER" type="internal">
+    <tableData>
+      0.00  0.02772
+      0.10  0.02745
+      0.20  0.02662
+      0.30  0.02523
+      0.40  0.02329
+      0.50  0.02052
+      0.60  0.01719
+      0.70  0.01331
+      0.80  0.00887
+      0.90  0.00444
+      1.00  0.00111
+    </tableData>
+  </table>
+</propeller>

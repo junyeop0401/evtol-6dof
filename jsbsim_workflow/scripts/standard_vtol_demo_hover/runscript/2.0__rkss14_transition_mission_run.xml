@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd" name="standard_vtol_demo_hover_rkss14_transition_mission">
+  <description>
+    JSBSim-only standard VTOL transition mission from Gimpo/RKSS runway 14.
+    PX4 standard/lift+cruise mapping: pusher throttle ramps during front transition,
+    MC lift weight is blended down toward FW mode, back transition cuts pusher and
+    ramps MC lift weight back up before vertical landing. Because this JSBSim model
+    currently has no DATCOM elevator effectiveness, a small MC stabilization weight
+    is retained in the fixed-wing segment for standalone stability.
+  </description>
+  <use aircraft="standard_vtol_demo_hover" initialize="/home/junyeopkwon/evtol-6dof/jsbsim_workflow/scripts/standard_vtol_demo_hover/initial_condition/1.0__rkss14_runway_ground_init.xml"></use>
+  <run start="0.0" end="220.0" dt="0.01">
+    <property value="0.0">simulation/notify-time-trigger</property>
+    <property value="0.0">mission/state</property>
+    <event name="STATE 0 - pre-start disarmed">
+      <condition>simulation/sim-time-sec ge 0.01</condition>
+      <set name="mission/state" value="0.0"></set>
+      <set name="fcs/motor-armed" value="0.0"></set>
+      <set name="fcs/mc-weight" value="1.0"></set>
+      <set name="fcs/hover-altitude-enable" value="0.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="0.0"></set>
+      <set name="fcs/hover-manual-collective-cmd-norm" value="0.0"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.578"></set>
+      <set name="fcs/esc-cmd-norm[4]" value="0.0"></set>
+      <set name="fcs/aileron-cmd-norm" value="0.0"></set>
+      <set name="fcs/elevator-cmd-norm" value="0.0"></set>
+      <set name="fcs/rudder-cmd-norm" value="0.0"></set>
+      <set name="fcs/hover-roll-target-rad" value="0.0"></set>
+      <set name="fcs/hover-pitch-target-rad" value="0.0"></set>
+    </event>
+    <event name="STATE 1 - arm and idle">
+      <condition>simulation/sim-time-sec ge 1.0</condition>
+      <set name="mission/state" value="1.0"></set>
+      <set name="fcs/motor-armed" value="1.0"></set>
+      <set name="fcs/mc-weight" value="1.0"></set>
+      <set name="fcs/hover-altitude-enable" value="0.0"></set>
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.20" tc="0.6"></set>
+      <set name="fcs/esc-cmd-norm[4]" value="0.0"></set>
+    </event>
+    <event name="STATE 2 - vertical takeoff to 10 m">
+      <condition>simulation/sim-time-sec ge 3.0</condition>
+      <set name="mission/state" value="2.0"></set>
+      <set name="fcs/hover-altitude-enable" value="1.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="32.8084"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.578"></set>
+    </event>
+    <event name="STATE 3 - 10 m capture">
+      <condition logic="AND">
+        mission/state ge 2.0
+        position/h-agl-ft ge 29.5
+      </condition>
+      <set name="mission/state" value="3.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="32.8084"></set>
+    </event>
+    <event name="STATE 4 - climb to transition altitude 30 m">
+      <condition logic="AND">
+        mission/state ge 3.0
+        simulation/sim-time-sec ge 14.0
+      </condition>
+      <set name="mission/state" value="4.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="98.4252"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.585"></set>
+    </event>
+    <event name="STATE 5 - pre-transition hover at 30 m">
+      <condition logic="AND">
+        mission/state ge 4.0
+        simulation/sim-time-sec ge 26.0
+        position/h-agl-ft ge 90.0
+      </condition>
+      <set name="mission/state" value="5.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="98.4252"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.578"></set>
+      <set name="fcs/mc-weight" value="1.0"></set>
+      <set name="fcs/esc-cmd-norm[4]" value="0.0"></set>
+    </event>
+    <event name="STATE 6 - front transition MC to FW blend">
+      <condition logic="AND">
+        mission/state ge 5.0
+        simulation/sim-time-sec ge 30.0
+      </condition>
+      <set name="mission/state" value="6.0"></set>
+      <set name="fcs/esc-cmd-norm[4]" action="FG_RAMP" value="0.65" tc="3.0"></set>
+      <set name="fcs/mc-weight" action="FG_RAMP" value="0.22" tc="8.0"></set>
+      <set name="fcs/hover-altitude-enable" value="1.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="98.4252"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.560"></set>
+      <set name="fcs/hover-pitch-target-rad" value="0.0"></set>
+    </event>
+    <event name="STATE 7 - fixed-wing cruise segment">
+      <condition logic="AND">
+        mission/state ge 6.0
+        simulation/sim-time-sec ge 42.0
+        velocities/u-fps ge 32.8
+      </condition>
+      <set name="mission/state" value="7.0"></set>
+      <set name="fcs/mc-weight" value="0.22"></set>
+      <set name="fcs/esc-cmd-norm[4]" value="0.35"></set>
+      <set name="fcs/hover-altitude-target-ft" value="98.4252"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.560"></set>
+      <set name="fcs/hover-pitch-target-rad" value="0.0"></set>
+    </event>
+    <event name="STATE 8 - back transition FW to MC">
+      <condition logic="AND">
+        mission/state ge 7.0
+        simulation/sim-time-sec ge 58.0
+      </condition>
+      <set name="mission/state" value="8.0"></set>
+      <set name="fcs/esc-cmd-norm[4]" action="FG_RAMP" value="0.0" tc="1.0"></set>
+      <set name="fcs/mc-weight" action="FG_RAMP" value="1.0" tc="3.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="98.4252"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.578"></set>
+      <set name="fcs/hover-pitch-target-rad" value="0.20" action="FG_RAMP" tc="2.0"></set>
+    </event>
+    <event name="STATE 9 - MC hover recovered">
+      <condition logic="AND">
+        mission/state ge 8.0
+        simulation/sim-time-sec ge 80.0
+      </condition>
+      <set name="mission/state" value="9.0"></set>
+      <set name="fcs/mc-weight" value="1.0"></set>
+      <set name="fcs/esc-cmd-norm[4]" value="0.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="98.4252"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.578"></set>
+      <set name="fcs/hover-pitch-target-rad" value="0.14" action="FG_RAMP" tc="2.0"></set>
+    </event>
+    <event name="STATE 10 - vertical descent">
+      <condition logic="AND">
+        mission/state ge 9.0
+        simulation/sim-time-sec ge 96.0
+      </condition>
+      <set name="mission/state" value="10.0"></set>
+      <set name="fcs/hover-altitude-target-ft" value="0.8"></set>
+      <set name="fcs/hover-throttle-base-norm" value="0.520"></set>
+      <set name="fcs/hover-pitch-target-rad" value="0.06" action="FG_RAMP" tc="3.0"></set>
+    </event>
+    <event name="STATE 11 - touchdown idle">
+      <condition logic="AND">
+        mission/state ge 10.0
+        position/h-agl-ft le 1.0
+      
+        velocities/u-fps le 2.0
+        velocities/u-fps ge -2.0
+      </condition>
+      <set name="mission/state" value="11.0"></set>
+      <set name="fcs/hover-altitude-enable" value="0.0"></set>
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.15" tc="0.5"></set>
+      <set name="fcs/mc-weight" value="1.0"></set>
+    </event>
+    <event name="STATE 12 - shutdown">
+      <condition logic="AND">
+        mission/state ge 11.0
+        simulation/sim-time-sec ge 210.0
+      </condition>
+      <set name="mission/state" value="12.0"></set>
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.0" tc="0.6"></set>
+      <set name="fcs/esc-cmd-norm[4]" value="0.0"></set>
+      <set name="fcs/motor-armed" value="0.0"></set>
+    </event>
+    <event name="STATE 13 - terminate after shutdown">
+      <condition logic="AND">
+        mission/state ge 12.0
+        simulation/sim-time-sec ge 215.0
+      </condition>
+      <set name="mission/state" value="13.0"></set>
+      <set name="simulation/terminate" value="1"></set>
+    </event>
+    <event name="Mission monitor" persistent="true">
+      <condition>simulation/sim-time-sec ge simulation/notify-time-trigger</condition>
+      <notify>
+        <property>simulation/sim-time-sec</property>
+        <property>mission/state</property>
+        <property>position/lat-geod-deg</property>
+        <property>position/long-gc-deg</property>
+        <property>position/h-agl-ft</property>
+        <property>velocities/vt-fps</property>
+        <property>velocities/u-fps</property>
+        <property>velocities/h-dot-fps</property>
+        <property>attitude/phi-deg</property>
+        <property>attitude/theta-deg</property>
+        <property>attitude/psi-deg</property>
+        <property>fcs/motor-armed</property>
+        <property>fcs/mc-weight</property>
+        <property>fcs/hover-collective-cmd-norm</property>
+        <property>fcs/esc-out[0]</property>
+        <property>fcs/esc-out[1]</property>
+        <property>fcs/esc-out[2]</property>
+        <property>fcs/esc-out[3]</property>
+        <property>fcs/esc-out[4]</property>
+      </notify>
+      <set name="simulation/notify-time-trigger" value="1.0" type="FG_DELTA"></set>
+    </event>
+  </run>
+  <output name="standard_vtol_demo_hover_rkss14_transition_mission.csv" type="CSV" rate="100">
+    <property>simulation/sim-time-sec</property>
+    <property>mission/state</property>
+    <property>position/lat-geod-deg</property>
+    <property>position/long-gc-deg</property>
+    <property>position/h-agl-ft</property>
+    <property>velocities/vt-fps</property>
+    <property>velocities/u-fps</property>
+    <property>velocities/h-dot-fps</property>
+    <property>attitude/phi-deg</property>
+    <property>attitude/theta-deg</property>
+    <property>attitude/psi-deg</property>
+    <property>fcs/motor-armed</property>
+    <property>fcs/mc-weight</property>
+    <property>fcs/hover-collective-cmd-norm</property>
+    <property>fcs/esc-cmd-norm[0]</property>
+    <property>fcs/esc-out[0]</property>
+    <property>fcs/esc-cmd-norm[1]</property>
+    <property>fcs/esc-out[1]</property>
+    <property>fcs/esc-cmd-norm[2]</property>
+    <property>fcs/esc-out[2]</property>
+    <property>fcs/esc-cmd-norm[3]</property>
+    <property>fcs/esc-out[3]</property>
+    <property>fcs/esc-cmd-norm[4]</property>
+    <property>fcs/esc-out[4]</property>
+  </output>
+</runscript>

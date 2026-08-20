@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<fdm_config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            name="standard_vtol_demo_hover_datcom_main"
+            version="2.0"
+            release="ALPHA"
+            xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
+  <fileheader>
+    <author>IAMAI / Codex demo scaffold</author>
+    <filecreationdate>2026-05-06</filecreationdate>
+    <version>0.1</version>
+    <description>standard_vtol_demo_hover_datcom_main modular JSBSim standalone model.</description>
+    <note>F450-style modular layout. Main XML loads metrics, mass, gear, effectors, external reactions, flight control, and aerodynamics from separate module files.</note>
+    <note>Switch aerodynamics in the main XML by selecting Aero_DATCOM.xml or Aero_Demo.xml.</note>
+  </fileheader>
+
+  <metrics file="Metrics.xml"/>
+  <mass_balance file="Mass.xml"/>
+  <ground_reactions file="Gear.xml"/>
+  <system file="Effectors.xml"/>
+  <flight_control file="FlightControl.xml"/>
+  <external_reactions file="ExternalReactions.xml"/>
+  <aerodynamics file="Aero_DATCOM.xml"/>
+</fdm_config>

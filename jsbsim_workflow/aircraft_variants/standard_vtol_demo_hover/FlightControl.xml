@@ -1,0 +1,344 @@
+<?xml version="1.0"?>
+<flight_control name="standard_vtol_demo">
+  <channel name="HoverAltitudeController">
+    <summer name="fcs/hover-altitude-error-ft">
+      <input>fcs/hover-altitude-target-ft</input>
+      <input>-position/h-agl-ft</input>
+      <clipto>
+        <min>-20.0</min>
+        <max>20.0</max>
+      </clipto>
+    </summer>
+    <pure_gain name="fcs/hover-altitude-p-norm">
+      <input>fcs/hover-altitude-error-ft</input>
+      <gain>0.006</gain>
+    </pure_gain>
+    <pure_gain name="fcs/hover-vertical-rate-d-norm">
+      <input>velocities/h-dot-fps</input>
+      <gain>-0.015</gain>
+      <clipto>
+        <min>-0.120</min>
+        <max>0.120</max>
+      </clipto>
+    </pure_gain>
+    <summer name="fcs/hover-altitude-collective-raw-norm">
+      <input>fcs/hover-throttle-base-norm</input>
+      <input>fcs/hover-altitude-p-norm</input>
+      <input>fcs/hover-vertical-rate-d-norm</input>
+      <clipto>
+        <min>0.430</min>
+        <max>0.680</max>
+      </clipto>
+    </summer>
+    <switch name="fcs/hover-collective-cmd-norm">
+      <default value="fcs/hover-manual-collective-cmd-norm"></default>
+      <test value="fcs/hover-altitude-collective-raw-norm">
+          fcs/hover-altitude-enable eq 1
+        </test>
+    </switch>
+  </channel>
+  <channel name="HoverAttitudeController">
+    <summer name="fcs/hover-forward-speed-error-fps">
+      <input>velocities/u-fps</input>
+      <input>-fcs/hover-forward-speed-target-fps</input>
+      <clipto>
+        <min>-20.0</min>
+        <max>20.0</max>
+      </clipto>
+    </summer>
+    <pure_gain name="fcs/hover-pitch-speed-target-rad">
+      <input>fcs/hover-forward-speed-error-fps</input>
+      <gain>0.008</gain>
+      <clipto>
+        <min>-0.060</min>
+        <max>0.060</max>
+      </clipto>
+    </pure_gain>
+    <switch name="fcs/hover-pitch-target-active-rad">
+      <default value="fcs/hover-pitch-target-rad"></default>
+      <test value="fcs/hover-pitch-speed-target-rad">
+          fcs/hover-speed-enable eq 1
+        </test>
+    </switch>
+    <summer name="fcs/hover-lateral-speed-error-fps">
+      <input>fcs/hover-lateral-speed-target-fps</input>
+      <input>-velocities/v-fps</input>
+      <clipto>
+        <min>-20.0</min>
+        <max>20.0</max>
+      </clipto>
+    </summer>
+    <pure_gain name="fcs/hover-roll-speed-target-rad">
+      <input>fcs/hover-lateral-speed-error-fps</input>
+      <gain>0.008</gain>
+      <clipto>
+        <min>-0.060</min>
+        <max>0.060</max>
+      </clipto>
+    </pure_gain>
+    <switch name="fcs/hover-roll-target-active-rad">
+      <default value="fcs/hover-roll-target-rad"></default>
+      <test value="fcs/hover-roll-speed-target-rad">
+          fcs/hover-speed-enable eq 1
+        </test>
+    </switch>
+    <summer name="fcs/hover-roll-error-rad">
+      <input>fcs/hover-roll-target-active-rad</input>
+      <input>-attitude/phi-rad</input>
+      <clipto>
+        <min>-0.35</min>
+        <max>0.35</max>
+      </clipto>
+    </summer>
+    <pure_gain name="fcs/hover-roll-att-cmd-norm">
+      <input>fcs/hover-roll-error-rad</input>
+      <gain>0.080</gain>
+    </pure_gain>
+    <pure_gain name="fcs/hover-roll-rate-cmd-norm">
+      <input>velocities/p-aero-rad_sec</input>
+      <gain>-0.030</gain>
+    </pure_gain>
+    <summer name="fcs/hover-roll-mix-norm">
+      <input>fcs/hover-roll-att-cmd-norm</input>
+      <input>fcs/hover-roll-rate-cmd-norm</input>
+      <clipto>
+        <min>-0.080</min>
+        <max>0.080</max>
+      </clipto>
+    </summer>
+    <summer name="fcs/hover-pitch-error-rad">
+      <input>fcs/hover-pitch-target-active-rad</input>
+      <input>-attitude/theta-rad</input>
+      <clipto>
+        <min>-0.35</min>
+        <max>0.35</max>
+      </clipto>
+    </summer>
+    <pure_gain name="fcs/hover-pitch-att-cmd-norm">
+      <input>fcs/hover-pitch-error-rad</input>
+      <gain>0.080</gain>
+    </pure_gain>
+    <pure_gain name="fcs/hover-pitch-rate-cmd-norm">
+      <input>velocities/q-aero-rad_sec</input>
+      <gain>-0.030</gain>
+    </pure_gain>
+    <summer name="fcs/hover-pitch-mix-norm">
+      <input>fcs/hover-pitch-att-cmd-norm</input>
+      <input>fcs/hover-pitch-rate-cmd-norm</input>
+      <clipto>
+        <min>-0.080</min>
+        <max>0.080</max>
+      </clipto>
+    </summer>
+    <pure_gain name="fcs/hover-yaw-rate-mix-norm">
+      <input>velocities/r-aero-rad_sec</input>
+      <gain>-0.020</gain>
+      <clipto>
+        <min>-0.040</min>
+        <max>0.040</max>
+      </clipto>
+    </pure_gain>
+    <summer name="fcs/lift-esc-raw-norm[0]">
+      <input>fcs/hover-collective-cmd-norm</input>
+      <input>-fcs/hover-roll-mix-norm</input>
+      <input>fcs/hover-pitch-mix-norm</input>
+      <input>fcs/hover-yaw-rate-mix-norm</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+    </summer>
+    <summer name="fcs/lift-esc-raw-norm[1]">
+      <input>fcs/hover-collective-cmd-norm</input>
+      <input>fcs/hover-roll-mix-norm</input>
+      <input>-fcs/hover-pitch-mix-norm</input>
+      <input>fcs/hover-yaw-rate-mix-norm</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+    </summer>
+    <summer name="fcs/lift-esc-raw-norm[2]">
+      <input>fcs/hover-collective-cmd-norm</input>
+      <input>fcs/hover-roll-mix-norm</input>
+      <input>fcs/hover-pitch-mix-norm</input>
+      <input>-fcs/hover-yaw-rate-mix-norm</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+    </summer>
+    <summer name="fcs/lift-esc-raw-norm[3]">
+      <input>fcs/hover-collective-cmd-norm</input>
+      <input>-fcs/hover-roll-mix-norm</input>
+      <input>-fcs/hover-pitch-mix-norm</input>
+      <input>-fcs/hover-yaw-rate-mix-norm</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+    </summer>
+  </channel>
+  <channel name="LiftMotorWeightBlend">
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/lift-esc-raw-norm[0]</property>
+          <property>fcs/mc-weight</property>
+        </product>
+      </function>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-cmd-norm[0]</output>
+    </fcs_function>
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/lift-esc-raw-norm[1]</property>
+          <property>fcs/mc-weight</property>
+        </product>
+      </function>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-cmd-norm[1]</output>
+    </fcs_function>
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/lift-esc-raw-norm[2]</property>
+          <property>fcs/mc-weight</property>
+        </product>
+      </function>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-cmd-norm[2]</output>
+    </fcs_function>
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/lift-esc-raw-norm[3]</property>
+          <property>fcs/mc-weight</property>
+        </product>
+      </function>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-cmd-norm[3]</output>
+    </fcs_function>
+  </channel>
+  <channel name="Roll">
+    <summer name="fcs/aileron-sum">
+      <input>fcs/aileron-cmd-norm</input>
+      <clipto>
+        <min>-1</min>
+        <max>1</max>
+      </clipto>
+    </summer>
+    <aerosurface_scale name="fcs/left-aileron-control">
+      <input>fcs/aileron-sum</input>
+      <range>
+        <min>-25</min>
+        <max>25</max>
+      </range>
+      <gain>0.0174533</gain>
+    </aerosurface_scale>
+    <actuator name="fcs/left-aileron-actuator">
+      <input>fcs/left-aileron-control</input>
+      <clipto>
+        <min>-0.4363</min>
+        <max>0.4363</max>
+      </clipto>
+      <output>fcs/left-aileron-pos-rad</output>
+    </actuator>
+    <aerosurface_scale name="fcs/right-aileron-control">
+      <input>fcs/aileron-sum</input>
+      <range>
+        <min>-25</min>
+        <max>25</max>
+      </range>
+      <gain>0.0174533</gain>
+    </aerosurface_scale>
+    <actuator name="fcs/right-aileron-actuator">
+      <input>fcs/right-aileron-control</input>
+      <clipto>
+        <min>-0.4363</min>
+        <max>0.4363</max>
+      </clipto>
+      <output>fcs/right-aileron-pos-rad</output>
+    </actuator>
+    <summer name="fcs/effective-aileron-pos">
+      <input>fcs/left-aileron-pos-rad</input>
+      <input>fcs/right-aileron-pos-rad</input>
+      <gain>0.5</gain>
+    </summer>
+    <pure_gain name="fcs/effective-aileron-rad-to-deg">
+      <input>fcs/effective-aileron-pos</input>
+      <gain>57.295779513082</gain>
+      <output>fcs/effective-aileron-pos-deg</output>
+    </pure_gain>
+  </channel>
+  <channel name="Pitch">
+    <summer name="fcs/elevator-sum">
+      <input>fcs/elevator-cmd-norm</input>
+      <clipto>
+        <min>-1</min>
+        <max>1</max>
+      </clipto>
+    </summer>
+    <aerosurface_scale name="fcs/elevator-control">
+      <input>fcs/elevator-sum</input>
+      <range>
+        <min>-25</min>
+        <max>25</max>
+      </range>
+      <gain>0.0174533</gain>
+    </aerosurface_scale>
+    <actuator name="fcs/elevator-actuator">
+      <input>fcs/elevator-control</input>
+      <clipto>
+        <min>-0.4363</min>
+        <max>0.4363</max>
+      </clipto>
+      <output>fcs/elevator-pos-rad</output>
+    </actuator>
+    <fcs_function name="fcs/mag-elevator-pos-rad">
+      <function>
+        <abs>
+          <property>fcs/elevator-pos-rad</property>
+        </abs>
+      </function>
+    </fcs_function>
+  </channel>
+  <channel name="Yaw">
+    <summer name="fcs/rudder-sum">
+      <input>fcs/rudder-cmd-norm</input>
+      <clipto>
+        <min>-1</min>
+        <max>1</max>
+      </clipto>
+    </summer>
+    <aerosurface_scale name="fcs/rudder-control">
+      <input>fcs/rudder-sum</input>
+      <range>
+        <min>-25</min>
+        <max>25</max>
+      </range>
+      <gain>0.0174533</gain>
+    </aerosurface_scale>
+    <actuator name="fcs/rudder-actuator">
+      <input>fcs/rudder-control</input>
+      <clipto>
+        <min>-0.4363</min>
+        <max>0.4363</max>
+      </clipto>
+      <output>fcs/rudder-pos-rad</output>
+    </actuator>
+  </channel>
+</flight_control>

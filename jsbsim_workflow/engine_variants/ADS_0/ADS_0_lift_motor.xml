@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- Author: junyeopkwon -->
+
+<brushless_dc_motor name="ADS_0 lift motor template">
+  <!-- Zero-value multicopter lift motor template. -->
+  <velocityconstant>0</velocityconstant>
+  <coilresistance>0</coilresistance>
+  <noloadcurrent>0</noloadcurrent>
+  <maxvolts>0</maxvolts>
+</brushless_dc_motor>

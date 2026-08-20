@@ -1,0 +1,28 @@
+# Python cache and local runtime files
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# JSBSim generated outputs
+logs/
+
+# Full JSBSim/PX4 execution data mirror (28GB+, harness runtime root, not source)
+jsbsim_workflow_data/
+
+# OS/editor metadata
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+*Zone.Identifier
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+

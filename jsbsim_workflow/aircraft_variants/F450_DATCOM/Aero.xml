@@ -1,0 +1,479 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<aerodynamics>
+  <alphalimits unit="DEG">
+    <min>-25</min>
+    <max>11</max>
+  </alphalimits>
+  <axis name="LIFT">
+    <function name="aero/coefficient/CL_base">
+      <description>Lift coefficient from DATCOM clean case</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">velocities/mach</independentVar>
+          <tableData>
+ 0.1 0.2 0.3
+-25 -1.791 -1.794 -1.693
+-22 -1.654 -1.659 -1.551
+-19 -1.448 -1.453 -1.387
+-16 -1.16 -1.166 -1.153
+-13 -0.853 -0.858 -0.854
+-10 -0.55 -0.553 -0.554
+-7 -0.259 -0.261 -0.263
+-4 0.016 0.016 0.016
+-1 0.299 0.301 0.302
+2 0.598 0.602 0.601
+5 0.914 0.919 0.913
+8 1.241 1.248 1.207
+11 1.512 1.517 1.432
+</tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/coefficient/CL_de">
+      <description>Lift increment due to elevator deflection</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">fcs/elevator-pos-deg</independentVar>
+          <independentVar lookup="table">velocities/mach</independentVar>
+          <tableData breakPoint="0.1">
+									 -15             0            15
+                       -25        -0.009             0         0.009
+                       -22        -0.009             0         0.009
+                       -19        -0.009             0         0.009
+                       -16        -0.009             0         0.009
+                       -13        -0.009             0         0.009
+                       -10        -0.009             0         0.009
+                        -7        -0.009             0         0.009
+                        -4        -0.009             0         0.009
+                        -1        -0.009             0         0.009
+                         2        -0.009             0         0.009
+                         5        -0.009             0         0.009
+                         8        -0.009             0         0.009
+                        11        -0.009             0         0.009
+            </tableData>
+          <tableData breakPoint="0.2">
+									 -15             0            15
+                       -25        -0.012             0         0.012
+                       -22        -0.012             0         0.012
+                       -19        -0.012             0         0.012
+                       -16        -0.012             0         0.012
+                       -13        -0.012             0         0.012
+                       -10        -0.012             0         0.012
+                        -7        -0.012             0         0.012
+                        -4        -0.012             0         0.012
+                        -1        -0.012             0         0.012
+                         2        -0.012             0         0.012
+                         5        -0.012             0         0.012
+                         8        -0.012             0         0.012
+                        11        -0.012             0         0.012
+            </tableData>
+          <tableData breakPoint="0.3">
+									 -15             0            15
+                       -25        -0.033             0         0.033
+                       -22        -0.033             0         0.033
+                       -19        -0.033             0         0.033
+                       -16        -0.033             0         0.033
+                       -13        -0.033             0         0.033
+                       -10        -0.033             0         0.033
+                        -7        -0.033             0         0.033
+                        -4        -0.033             0         0.033
+                        -1        -0.033             0         0.033
+                         2        -0.033             0         0.033
+                         5        -0.033             0         0.033
+                         8        -0.033             0         0.033
+                        11        -0.033             0         0.033
+            </tableData>
+        </table>
+      </product>
+    </function>
+  </axis>
+  <axis name="DRAG">
+    <function name="aero/coefficient/CD_base">
+      <description>Drag coefficient from DATCOM clean case</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">velocities/mach</independentVar>
+          <tableData>
+ 0.1 0.2 0.3
+-25 0.175 0.169 0.153
+-22 0.148 0.144 0.129
+-19 0.117 0.112 0.104
+-16 0.082 0.078 0.076
+-13 0.055 0.051 0.049
+-10 0.035 0.032 0.031
+-7 0.025 0.022 0.02
+-4 0.021 0.018 0.017
+-1 0.025 0.022 0.021
+2 0.036 0.034 0.032
+5 0.057 0.055 0.053
+8 0.089 0.087 0.081
+11 0.124 0.122 0.111
+</tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/coefficient/CD_de">
+      <description>Drag increment due to elevator deflection</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">fcs/elevator-pos-deg</independentVar>
+          <independentVar lookup="table">velocities/mach</independentVar>
+          <tableData breakPoint="0.1">
+									 -15             0            15
+                       -25       0.00841     -3.39e-06      -0.00151
+                       -22        0.0076     -2.83e-06       -0.0007
+                       -19        0.0069     -2.36e-06             0
+                       -16       0.00631     -1.95e-06       0.00059
+                       -13       0.00574     -1.57e-06       0.00116
+                       -10       0.00518     -1.18e-06      0.001714
+                        -7       0.00462     -8.01e-07      0.002275
+                        -4       0.00406     -4.14e-07      0.002842
+                        -1       0.00351     -4.23e-08      0.003386
+                         2      0.002998      3.08e-07        0.0039
+                         5    0.00248303       6.6e-07       0.00441
+                         8      0.001948      1.03e-06       0.00495
+                        11       0.00134      1.44e-06       0.00556
+            </tableData>
+          <tableData breakPoint="0.2">
+									 -15             0            15
+                       -25       0.00898     -3.67e-06      -0.00176
+                       -22        0.0081     -3.06e-06      -0.00088
+                       -19       0.00734     -2.55e-06      -0.00012
+                       -16        0.0067     -2.11e-06       0.00052
+                       -13       0.00609     -1.69e-06       0.00113
+                       -10       0.00548     -1.28e-06      0.001733
+                        -7       0.00488     -8.66e-07      0.002338
+                        -4       0.00427     -4.49e-07       0.00295
+                        -1       0.00368     -4.77e-08       0.00354
+                         2      0.003125      3.31e-07       0.00409
+                         5     0.0025686      7.11e-07       0.00465
+                         8       0.00199      1.11e-06       0.00523
+                        11       0.00133      1.56e-06       0.00589
+            </tableData>
+          <tableData breakPoint="0.3">
+									 -15             0            15
+                       -25       0.00968     -4.02e-06       -0.0021
+                       -22       0.00875     -3.39e-06      -0.00117
+                       -19       0.00788     -2.79e-06       -0.0003
+                       -16       0.00712     -2.28e-06       0.00045
+                       -13       0.00646     -1.82e-06       0.00112
+                       -10        0.0058     -1.38e-06      0.001771
+                        -7       0.00515     -9.32e-07      0.002424
+                        -4        0.0045     -4.83e-07      0.003079
+                        -1       0.00387     -5.26e-08       0.00371
+                         2      0.003267      3.56e-07       0.00431
+                         5      0.002661       7.7e-07       0.00491
+                         8       0.00199      1.23e-06       0.00559
+                        11       0.00122      1.75e-06       0.00635
+            </tableData>
+        </table>
+      </product>
+    </function>
+  </axis>
+  <axis name="SIDE">
+    <function name="aero/coefficient/CY_beta">
+      <description>Side force due to sideslip: DATCOM CYB_per_deg multiplied by beta_deg</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <property>aero/beta-deg</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">velocities/mach</independentVar>
+          <tableData>
+ 0.1 0.2 0.3
+-25 -0.004675 -0.004681 -0.004693
+-22 -0.004675 -0.004681 -0.004693
+-19 -0.004675 -0.004681 -0.004693
+-16 -0.004675 -0.004681 -0.004693
+-13 -0.004675 -0.004681 -0.004693
+-10 -0.004675 -0.004681 -0.004693
+-7 -0.004675 -0.004681 -0.004693
+-4 -0.004675 -0.004681 -0.004693
+-1 -0.004675 -0.004681 -0.004693
+2 -0.004675 -0.004681 -0.004693
+5 -0.004675 -0.004681 -0.004693
+8 -0.004675 -0.004681 -0.004693
+11 -0.004675 -0.004681 -0.004693
+</tableData>
+        </table>
+      </product>
+    </function>
+  </axis>
+  <axis name="ROLL">
+    <function name="aero/coefficient/Cl_beta">
+      <description>Rolling moment due to sideslip: DATCOM CLB_per_deg multiplied by beta_deg</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <property>metrics/bw-ft</property>
+        <property>aero/beta-deg</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">velocities/mach</independentVar>
+          <tableData>
+ 0.1 0.2 0.3
+-25 -0.0005556 -0.0005605 -0.0005892
+-22 -0.00055 -0.0005552 -0.00059
+-19 -0.0005536 -0.0005583 -0.0005857
+-16 -0.0005747 -0.0005791 -0.000596
+-13 -0.0006056 -0.0006098 -0.0006211
+-10 -0.0006379 -0.0006423 -0.0006522
+-7 -0.0006674 -0.000672 -0.0006811
+-4 -0.0006931 -0.000698 -0.0007069
+-1 -0.0007184 -0.0007235 -0.0007322
+2 -0.0007448 -0.0007501 -0.0007582
+5 -0.0007744 -0.0007799 -0.0007868
+8 -0.0008065 -0.0008122 -0.0008133
+11 -0.0008308 -0.0008361 -0.0008302
+</tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/coefficient/Cl_da">
+      <description>Rolling moment increment due to aileron deflection</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <property>metrics/bw-ft</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">fcs/effective-aileron-pos-deg</independentVar>
+          <independentVar lookup="table">velocities/mach</independentVar>
+          <tableData breakPoint="0.1">
+									 -20           -10             0            10            20
+                       -25      -0.06239       -0.0367             0        0.0367       0.06239
+                       -22      -0.06239       -0.0367             0        0.0367       0.06239
+                       -19      -0.06239       -0.0367             0        0.0367       0.06239
+                       -16      -0.06239       -0.0367             0        0.0367       0.06239
+                       -13      -0.06239       -0.0367             0        0.0367       0.06239
+                       -10      -0.06239       -0.0367             0        0.0367       0.06239
+                        -7      -0.06239       -0.0367             0        0.0367       0.06239
+                        -4      -0.06239       -0.0367             0        0.0367       0.06239
+                        -1      -0.06239       -0.0367             0        0.0367       0.06239
+                         2      -0.06239       -0.0367             0        0.0367       0.06239
+                         5      -0.06239       -0.0367             0        0.0367       0.06239
+                         8      -0.06239       -0.0367             0        0.0367       0.06239
+                        11      -0.06239       -0.0367             0        0.0367       0.06239
+            </tableData>
+          <tableData breakPoint="0.2">
+									 -20           -10             0            10            20
+                       -25     -0.062559       -0.0368             0        0.0368      0.062559
+                       -22     -0.062559       -0.0368             0        0.0368      0.062559
+                       -19     -0.062559       -0.0368             0        0.0368      0.062559
+                       -16     -0.062559       -0.0368             0        0.0368      0.062559
+                       -13     -0.062559       -0.0368             0        0.0368      0.062559
+                       -10     -0.062559       -0.0368             0        0.0368      0.062559
+                        -7     -0.062559       -0.0368             0        0.0368      0.062559
+                        -4     -0.062559       -0.0368             0        0.0368      0.062559
+                        -1     -0.062559       -0.0368             0        0.0368      0.062559
+                         2     -0.062559       -0.0368             0        0.0368      0.062559
+                         5     -0.062559       -0.0368             0        0.0368      0.062559
+                         8     -0.062559       -0.0368             0        0.0368      0.062559
+                        11     -0.062559       -0.0368             0        0.0368      0.062559
+            </tableData>
+          <tableData breakPoint="0.3">
+									 -20           -10             0            10            20
+                       -25     -0.062649     -0.036852             0      0.036852      0.062649
+                       -22     -0.062649     -0.036852             0      0.036852      0.062649
+                       -19     -0.062649     -0.036852             0      0.036852      0.062649
+                       -16     -0.062649     -0.036852             0      0.036852      0.062649
+                       -13     -0.062649     -0.036852             0      0.036852      0.062649
+                       -10     -0.062649     -0.036852             0      0.036852      0.062649
+                        -7     -0.062649     -0.036852             0      0.036852      0.062649
+                        -4     -0.062649     -0.036852             0      0.036852      0.062649
+                        -1     -0.062649     -0.036852             0      0.036852      0.062649
+                         2     -0.062649     -0.036852             0      0.036852      0.062649
+                         5     -0.062649     -0.036852             0      0.036852      0.062649
+                         8     -0.062649     -0.036852             0      0.036852      0.062649
+                        11     -0.062649     -0.036852             0      0.036852      0.062649
+            </tableData>
+        </table>
+      </product>
+    </function>
+  </axis>
+  <axis name="PITCH">
+    <function name="aero/coefficient/Cm_base">
+      <description>Pitching moment coefficient from DATCOM clean case</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <property>metrics/cbarw-ft</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">velocities/mach</independentVar>
+          <tableData>
+ 0.1 0.2 0.3
+-25 0.4687 0.4665 0.4388
+-22 0.4111 0.4106 0.3944
+-19 0.3491 0.3495 0.3423
+-16 0.285 0.286 0.2837
+-13 0.2238 0.2249 0.2245
+-10 0.1646 0.1656 0.1658
+-7 0.1085 0.1092 0.1093
+-4 0.0544 0.0548 0.0547
+-1 0.0021 0.0021 0.0016
+2 -0.0497 -0.0502 -0.0511
+5 -0.1043 -0.1053 -0.1067
+8 -0.1627 -0.1642 -0.1648
+11 -0.2224 -0.2241 -0.2239
+</tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/coefficient/Cm_de">
+      <description>Pitching moment increment due to elevator deflection</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <property>metrics/cbarw-ft</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">fcs/elevator-pos-deg</independentVar>
+          <independentVar lookup="table">velocities/mach</independentVar>
+          <tableData breakPoint="0.1">
+									 -15             0            15
+                       -25         0.094       -0.0001       -0.0949
+                       -22         0.094       -0.0001       -0.0949
+                       -19         0.094       -0.0001       -0.0949
+                       -16         0.094       -0.0001       -0.0949
+                       -13         0.094       -0.0001       -0.0949
+                       -10         0.094       -0.0001       -0.0949
+                        -7         0.094       -0.0001       -0.0949
+                        -4         0.094       -0.0001       -0.0949
+                        -1         0.094       -0.0001       -0.0949
+                         2         0.094       -0.0001       -0.0949
+                         5         0.094       -0.0001       -0.0949
+                         8         0.094       -0.0001       -0.0949
+                        11         0.094       -0.0001       -0.0949
+            </tableData>
+          <tableData breakPoint="0.2">
+									 -15             0            15
+                       -25        0.0982       -0.0001       -0.0991
+                       -22        0.0982       -0.0001       -0.0991
+                       -19        0.0982       -0.0001       -0.0991
+                       -16        0.0982       -0.0001       -0.0991
+                       -13        0.0982       -0.0001       -0.0991
+                       -10        0.0982       -0.0001       -0.0991
+                        -7        0.0982       -0.0001       -0.0991
+                        -4        0.0982       -0.0001       -0.0991
+                        -1        0.0982       -0.0001       -0.0991
+                         2        0.0982       -0.0001       -0.0991
+                         5        0.0982       -0.0001       -0.0991
+                         8        0.0982       -0.0001       -0.0991
+                        11        0.0982       -0.0001       -0.0991
+            </tableData>
+          <tableData breakPoint="0.3">
+									 -15             0            15
+                       -25        0.0994       -0.0001       -0.1004
+                       -22        0.0994       -0.0001       -0.1004
+                       -19        0.0994       -0.0001       -0.1004
+                       -16        0.0994       -0.0001       -0.1004
+                       -13        0.0994       -0.0001       -0.1004
+                       -10        0.0994       -0.0001       -0.1004
+                        -7        0.0994       -0.0001       -0.1004
+                        -4        0.0994       -0.0001       -0.1004
+                        -1        0.0994       -0.0001       -0.1004
+                         2        0.0994       -0.0001       -0.1004
+                         5        0.0994       -0.0001       -0.1004
+                         8        0.0994       -0.0001       -0.1004
+                        11        0.0994       -0.0001       -0.1004
+            </tableData>
+        </table>
+      </product>
+    </function>
+  </axis>
+  <axis name="YAW">
+    <function name="aero/coefficient/Cn_beta">
+      <description>Yawing moment due to sideslip: DATCOM CNB_per_deg multiplied by beta_deg</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <property>metrics/bw-ft</property>
+        <property>aero/beta-deg</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">velocities/mach</independentVar>
+          <tableData>
+ 0.1 0.2 0.3
+-25 0.0008295 0.0008508 0.0008617
+-22 0.0008295 0.0008508 0.0008617
+-19 0.0008295 0.0008508 0.0008617
+-16 0.0008295 0.0008508 0.0008617
+-13 0.0008295 0.0008508 0.0008617
+-10 0.0008295 0.0008508 0.0008617
+-7 0.0008295 0.0008508 0.0008617
+-4 0.0008295 0.0008508 0.0008617
+-1 0.0008295 0.0008508 0.0008617
+2 0.0008295 0.0008508 0.0008617
+5 0.0008295 0.0008508 0.0008617
+8 0.0008295 0.0008508 0.0008617
+11 0.0008295 0.0008508 0.0008617
+</tableData>
+        </table>
+      </product>
+    </function>
+    <function name="aero/coefficient/Cn_da">
+      <description>Yawing moment increment due to aileron deflection</description>
+      <product>
+        <property>aero/qbar-area</property>
+        <property>metrics/bw-ft</property>
+        <table>
+          <independentVar lookup="row">aero/alpha-deg</independentVar>
+          <independentVar lookup="column">fcs/effective-aileron-pos-deg</independentVar>
+          <independentVar lookup="table">velocities/mach</independentVar>
+          <tableData breakPoint="0.1">
+									 -20           -10             0            10            20
+                       -25       -0.0105     -0.006178             0      0.006178        0.0105
+                       -22      -0.00976     -0.005741             0      0.005741       0.00976
+                       -19     -0.008515     -0.005009             0      0.005009      0.008515
+                       -16     -0.006712     -0.003948             0      0.003948      0.006712
+                       -13     -0.004806     -0.002827             0      0.002827      0.004806
+                       -10     -0.002944     -0.001732             0      0.001732      0.002944
+                        -7     -0.001165    -0.0006853             0     0.0006853      0.001165
+                        -4     0.0005081     0.0002989             0    -0.0002989    -0.0005081
+                        -1      0.002259      0.001329             0     -0.001329     -0.002259
+                         2      0.004129      0.002429             0     -0.002429     -0.004129
+                         5       0.00608      0.003576             0     -0.003576      -0.00608
+                         8      0.008072      0.004748             0     -0.004748     -0.008072
+                        11      0.009607      0.005651             0     -0.005651     -0.009607
+            </tableData>
+          <tableData breakPoint="0.2">
+									 -20           -10             0            10            20
+                       -25      -0.01055     -0.006205             0      0.006205       0.01055
+                       -22     -0.009814     -0.005773             0      0.005773      0.009814
+                       -19      -0.00857     -0.005041             0      0.005041       0.00857
+                       -16     -0.006769     -0.003982             0      0.003982      0.006769
+                       -13     -0.004849     -0.002852             0      0.002852      0.004849
+                       -10     -0.002972     -0.001748             0      0.001748      0.002972
+                        -7     -0.001177    -0.0006921             0     0.0006921      0.001177
+                        -4     0.0005133     0.0003019             0    -0.0003019    -0.0005133
+                        -1      0.002281      0.001342             0     -0.001342     -0.002281
+                         2      0.004167      0.002451             0     -0.002451     -0.004167
+                         5      0.006133      0.003607             0     -0.003607     -0.006133
+                         8      0.008139      0.004788             0     -0.004788     -0.008139
+                        11      0.009664      0.005685             0     -0.005685     -0.009664
+            </tableData>
+          <tableData breakPoint="0.3">
+									 -20           -10             0            10            20
+                       -25     -0.009931     -0.005842             0      0.005842      0.009931
+                       -22     -0.009114     -0.005361             0      0.005361      0.009114
+                       -19     -0.008167     -0.004804             0      0.004804      0.008167
+                       -16     -0.006719     -0.003952             0      0.003952      0.006719
+                       -13     -0.004839     -0.002847             0      0.002847      0.004839
+                       -10     -0.002983     -0.001755             0      0.001755      0.002983
+                        -7     -0.001189    -0.0006992             0     0.0006992      0.001189
+                        -4     0.0005199     0.0003058             0    -0.0003058    -0.0005199
+                        -1      0.002296       0.00135             0      -0.00135     -0.002296
+                         2      0.004168      0.002452             0     -0.002452     -0.004168
+                         5        0.0061      0.003588             0     -0.003588       -0.0061
+                         8      0.007848      0.004617             0     -0.004617     -0.007848
+                        11      0.009073      0.005337             0     -0.005337     -0.009073
+            </tableData>
+        </table>
+      </product>
+    </function>
+  </axis>
+</aerodynamics>

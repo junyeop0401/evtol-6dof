@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<system name="fcs">
+  <property value="0.0">mission/state</property>
+  <property value="0.0">fcs/motor-armed</property>
+  <property value="0.0">fcs/hover-collective-cmd-norm</property>
+  <property value="0.0">fcs/hover-manual-collective-cmd-norm</property>
+  <property value="0.0">fcs/hover-altitude-enable</property>
+  <property value="0.0">fcs/hover-altitude-target-ft</property>
+  <property value="0.535">fcs/hover-throttle-base-norm</property>
+  <property value="0.0">fcs/esc-cmd-norm[0]</property>
+  <property value="0.0">fcs/esc-cmd-armed[0]</property>
+  <property value="0.0">fcs/esc-cmd-norm[1]</property>
+  <property value="0.0">fcs/esc-cmd-armed[1]</property>
+  <property value="0.0">fcs/esc-cmd-norm[2]</property>
+  <property value="0.0">fcs/esc-cmd-armed[2]</property>
+  <property value="0.0">fcs/esc-cmd-norm[3]</property>
+  <property value="0.0">fcs/esc-cmd-armed[3]</property>
+  <property value="0.0">fcs/esc-cmd-norm[4]</property>
+  <property value="0.0">fcs/esc-cmd-armed[4]</property>
+  <property value="1.0">fcs/mc-weight</property>
+  <property value="0.0">fcs/lift-esc-raw-norm[0]</property>
+  <property value="0.0">fcs/lift-esc-raw-norm[1]</property>
+  <property value="0.0">fcs/lift-esc-raw-norm[2]</property>
+  <property value="0.0">fcs/lift-esc-raw-norm[3]</property>
+  <property value="0.0">fcs/hover-roll-target-rad</property>
+  <property value="0.0">fcs/hover-pitch-target-rad</property>
+  <property value="0.0">fcs/hover-speed-enable</property>
+  <property value="0.0">fcs/hover-forward-speed-target-fps</property>
+  <property value="0.0">fcs/hover-lateral-speed-target-fps</property>
+  <channel name="MotorArmingGate">
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/esc-cmd-norm[0]</property>
+          <property>fcs/motor-armed</property>
+        </product>
+      </function>
+      <output>fcs/esc-cmd-armed[0]</output>
+    </fcs_function>
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/esc-cmd-norm[1]</property>
+          <property>fcs/motor-armed</property>
+        </product>
+      </function>
+      <output>fcs/esc-cmd-armed[1]</output>
+    </fcs_function>
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/esc-cmd-norm[2]</property>
+          <property>fcs/motor-armed</property>
+        </product>
+      </function>
+      <output>fcs/esc-cmd-armed[2]</output>
+    </fcs_function>
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/esc-cmd-norm[3]</property>
+          <property>fcs/motor-armed</property>
+        </product>
+      </function>
+      <output>fcs/esc-cmd-armed[3]</output>
+    </fcs_function>
+    <fcs_function>
+      <function>
+        <product>
+          <property>fcs/esc-cmd-norm[4]</property>
+          <property>fcs/motor-armed</property>
+        </product>
+      </function>
+      <output>fcs/esc-cmd-armed[4]</output>
+    </fcs_function>
+  </channel>
+  <channel name="LiftMotor0">
+    <actuator name="fcs/etc/esc_0">
+      <input>fcs/esc-cmd-armed[0]</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-out[0]</output>
+    </actuator>
+  </channel>
+  <channel name="LiftMotor1">
+    <actuator name="fcs/etc/esc_1">
+      <input>fcs/esc-cmd-armed[1]</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-out[1]</output>
+    </actuator>
+  </channel>
+  <channel name="LiftMotor2">
+    <actuator name="fcs/etc/esc_2">
+      <input>fcs/esc-cmd-armed[2]</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-out[2]</output>
+    </actuator>
+  </channel>
+  <channel name="LiftMotor3">
+    <actuator name="fcs/etc/esc_3">
+      <input>fcs/esc-cmd-armed[3]</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-out[3]</output>
+    </actuator>
+  </channel>
+  <channel name="PusherMotor">
+    <actuator name="fcs/etc/esc_4">
+      <input>fcs/esc-cmd-armed[4]</input>
+      <clipto>
+        <min>0.0</min>
+        <max>1.0</max>
+      </clipto>
+      <output>fcs/esc-out[4]</output>
+    </actuator>
+  </channel>
+  <property value="0.0">fcs/motor_torque[0]</property>
+  <property value="0.0">fcs/motor_torque[1]</property>
+  <property value="0.0">fcs/motor_torque[2]</property>
+  <property value="0.0">fcs/motor_torque[3]</property>
+  <channel name="Motor0Torque">
+    <fcs_function>
+      <function>
+        <product>
+          <table>
+            <independentVar>fcs/esc-out[0]</independentVar>
+            <tableData>
+                0.0 0.0
+                0.5 0.05
+                0.7 0.10
+                1.0 0.25
+              </tableData>
+          </table>
+          <value>1.0</value>
+        </product>
+      </function>
+      <output>fcs/motor_torque[0]</output>
+    </fcs_function>
+  </channel>
+  <channel name="Motor1Torque">
+    <fcs_function>
+      <function>
+        <product>
+          <table>
+            <independentVar>fcs/esc-out[1]</independentVar>
+            <tableData>
+                0.0 0.0
+                0.5 0.05
+                0.7 0.10
+                1.0 0.25
+              </tableData>
+          </table>
+          <value>1.0</value>
+        </product>
+      </function>
+      <output>fcs/motor_torque[1]</output>
+    </fcs_function>
+  </channel>
+  <channel name="Motor2Torque">
+    <fcs_function>
+      <function>
+        <product>
+          <table>
+            <independentVar>fcs/esc-out[2]</independentVar>
+            <tableData>
+                0.0 0.0
+                0.5 0.05
+                0.7 0.10
+                1.0 0.25
+              </tableData>
+          </table>
+          <value>-1.0</value>
+        </product>
+      </function>
+      <output>fcs/motor_torque[2]</output>
+    </fcs_function>
+  </channel>
+  <channel name="Motor3Torque">
+    <fcs_function>
+      <function>
+        <product>
+          <table>
+            <independentVar>fcs/esc-out[3]</independentVar>
+            <tableData>
+                0.0 0.0
+                0.5 0.05
+                0.7 0.10
+                1.0 0.25
+              </tableData>
+          </table>
+          <value>-1.0</value>
+        </product>
+      </function>
+      <output>fcs/motor_torque[3]</output>
+    </fcs_function>
+  </channel>
+  <channel name="NetMotorTorque">
+    <fcs_function>
+      <function>
+        <sum>
+          <property>fcs/motor_torque[0]</property>
+          <property>fcs/motor_torque[1]</property>
+          <property>fcs/motor_torque[2]</property>
+          <property>fcs/motor_torque[3]</property>
+        </sum>
+      </function>
+      <output>fcs/net_torque</output>
+    </fcs_function>
+  </channel>
+</system>

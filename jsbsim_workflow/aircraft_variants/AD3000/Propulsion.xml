@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<propulsion>
+  <!-- 주의: 기체 Spec 시트의 pull test는 static data라서 J=0 Ct/Cp만 직접 계산된다. J>0 table 값은 임시 advance-ratio shape를 곱한 초기 가정이다. -->
+  <!-- lift rotor 4기는 DB 정리.xlsx의 기체 Spec 시트에 있는 V6212 180KV와 VSC 22.1x7.4 공식 pull test 데이터를 기준으로 구성했다. -->
+  <engine file="AD3000_lift_motor_V6212_180KV" name="lift front right">
+    <thruster file="AD3000_lift_prop_Hobbywing_VSC_22x7_4">
+      <location unit="M"><x>0.202142</x><y>0.487191</y><z>-0.021014</z></location>
+      <orient unit="DEG"><roll>0.0</roll><pitch>90.0</pitch><yaw>0.0</yaw></orient>
+      <sense>1.0</sense>
+      <p_factor>0.0</p_factor>
+    </thruster>
+  </engine>
+
+  <engine file="AD3000_lift_motor_V6212_180KV" name="lift aft left">
+    <thruster file="AD3000_lift_prop_Hobbywing_VSC_22x7_4">
+      <location unit="M"><x>1.164142</x><y>-0.487191</y><z>-0.020466</z></location>
+      <orient unit="DEG"><roll>0.0</roll><pitch>90.0</pitch><yaw>0.0</yaw></orient>
+      <sense>1.0</sense>
+      <p_factor>0.0</p_factor>
+    </thruster>
+  </engine>
+
+  <engine file="AD3000_lift_motor_V6212_180KV" name="lift front left">
+    <thruster file="AD3000_lift_prop_Hobbywing_VSC_22x7_4">
+      <location unit="M"><x>0.202148</x><y>-0.487191</y><z>-0.021010</z></location>
+      <orient unit="DEG"><roll>0.0</roll><pitch>90.0</pitch><yaw>0.0</yaw></orient>
+      <sense>-1.0</sense>
+      <p_factor>0.0</p_factor>
+    </thruster>
+  </engine>
+
+  <engine file="AD3000_lift_motor_V6212_180KV" name="lift aft right">
+    <thruster file="AD3000_lift_prop_Hobbywing_VSC_22x7_4">
+      <location unit="M"><x>1.164142</x><y>0.487191</y><z>-0.020468</z></location>
+      <orient unit="DEG"><roll>0.0</roll><pitch>90.0</pitch><yaw>0.0</yaw></orient>
+      <sense>-1.0</sense>
+      <p_factor>0.0</p_factor>
+    </thruster>
+  </engine>
+
+  <!-- cruise 실기 의도 prop은 기체 Spec 시트의 20*10이다. 해당 조합의 공개 thrust/power sheet가 없어 우선 같은 시트의 V6215 210KV와 VSC 22.1x7.4 공식 공개 데이터를 사용한다. -->
+  <engine file="AD3000_cruise_motor_V6215_210KV" name="cruise pusher">
+    <thruster file="AD3000_cruise_prop_Hobbywing_VSC_22x7_4">
+      <location unit="M"><x>1.546555</x><y>0.000001</y><z>0.011949</z></location>
+      <orient unit="DEG"><roll>0.0</roll><pitch>0.0</pitch><yaw>0.0</yaw></orient>
+      <sense>1.0</sense>
+      <p_factor>0.02</p_factor>
+    </thruster>
+  </engine>
+</propulsion>

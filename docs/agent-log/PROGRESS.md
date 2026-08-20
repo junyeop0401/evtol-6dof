@@ -39,3 +39,24 @@
 - 남은 리스크: 위 "핵심 발견" 3, 4번 그대로
 - 후속 작업: (1) engine XML을 electric_engine으로 교체할지 또는 brushless_dc_motor 유지 근거를 명시할지 사용자/Codex 결정, (2) MiniTalon_smoke_test.csv를 열어 propeller-rpm/power-hp/thrust-lbs 실제 수치가 0이 아닌지 직접 확인, (3) trim 재시도 시 CG/Cm0/Cmde/thrust line을 함께 조정(TODO-20260803-1528-003), (4) 위 사항이 정리된 뒤 jsbsim_workflow/scripts/MiniTalon/{initial_condition,runscript}에 실제 XML 작성
 - Git commit: 없음
+
+## [2026-08-20 16:10] PROGRESS-20260820-1610-001 — DONE
+
+- 과업: jsbsim_workflow 부모 Git 저장소 편입
+- 대상 프로젝트: /home/junyeopkwon/evtol-6dof
+- 조사한 파일: .gitignore, jsbsim_workflow/.gitignore, docs/agent-log/INDEX.md, docs/agent-log/TASK.md, docs/agent-log/PROGRESS.md, docs/agent-log/TODO.md
+- 생성한 파일: 없음
+- 수정한 파일: .gitignore, docs/agent-log/INDEX.md, docs/agent-log/TASK.md, docs/agent-log/PROGRESS.md, docs/agent-log/TODO.md
+- 추가 예정 파일: jsbsim_workflow 내부 repo가 추적하던 소스/문서 173개
+- 핵심 변경점: jsbsim_workflow/.git을 /home/junyeopkwon/jsbsim_workflow_git_backup_20260820_160500으로 이동 백업하고, 부모 repo에서 jsbsim_workflow 파일들을 추적하도록 stage함
+- 실행한 명령어: git -C jsbsim_workflow status --short --branch, git -C jsbsim_workflow ls-files, git add -f, git diff --cached --name-only, git diff --cached --stat
+- 테스트 결과: 해당 없음
+- lint 결과: 해당 없음
+- type check 결과: 해당 없음
+- build 결과: 해당 없음
+- 실행 확인 결과: staged 파일 174개 중 jsbsim_workflow 경로 173개 확인, jsbsim_workflow/logs/ 및 jsbsim_workflow/jsbsim_workflow_data/ staged 항목 없음 확인
+- 검증하지 못한 항목: D드라이브 clone 반영 여부
+- 검증하지 못한 이유: commit/push 후 Windows clone에서 git pull이 필요
+- 남은 리스크: 기존 내부 repo의 commit 이력은 백업에만 남고 부모 repo에는 파일 스냅샷으로 편입됨
+- 후속 작업: commit/push 후 D:\\dev\\evtol-6dof에서 git pull 실행
+- Git commit: 예정

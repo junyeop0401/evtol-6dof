@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<initialize name="standard_vtol_demo ground check">
+  <vt unit="M/S">0.0</vt>
+  <latitude type="geodetic" unit="DEG">37.5583</latitude>
+  <longitude unit="DEG">126.7906</longitude>
+  <altitude unit="M">18.0</altitude>
+  <elevation unit="M">18.0</elevation>
+  <psi unit="DEG">315.0</psi>
+</initialize>

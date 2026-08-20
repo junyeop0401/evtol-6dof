@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sf.net/JSBSimScript.xsl"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd" name="standard_vtol_demo_hover_rkss14_multicopter_certificate_mission">
+  <description>
+    JSBSim-only multicopter mission from Gimpo/RKSS runway 14, loosely based on
+    Korean unmanned multicopter practical-test patterns: start/arm, takeoff,
+    hover, lateral hover, forward/backward flight, triangle flight, circle-like
+    flight, emergency descent/recovery, normal landing, shutdown. This script
+    keeps standard_vtol_demo_hover in multicopter mode only: mc-weight=1 and
+    pusher motor command zero throughout the mission.
+  </description>
+  <use aircraft="standard_vtol_demo_hover" initialize="/home/junyeopkwon/evtol-6dof/jsbsim_workflow/scripts/standard_vtol_demo_hover/initial_condition/1.1__rkss14_runway_ground_init.xml" />
+  <run start="0.0" end="205.0" dt="0.01">
+    <property value="0.0">simulation/notify-time-trigger</property>
+    <property value="0.0">mission/state</property>
+    <event name="STATE 0 - preflight disarmed">
+      <condition>simulation/sim-time-sec ge 0.01</condition>
+      <set name="mission/state" value="0.0" />
+      <set name="fcs/motor-armed" value="0.0" />
+      <set name="fcs/mc-weight" value="1.0" />
+      <set name="fcs/hover-altitude-enable" value="0.0" />
+      <set name="fcs/hover-altitude-target-ft" value="0.0" />
+      <set name="fcs/hover-manual-collective-cmd-norm" value="0.0" />
+      <set name="fcs/hover-throttle-base-norm" value="0.578" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-speed-enable" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+      <set name="fcs/esc-cmd-norm[0]" value="0.0" />
+      <set name="fcs/esc-cmd-norm[1]" value="0.0" />
+      <set name="fcs/esc-cmd-norm[2]" value="0.0" />
+      <set name="fcs/esc-cmd-norm[3]" value="0.0" />
+      <set name="fcs/esc-cmd-norm[4]" value="0.0" />
+      <set name="fcs/aileron-cmd-norm" value="0.0" />
+      <set name="fcs/elevator-cmd-norm" value="0.0" />
+      <set name="fcs/rudder-cmd-norm" value="0.0" />
+    </event>
+    <event name="STATE 1 - arm and idle">
+      <condition>simulation/sim-time-sec ge 1.0</condition>
+      <set name="mission/state" value="1.0" />
+      <set name="fcs/motor-armed" value="1.0" />
+      <set name="fcs/mc-weight" value="1.0" />
+      <set name="fcs/hover-altitude-enable" value="0.0" />
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.20" tc="0.5" />
+      <set name="fcs/esc-cmd-norm[4]" value="0.0" />
+    </event>
+    <event name="STATE 2 - takeoff to 4 m AGL">
+      <condition>simulation/sim-time-sec ge 3.0</condition>
+      <set name="mission/state" value="2.0" />
+      <set name="fcs/hover-altitude-enable" value="1.0" />
+      <set name="fcs/hover-altitude-target-ft" value="13.1234" />
+      <set name="fcs/hover-throttle-base-norm" value="0.578" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-speed-enable" value="1.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 3 - takeoff point hover 5 s">
+      <condition logic="AND">
+        simulation/sim-time-sec ge 11.0
+        mission/state ge 2.0
+      </condition>
+      <set name="mission/state" value="3.0" />
+      <set name="fcs/hover-altitude-target-ft" value="13.1234" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 4 - lateral hover left leg">
+      <condition>simulation/sim-time-sec ge 16.0</condition>
+      <set name="mission/state" value="4.0" />
+      <set name="fcs/hover-roll-target-rad" value="-0.035" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="-3.0" />
+    </event>
+    <event name="STATE 5 - lateral left brake">
+      <condition>simulation/sim-time-sec ge 22.0</condition>
+      <set name="mission/state" value="5.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.030" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 6 - left hover 5 s">
+      <condition>simulation/sim-time-sec ge 26.0</condition>
+      <set name="mission/state" value="6.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 7 - lateral hover right leg">
+      <condition>simulation/sim-time-sec ge 31.0</condition>
+      <set name="mission/state" value="7.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.035" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="3.0" />
+    </event>
+    <event name="STATE 8 - lateral right brake">
+      <condition>simulation/sim-time-sec ge 37.0</condition>
+      <set name="mission/state" value="8.0" />
+      <set name="fcs/hover-roll-target-rad" value="-0.030" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 9 - right hover 5 s">
+      <condition>simulation/sim-time-sec ge 41.0</condition>
+      <set name="mission/state" value="9.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 10 - forward horizontal flight">
+      <condition>simulation/sim-time-sec ge 46.0</condition>
+      <set name="mission/state" value="10.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="-0.040" />
+      <set name="fcs/hover-forward-speed-target-fps" value="5.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 11 - forward brake">
+      <condition>simulation/sim-time-sec ge 53.0</condition>
+      <set name="mission/state" value="11.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.040" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 12 - forward point hover 5 s">
+      <condition>simulation/sim-time-sec ge 58.0</condition>
+      <set name="mission/state" value="12.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 13 - backward horizontal flight">
+      <condition>simulation/sim-time-sec ge 63.0</condition>
+      <set name="mission/state" value="13.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.040" />
+      <set name="fcs/hover-forward-speed-target-fps" value="-5.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 14 - backward brake">
+      <condition>simulation/sim-time-sec ge 70.0</condition>
+      <set name="mission/state" value="14.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="-0.040" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 15 - center hover 5 s">
+      <condition>simulation/sim-time-sec ge 75.0</condition>
+      <set name="mission/state" value="15.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 16 - triangle leg 1">
+      <condition>simulation/sim-time-sec ge 80.0</condition>
+      <set name="mission/state" value="16.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.026" />
+      <set name="fcs/hover-pitch-target-rad" value="-0.034" />
+      <set name="fcs/hover-forward-speed-target-fps" value="4.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="2.5" />
+    </event>
+    <event name="STATE 17 - triangle leg 2">
+      <condition>simulation/sim-time-sec ge 86.0</condition>
+      <set name="mission/state" value="17.0" />
+      <set name="fcs/hover-roll-target-rad" value="-0.052" />
+      <set name="fcs/hover-pitch-target-rad" value="0.000" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="-4.5" />
+    </event>
+    <event name="STATE 18 - triangle leg 3">
+      <condition>simulation/sim-time-sec ge 92.0</condition>
+      <set name="mission/state" value="18.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.026" />
+      <set name="fcs/hover-pitch-target-rad" value="0.034" />
+      <set name="fcs/hover-forward-speed-target-fps" value="-4.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="2.0" />
+    </event>
+    <event name="STATE 19 - triangle recovery hover 5 s">
+      <condition>simulation/sim-time-sec ge 99.0</condition>
+      <set name="mission/state" value="19.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 20 - circle approximation arc 1">
+      <condition>simulation/sim-time-sec ge 104.0</condition>
+      <set name="mission/state" value="20.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.030" />
+      <set name="fcs/hover-pitch-target-rad" value="-0.030" />
+      <set name="fcs/hover-forward-speed-target-fps" value="4.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="2.0" />
+    </event>
+    <event name="STATE 21 - circle approximation arc 2">
+      <condition>simulation/sim-time-sec ge 108.0</condition>
+      <set name="mission/state" value="21.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.040" />
+      <set name="fcs/hover-pitch-target-rad" value="0.000" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="4.0" />
+    </event>
+    <event name="STATE 22 - circle approximation arc 3">
+      <condition>simulation/sim-time-sec ge 112.0</condition>
+      <set name="mission/state" value="22.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.030" />
+      <set name="fcs/hover-pitch-target-rad" value="0.030" />
+      <set name="fcs/hover-forward-speed-target-fps" value="-4.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="2.0" />
+    </event>
+    <event name="STATE 23 - circle approximation arc 4">
+      <condition>simulation/sim-time-sec ge 116.0</condition>
+      <set name="mission/state" value="23.0" />
+      <set name="fcs/hover-roll-target-rad" value="-0.030" />
+      <set name="fcs/hover-pitch-target-rad" value="0.030" />
+      <set name="fcs/hover-forward-speed-target-fps" value="-4.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="-2.0" />
+    </event>
+    <event name="STATE 24 - circle approximation arc 5">
+      <condition>simulation/sim-time-sec ge 120.0</condition>
+      <set name="mission/state" value="24.0" />
+      <set name="fcs/hover-roll-target-rad" value="-0.040" />
+      <set name="fcs/hover-pitch-target-rad" value="0.000" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="-4.0" />
+    </event>
+    <event name="STATE 25 - circle approximation arc 6">
+      <condition>simulation/sim-time-sec ge 124.0</condition>
+      <set name="mission/state" value="25.0" />
+      <set name="fcs/hover-roll-target-rad" value="-0.030" />
+      <set name="fcs/hover-pitch-target-rad" value="-0.030" />
+      <set name="fcs/hover-forward-speed-target-fps" value="4.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="-2.0" />
+    </event>
+    <event name="STATE 26 - pattern recovery hover 10 s">
+      <condition>simulation/sim-time-sec ge 129.0</condition>
+      <set name="mission/state" value="26.0" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 27 - emergency descent and recovery check">
+      <condition>simulation/sim-time-sec ge 139.0</condition>
+      <set name="mission/state" value="27.0" />
+      <set name="fcs/hover-altitude-target-ft" value="6.5617" />
+      <set name="fcs/hover-throttle-base-norm" value="0.548" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 28 - recover to standard test altitude">
+      <condition>simulation/sim-time-sec ge 151.0</condition>
+      <set name="mission/state" value="28.0" />
+      <set name="fcs/hover-altitude-target-ft" value="13.1234" />
+      <set name="fcs/hover-throttle-base-norm" value="0.578" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 29 - normal landing approach">
+      <condition>simulation/sim-time-sec ge 163.0</condition>
+      <set name="mission/state" value="29.0" />
+      <set name="fcs/hover-altitude-target-ft" value="0.8" />
+      <set name="fcs/hover-throttle-base-norm" value="0.520" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+      <set name="fcs/hover-forward-speed-target-fps" value="0.0" />
+      <set name="fcs/hover-lateral-speed-target-fps" value="0.0" />
+    </event>
+    <event name="STATE 30 - touchdown idle">
+      <condition logic="AND">
+        simulation/sim-time-sec ge 178.0
+        mission/state ge 29.0
+        position/h-agl-ft le 1.0
+      </condition>
+      <set name="mission/state" value="30.0" />
+      <set name="fcs/hover-altitude-enable" value="0.0" />
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.15" tc="0.5" />
+      <set name="fcs/hover-roll-target-rad" value="0.0" />
+      <set name="fcs/hover-pitch-target-rad" value="0.0" />
+    </event>
+    <event name="STATE 31 - shutdown">
+      <condition logic="AND">
+        mission/state ge 30.0
+        simulation/sim-time-sec ge 190.0
+      </condition>
+      <set name="mission/state" value="31.0" />
+      <set name="fcs/hover-manual-collective-cmd-norm" action="FG_RAMP" value="0.0" tc="0.6" />
+      <set name="fcs/esc-cmd-norm[4]" value="0.0" />
+      <set name="fcs/motor-armed" value="0.0" />
+    </event>
+    <event name="STATE 32 - terminate after shutdown">
+      <condition logic="AND">
+        mission/state ge 31.0
+        simulation/sim-time-sec ge 198.0
+      </condition>
+      <set name="mission/state" value="32.0" />
+      <set name="simulation/terminate" value="1" />
+    </event>
+    <event name="Mission monitor" persistent="true">
+      <condition>simulation/sim-time-sec ge simulation/notify-time-trigger</condition>
+      <notify>
+        <property>simulation/sim-time-sec</property>
+        <property>mission/state</property>
+        <property>position/lat-geod-deg</property>
+        <property>position/long-gc-deg</property>
+        <property>position/h-agl-ft</property>
+        <property>velocities/h-dot-fps</property>
+        <property>velocities/u-fps</property>
+        <property>velocities/v-fps</property>
+        <property>attitude/phi-deg</property>
+        <property>attitude/theta-deg</property>
+        <property>attitude/psi-deg</property>
+        <property>fcs/motor-armed</property>
+        <property>fcs/mc-weight</property>
+        <property>fcs/hover-roll-target-rad</property>
+        <property>fcs/hover-pitch-target-rad</property>
+        <property>fcs/hover-collective-cmd-norm</property>
+        <property>fcs/hover-speed-enable</property>
+        <property>fcs/hover-forward-speed-target-fps</property>
+        <property>fcs/hover-lateral-speed-target-fps</property>
+        <property>fcs/hover-speed-enable</property>
+        <property>fcs/hover-forward-speed-target-fps</property>
+        <property>fcs/hover-lateral-speed-target-fps</property>
+        <property>fcs/esc-out[0]</property>
+        <property>fcs/esc-out[1]</property>
+        <property>fcs/esc-out[2]</property>
+        <property>fcs/esc-out[3]</property>
+        <property>fcs/esc-out[4]</property>
+      </notify>
+      <set name="simulation/notify-time-trigger" value="1.0" type="FG_DELTA" />
+    </event>
+  </run>
+  <output name="standard_vtol_demo_rkss14_multicopter_certificate_mission.csv" type="CSV" rate="100">
+    <property>simulation/sim-time-sec</property>
+    <property>mission/state</property>
+    <property>position/lat-geod-deg</property>
+    <property>position/long-gc-deg</property>
+    <property>position/h-agl-ft</property>
+    <property>velocities/h-dot-fps</property>
+    <property>velocities/u-fps</property>
+    <property>velocities/v-fps</property>
+    <property>attitude/phi-deg</property>
+    <property>attitude/theta-deg</property>
+    <property>attitude/psi-deg</property>
+    <property>fcs/motor-armed</property>
+    <property>fcs/mc-weight</property>
+    <property>fcs/hover-roll-target-rad</property>
+    <property>fcs/hover-pitch-target-rad</property>
+    <property>fcs/hover-collective-cmd-norm</property>
+    <property>fcs/hover-speed-enable</property>
+    <property>fcs/hover-forward-speed-target-fps</property>
+    <property>fcs/hover-lateral-speed-target-fps</property>
+    <property>fcs/esc-cmd-norm[0]</property>
+    <property>fcs/esc-out[0]</property>
+    <property>fcs/esc-cmd-norm[1]</property>
+    <property>fcs/esc-out[1]</property>
+    <property>fcs/esc-cmd-norm[2]</property>
+    <property>fcs/esc-out[2]</property>
+    <property>fcs/esc-cmd-norm[3]</property>
+    <property>fcs/esc-out[3]</property>
+    <property>fcs/esc-cmd-norm[4]</property>
+    <property>fcs/esc-out[4]</property>
+  </output>
+</runscript>

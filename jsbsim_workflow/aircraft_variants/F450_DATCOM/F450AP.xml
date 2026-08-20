@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<autopilot name="F450 hover autopilot">
+  <!-- Mode: 0 MANUAL, 1 ATTITUDE, 2 ALTITUDE, 3 HOVER(position + altitude). -->
+  <property value="0">ap/mode</property>
+  <property value="0">ap/altitude-reference</property> <!-- 0 AGL, 1 MSL -->
+  <property value="0.0">ap/roll-setpoint-rad</property>
+  <property value="0.0">ap/pitch-setpoint-rad</property>
+  <property value="0.0">ap/heading-setpoint-rad</property>
+  <property value="0.0">ap/north-setpoint-m</property>
+  <property value="0.0">ap/east-setpoint-m</property>
+  <property value="44.725801">ap/home-lat-deg</property>
+  <property value="-93.075866">ap/home-lon-deg</property>
+  <property value="0.5">ap/altitude-setpoint-ft</property>
+  <property value="0.31">ap/hover-throttle-base</property>
+
+  <channel name="North-East position hold">
+    <summer name="ap/local-lat-delta-deg">
+      <input>position/lat-geod-deg</input>
+      <input>-ap/home-lat-deg</input>
+    </summer>
+    <summer name="ap/local-lon-delta-deg">
+      <input>position/long-gc-deg</input>
+      <input>-ap/home-lon-deg</input>
+    </summer>
+    <pure_gain name="ap/local-north-m">
+      <input>ap/local-lat-delta-deg</input><gain>111319.490793</gain>
+    </pure_gain>
+    <pure_gain name="ap/local-east-m">
+      <input>ap/local-lon-delta-deg</input><gain>79090.567312</gain>
+    </pure_gain>
+
+    <summer name="ap/north-position-error-m">
+      <input>ap/north-setpoint-m</input>
+      <input>-ap/local-north-m</input>
+      <clipto><min>-10.0</min><max>10.0</max></clipto>
+    </summer>
+    <summer name="ap/east-position-error-m">
+      <input>ap/east-setpoint-m</input>
+      <input>-ap/local-east-m</input>
+      <clipto><min>-10.0</min><max>10.0</max></clipto>
+    </summer>
+
+    <pure_gain name="ap/north-velocity-setpoint-mps">
+      <input>ap/north-position-error-m</input><gain>0.20</gain>
+      <clipto><min>-1.0</min><max>1.0</max></clipto>
+    </pure_gain>
+    <pure_gain name="ap/east-velocity-setpoint-mps">
+      <input>ap/east-position-error-m</input><gain>0.20</gain>
+      <clipto><min>-1.0</min><max>1.0</max></clipto>
+    </pure_gain>
+    <pure_gain name="ap/north-velocity-setpoint-fps">
+      <input>ap/north-velocity-setpoint-mps</input><gain>3.280839895</gain>
+    </pure_gain>
+    <pure_gain name="ap/east-velocity-setpoint-fps">
+      <input>ap/east-velocity-setpoint-mps</input><gain>3.280839895</gain>
+    </pure_gain>
+
+    <summer name="ap/north-velocity-error-fps">
+      <input>ap/north-velocity-setpoint-fps</input>
+      <input>-velocities/v-north-fps</input>
+    </summer>
+    <summer name="ap/east-velocity-error-fps">
+      <input>ap/east-velocity-setpoint-fps</input>
+      <input>-velocities/v-east-fps</input>
+    </summer>
+
+    <!-- Heading-zero test controller: signed local north/east errors drive pitch/roll references. -->
+    <pure_gain name="ap/hover-pitch-reference-rad">
+      <input>ap/north-velocity-error-fps</input><gain>-0.025</gain>
+      <clipto><min>-0.08</min><max>0.08</max></clipto>
+    </pure_gain>
+    <pure_gain name="ap/hover-roll-reference-rad">
+      <input>ap/east-velocity-error-fps</input><gain>0.025</gain>
+      <clipto><min>-0.08</min><max>0.08</max></clipto>
+    </pure_gain>
+  </channel>
+
+  <channel name="Reference selection">
+    <switch name="ap/selected-roll-reference-rad">
+      <default value="0.0"/>
+      <test value="ap/hover-roll-reference-rad">ap/mode == 3</test>
+      <test logic="OR" value="ap/roll-setpoint-rad">
+        ap/mode == 1
+        ap/mode == 2
+      </test>
+    </switch>
+    <switch name="ap/selected-pitch-reference-rad">
+      <default value="0.0"/>
+      <test value="ap/hover-pitch-reference-rad">ap/mode == 3</test>
+      <test logic="OR" value="ap/pitch-setpoint-rad">
+        ap/mode == 1
+        ap/mode == 2
+      </test>
+    </switch>
+  </channel>
+
+  <channel name="Attitude hold">
+    <summer name="ap/roll-error-rad">
+      <input>ap/selected-roll-reference-rad</input>
+      <input>-attitude/phi-rad</input>
+    </summer>
+    <pid name="ap/roll-controller">
+      <input>ap/roll-error-rad</input><kp>2.20</kp><ki>0.05</ki><kd>0.35</kd>
+      <clipto><min>-0.25</min><max>0.25</max></clipto>
+    </pid>
+    <switch name="ap/roll-cmd-norm">
+      <default value="0.0"/>
+      <test logic="OR" value="ap/roll-controller">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test>
+    </switch>
+
+    <summer name="ap/pitch-error-rad">
+      <input>ap/selected-pitch-reference-rad</input>
+      <input>-attitude/theta-rad</input>
+    </summer>
+    <pid name="ap/pitch-controller">
+      <input>ap/pitch-error-rad</input><kp>2.20</kp><ki>0.05</ki><kd>0.35</kd>
+      <clipto><min>-0.25</min><max>0.25</max></clipto>
+    </pid>
+    <switch name="ap/pitch-cmd-norm">
+      <default value="0.0"/>
+      <test logic="OR" value="ap/pitch-controller">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test>
+    </switch>
+
+    <summer name="ap/heading-delta-rad">
+      <input>ap/heading-setpoint-rad</input>
+      <input>-attitude/psi-rad</input>
+    </summer>
+    <fcs_function name="ap/wrapped-heading-error-rad">
+      <function>
+        <atan2>
+          <sin>
+            <property>ap/heading-delta-rad</property>
+          </sin>
+          <cos>
+            <property>ap/heading-delta-rad</property>
+          </cos>
+        </atan2>
+      </function>
+      <output>ap/heading-error-rad</output>
+    </fcs_function>
+    <pid name="ap/yaw-controller">
+      <input>ap/heading-error-rad</input><kp>1.40</kp><ki>0.03</ki><kd>0.12</kd>
+      <clipto><min>-0.18</min><max>0.18</max></clipto>
+    </pid>
+    <switch name="ap/yaw-cmd-norm">
+      <default value="0.0"/>
+      <test logic="OR" value="ap/yaw-controller">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test>
+    </switch>
+  </channel>
+
+  <channel name="Altitude hold">
+    <switch name="ap/current-altitude-ft">
+      <default value="position/h-agl-ft"/>
+      <test value="position/h-sl-ft">ap/altitude-reference == 1</test>
+    </switch>
+    <summer name="ap/altitude-error-ft">
+      <input>ap/altitude-setpoint-ft</input>
+      <input>-ap/current-altitude-ft</input>
+      <clipto><min>-20.0</min><max>20.0</max></clipto>
+    </summer>
+    <pure_gain name="ap/climb-rate-setpoint-fps">
+      <input>ap/altitude-error-ft</input><gain>0.35</gain>
+      <clipto><min>-4.0</min><max>4.0</max></clipto>
+    </pure_gain>
+    <summer name="ap/climb-rate-error-fps">
+      <input>ap/climb-rate-setpoint-fps</input>
+      <input>-velocities/h-dot-fps</input>
+    </summer>
+    <pid name="ap/altitude-throttle-correction">
+      <input>ap/climb-rate-error-fps</input><kp>0.055</kp><ki>0.012</ki><kd>0.010</kd>
+      <clipto><min>-0.25</min><max>0.25</max></clipto>
+    </pid>
+    <summer name="ap/altitude-collective-unclipped">
+      <input>ap/hover-throttle-base</input>
+      <input>ap/altitude-throttle-correction</input>
+    </summer>
+    <pure_gain name="ap/altitude-collective-clipped">
+      <input>ap/altitude-collective-unclipped</input><gain>1.0</gain>
+      <clipto><min>0.0</min><max>0.90</max></clipto>
+    </pure_gain>
+    <switch name="ap/collective-cmd-norm">
+      <default value="0.0"/>
+      <test logic="OR" value="ap/altitude-collective-clipped">
+        ap/mode == 2
+        ap/mode == 3
+      </test>
+    </switch>
+  </channel>
+
+  <channel name="F450 command output">
+    <switch name="fcs/ScasEngage"><default value="0.0"/><test logic="OR" value="1.0">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test></switch>
+    <switch name="fcs/throttle-cmd-norm"><default value="0.0"/><test logic="OR" value="ap/collective-cmd-norm">
+        ap/mode == 2
+        ap/mode == 3
+      </test></switch>
+    <switch name="fcs/aileron-cmd-norm"><default value="0.0"/><test logic="OR" value="ap/roll-cmd-norm">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test></switch>
+    <switch name="fcs/elevator-cmd-norm"><default value="0.0"/><test logic="OR" value="ap/pitch-cmd-norm">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test></switch>
+    <switch name="fcs/rudder-cmd-norm"><default value="0.0"/><test logic="OR" value="ap/yaw-cmd-norm">
+        ap/mode == 1
+        ap/mode == 2
+        ap/mode == 3
+      </test></switch>
+  </channel>
+</autopilot>

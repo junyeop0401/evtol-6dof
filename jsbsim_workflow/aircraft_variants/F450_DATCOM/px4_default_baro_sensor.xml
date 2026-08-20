@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<system name="PX4 default baro sensor stub">
+  <property value="0.0"> sensor/baro/pressure_pa </property>
+  <property value="0.0"> sensor/baro/altitude_m </property>
+</system>

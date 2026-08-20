@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metrics>
+
+  <!-- ============================================================
+       AD3000 기준 형상
+
+       주익
+       - Airfoil        : NACA 4412
+       - Wingspan       : 3.000 m
+       - Root chord     : 0.244 m
+       - MAC            : 0.215 m
+       - Reference area : 0.5720 m2
+       - Taper ratio    : 0.75
+       - Incidence      : 2.44 deg
+       - Twist          : -2.44 deg
+       - Sweep          : 1.0 deg
+
+       참고:
+       S = 0.5720 m2, b = 3.000 m이면 AR = 15.73이다.
+       specification sheet의 AR = 12.5와 맞지 않으므로 현재 JSBSim
+       기준 형상에는 DB의 면적과 span 값을 우선 사용한다.
+       ============================================================ -->
+
+  <wingarea unit="M2">0.5720</wingarea>
+  <wingspan unit="M">3.000</wingspan>
+  <chord unit="M">0.215</chord>
+  <wing_incidence unit="DEG">2.44</wing_incidence>
+
+
+  <!-- ============================================================
+       AD3000 V-tail 기준 형상
+
+       - Airfoil             : NACA 0012
+       - Total span          : 0.700 m
+       - Root chord          : 0.184 m
+       - Taper ratio         : 0.80
+       - Tip chord           : 0.1472 m
+       - Total planform area : 0.11592 m2
+       - Included V angle    : 90 deg
+       - Cant per surface    : 45 deg
+       - Incidence           : 0 deg
+       - Twist               : 0 deg
+       - Sweep               : 20 deg
+
+       기하 투영:
+       Horizontal = 2 * 0.11592 * cos(45 deg) = 0.16394 m2
+       Vertical   = 0.11592 * sin(45 deg) = 0.08197 m2
+       ============================================================ -->
+
+  <htailarea unit="M2">0.1640</htailarea>
+  <vtailarea unit="M2">0.0820</vtailarea>
+
+  <!-- Tail moment arm은 CG와 V-tail aerodynamic center가 확정된 뒤 재계산한다. -->
+  <htailarm unit="M">0.000</htailarm>
+  <vtailarm unit="M">0.000</vtailarm>
+
+
+  <!-- ============================================================
+       구조 기준 위치
+
+       현재는 임시값이다. 구조 datum, CG, aerodynamic reference point가
+       확정되면 교체한다.
+       ============================================================ -->
+
+  <location name="AERORP" unit="M">
+    <x>0.000</x>
+    <y>0.000</y>
+    <z>0.000</z>
+  </location>
+
+  <location name="EYEPOINT" unit="M">
+    <x>0.000</x>
+    <y>0.000</y>
+    <z>0.000</z>
+  </location>
+
+  <location name="VRP" unit="M">
+    <x>0.000</x>
+    <y>0.000</y>
+    <z>0.000</z>
+  </location>
+
+</metrics>

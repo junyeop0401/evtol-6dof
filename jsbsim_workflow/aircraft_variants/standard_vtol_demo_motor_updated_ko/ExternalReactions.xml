@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='utf-8'?>
+<external_reactions>
+  <property value="0.0">fcs/esc-out[0]</property>
+  <property value="0.0">fcs/esc-out[1]</property>
+  <property value="0.0">fcs/esc-out[2]</property>
+  <property value="0.0">fcs/esc-out[3]</property>
+  <property value="0.0">fcs/esc-out[4]</property>
+  <force name="MOTOR_0_LIFT_FR" frame="BODY">
+    <function>
+      <table>
+        <independentVar>fcs/esc-out[0]</independentVar>
+        <tableData>
+              0.00  0.000000
+              0.33  4.067529
+              0.35  4.605457
+              0.37  5.145589
+              0.39  5.685722
+              0.42  6.501432
+              0.45  7.323756
+              0.48  8.159308
+              0.51  9.014702
+              0.54  9.896551
+              0.57  10.813674
+              0.60  11.768276
+              0.63  12.766970
+              0.66  13.811961
+              0.69  14.901044
+              0.72  16.032016
+              0.75  17.193852
+              0.78  18.371120
+              0.81  19.546184
+              0.84  20.690383
+              0.87  21.770648
+              0.90  22.747296
+              1.00  24.502176
+            </tableData>
+      </table>
+    </function>
+    <location unit="M">
+      <x>-0.105</x>
+      <y>1.163</y>
+      <z>0.05</z>
+    </location>
+    <direction>
+      <x>0.0</x>
+      <y>0.0</y>
+      <z>-1.0</z>
+    </direction>
+  </force>
+  <force name="MOTOR_1_LIFT_RL" frame="BODY">
+    <function>
+      <table>
+        <independentVar>fcs/esc-out[1]</independentVar>
+        <tableData>
+              0.00  0.000000
+              0.33  4.067529
+              0.35  4.605457
+              0.37  5.145589
+              0.39  5.685722
+              0.42  6.501432
+              0.45  7.323756
+              0.48  8.159308
+              0.51  9.014702
+              0.54  9.896551
+              0.57  10.813674
+              0.60  11.768276
+              0.63  12.766970
+              0.66  13.811961
+              0.69  14.901044
+              0.72  16.032016
+              0.75  17.193852
+              0.78  18.371120
+              0.81  19.546184
+              0.84  20.690383
+              0.87  21.770648
+              0.90  22.747296
+              1.00  24.502176
+            </tableData>
+      </table>
+    </function>
+    <location unit="M">
+      <x>1.404</x>
+      <y>-1.163</y>
+      <z>0.05</z>
+    </location>
+    <direction>
+      <x>0.0</x>
+      <y>0.0</y>
+      <z>-1.0</z>
+    </direction>
+  </force>
+  <force name="MOTOR_2_LIFT_FL" frame="BODY">
+    <function>
+      <table>
+        <independentVar>fcs/esc-out[2]</independentVar>
+        <tableData>
+              0.00  0.000000
+              0.33  4.067529
+              0.35  4.605457
+              0.37  5.145589
+              0.39  5.685722
+              0.42  6.501432
+              0.45  7.323756
+              0.48  8.159308
+              0.51  9.014702
+              0.54  9.896551
+              0.57  10.813674
+              0.60  11.768276
+              0.63  12.766970
+              0.66  13.811961
+              0.69  14.901044
+              0.72  16.032016
+              0.75  17.193852
+              0.78  18.371120
+              0.81  19.546184
+              0.84  20.690383
+              0.87  21.770648
+              0.90  22.747296
+              1.00  24.502176
+            </tableData>
+      </table>
+    </function>
+    <location unit="M">
+      <x>-0.105</x>
+      <y>-1.163</y>
+      <z>0.05</z>
+    </location>
+    <direction>
+      <x>0.0</x>
+      <y>0.0</y>
+      <z>-1.0</z>
+    </direction>
+  </force>
+  <force name="MOTOR_3_LIFT_RR" frame="BODY">
+    <function>
+      <table>
+        <independentVar>fcs/esc-out[3]</independentVar>
+        <tableData>
+              0.00  0.000000
+              0.33  4.067529
+              0.35  4.605457
+              0.37  5.145589
+              0.39  5.685722
+              0.42  6.501432
+              0.45  7.323756
+              0.48  8.159308
+              0.51  9.014702
+              0.54  9.896551
+              0.57  10.813674
+              0.60  11.768276
+              0.63  12.766970
+              0.66  13.811961
+              0.69  14.901044
+              0.72  16.032016
+              0.75  17.193852
+              0.78  18.371120
+              0.81  19.546184
+              0.84  20.690383
+              0.87  21.770648
+              0.90  22.747296
+              1.00  24.502176
+            </tableData>
+      </table>
+    </function>
+    <location unit="M">
+      <x>1.404</x>
+      <y>1.163</y>
+      <z>0.05</z>
+    </location>
+    <direction>
+      <x>0.0</x>
+      <y>0.0</y>
+      <z>-1.0</z>
+    </direction>
+  </force>
+  <force name="PUSHER_THRUST" frame="BODY">
+    <function>
+      <description>Hobbywing V6215 210KV + VSC 22.1x7.4의 46V/12S 정지 인장시험 추력 데이터. 스로틀만을 입력으로 사용하는 경험적 모델이며, 검증된 유입류/전진비 데이터가 확보될 때까지 전진속도 보정은 적용하지 않음.</description>
+      <table>
+        <independentVar>fcs/esc-out[4]</independentVar>
+        <tableData>
+            0.00  0.000000
+              0.33  4.792850
+              0.35  5.346210
+              0.37  5.963504
+              0.39  6.629300
+              0.42  7.680905
+              0.45  8.761170
+              0.48  9.843640
+              0.51  10.912882
+              0.54  11.968896
+              0.57  13.011683
+              0.60  14.052265
+              0.63  15.108279
+              0.66  16.192953
+              0.69  17.323925
+              0.72  18.514421
+              0.75  19.773260
+              0.78  21.104852
+              0.81  22.504788
+              0.84  23.955429
+              0.87  25.430322
+              0.90  26.889782
+              1.00  30.597957
+            </tableData>
+      </table>
+    </function>
+    <location unit="M">
+      <x>2.249</x>
+      <y>0.0</y>
+      <z>0.0</z>
+    </location>
+    <direction>
+      <x>1.0</x>
+      <y>0.0</y>
+      <z>0.0</z>
+    </direction>
+  </force>
+</external_reactions>
+  

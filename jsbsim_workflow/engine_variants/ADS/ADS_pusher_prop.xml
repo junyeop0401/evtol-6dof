@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!-- Author: junyeopkwon -->
+
+<propeller name="ADS pusher prop placeholder" version="1.1">
+  <ixx unit="KG*M2">0.0012</ixx>
+  <diameter unit="IN">14.0</diameter>
+  <numblades>2</numblades>
+  <constspeed>0</constspeed>
+
+  <table name="C_THRUST" type="internal">
+    <tableData>
+      0.00  0.095
+      0.10  0.094
+      0.20  0.091
+      0.30  0.086
+      0.40  0.078
+      0.50  0.067
+      0.60  0.053
+      0.70  0.037
+      0.80  0.022
+      0.90  0.009
+      1.00 -0.001
+    </tableData>
+  </table>
+
+  <table name="C_POWER" type="internal">
+    <tableData>
+      0.00  0.050
+      0.10  0.049
+      0.20  0.047
+      0.30  0.044
+      0.40  0.040
+      0.50  0.034
+      0.60  0.027
+      0.70  0.020
+      0.80  0.012
+      0.90  0.005
+      1.00  0.001
+    </tableData>
+  </table>
+</propeller>
